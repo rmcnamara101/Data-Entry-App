@@ -6,7 +6,7 @@ from TextProcessor import *
 
 if __name__ == "__main__":
 
-    image_path = 'scanned_forms/SKM_C224e24111620340_0001.jpg'
+    image_path = 'Patient_Entry_Project/scanned_forms/SKM_C224e24111620340_0001.jpg'
 
     preparer = RequestFormPreparer(image_path)
 

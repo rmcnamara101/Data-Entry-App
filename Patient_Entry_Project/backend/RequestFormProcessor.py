@@ -6,6 +6,29 @@ from config import FIELD_REGIONS  # Import the FIELD_REGIONS
 from TextProcessor import TextProcessor
 import re
 
+# Define allowed characters for each field
+allowed_characters = {
+    "Medicare Number": r"[^0-9/]",  # Allow digits and slash
+    "Phone Number": r"[^0-9]",      # Allow digits only
+    "Address": r"[^A-Za-z0-9\s]",   # Allow letters, numbers, and spaces
+    "Doctor Information": r"[^A-Za-z0-9]",  # Allow letters and numbers
+    "Request Number": r"[^A-Za-z0-9]",      # Allow letters and digits
+    # Add other fields as needed
+}
+
+# Define common OCR misreads for each field
+common_misreads = {
+    "Doctor Information": {
+        '§': '5',
+        '$': '5',
+        'O': '0',
+        'I': '1',
+        'l': '1',
+        'B': '8',
+        # Add other misreads as needed
+    },
+    # Define misreads for other fields if necessary
+}
 
 class RequestFormProcessor:
     def __init__(self, processed_form: np.ndarray, debug_mode=False) -> None:
@@ -45,7 +68,7 @@ class RequestFormProcessor:
         # 2. Medicare Number Split
         if self.information.get("Medicare Number"):
             medicare_num = self.information["Medicare Number"]
-            match = re.match(r'^(\d{9})/(\d)$', medicare_num)
+            match = re.match(r'^(\d{10})/(\d)$', medicare_num)
             if match:
                 self.information["Medicare Number"] = match.group(1)
                 self.information["Medicare Position"] = match.group(2)
@@ -63,8 +86,9 @@ class RequestFormProcessor:
         # 5. Doctor Provider Number
         if self.information.get("Doctor Information"):
             doctor_info = self.information["Doctor Information"]
-            match = re.search(r'\b\w{8}\b$', doctor_info.strip())  # Last 8-character word
-            self.information["Provider Number"] = match.group(0) if match else None
+
+            result = doctor_info[-1:-8]
+            self.information["Provider Number"] = result
 
         return self.information
 
@@ -169,47 +193,37 @@ class RequestFormProcessor:
         return address_components
     
     def _clean_text(self, field_name: str, text: str) -> str:
-        """
-        Cleans and normalizes extracted text based on the field.
+        # Correct common misreads
+        text = self._correct_misreadings(field_name, text)
 
-        Args:
-            field_name: The name of the field being processed.
-            text: The raw extracted text.
+        # Apply character whitelist
+        if field_name in allowed_characters:
+            pattern = allowed_characters[field_name]
+            text = re.sub(pattern, '', text)
 
-        Returns:
-            Cleaned text.
-        """
+        # Additional cleaning per field
         if field_name == "Medicare Number":
-            # Remove unexpected characters and spaces
-            text = re.sub(r'[^0-9/]', '', text)  # Keep only digits and '/'
-            text = re.sub(r'\s+', '', text)  # Remove extra spaces
-
+            text = re.sub(r'\s+', '', text)
         elif field_name == "Phone Number":
-            # Normalize phone numbers (split concatenated numbers)
-            text = re.sub(r'\(H\)|\(M\)', '', text)  # Remove (H) and (M)
-            text = re.sub(r'\D', '', text)  # Remove all non-digit characters
-            if len(text) > 10:  # If multiple numbers, separate them
+            if len(text) > 10:
                 text = f"{text[:10]} / {text[10:]}"
-
         elif field_name == "Address":
-            # Add spaces before capital letters and numbers if missing
-            text = re.sub(r'(?<=[a-zA-Z])(?=[A-Z0-9])', ' ', text)  # Add space between words
-            text = re.sub(r'\s+', ' ', text)  # Normalize spaces
-
+            text = re.sub(r'(?<!^)(?=[A-Z0-9])', ' ', text)
+            text = re.sub(r'\s+', ' ', text).strip()
         elif field_name == "Doctor Information":
-            # Extract only the last line for provider number
-            lines = text.strip().split('\n')
-            if lines:
-                text = lines[-1]  # Assume provider number is on the last line
-            text = re.sub(r'[^\w]', '', text)  # Remove special characters
-
+            # No need to insert spaces if we're extracting the Provider Number directly
+            pass
         elif field_name == "Request Number":
-            # Clean and ensure format like "24Hxxxxx"
-            text = re.sub(r'\s+', '', text)  # Remove spaces
+            text = re.sub(r'\s+', '', text)
             match = re.search(r'24H\d{5}', text)
             if match:
                 text = match.group(0)
 
-        # General cleaning: Remove trailing spaces and extra newlines
-        text = text.strip()
+        return text.strip()
+    
+    def _correct_misreadings(self, field_name: str, text: str) -> str:
+        if field_name in common_misreads:
+            misreads = common_misreads[field_name]
+            for wrong_char, correct_char in misreads.items():
+                text = text.replace(wrong_char, correct_char)
         return text
