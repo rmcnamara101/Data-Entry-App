@@ -22,9 +22,7 @@ common_misreads = {
         '§': '5',
         '$': '5',
         'O': '0',
-        'I': '1',
         'l': '1',
-        'B': '8',
         # Add other misreads as needed
     },
     # Define misreads for other fields if necessary
@@ -76,7 +74,7 @@ class RequestFormProcessor:
         # 3. Phone Number Cleanup
         if self.information.get("Phone Number"):
             phone_numbers = re.findall(r'\d{10}', self.information["Phone Number"])
-            self.information["Phone Number"] = " / ".join(phone_numbers[:2])  # Keep first two numbers
+            self.information["Phone Number"] = phone_numbers[0] if phone_numbers else None
 
         # 4. Address Parsing
         if self.information.get("Address"):
@@ -87,8 +85,15 @@ class RequestFormProcessor:
         if self.information.get("Doctor Information"):
             doctor_info = self.information["Doctor Information"]
 
-            result = doctor_info[-1:-8]
-            self.information["Provider Number"] = result
+            # Take the last 8 characters as the provider number
+            provider_number = doctor_info[-8:]
+
+            # Validate the provider number format
+            if re.match(r'^[A-Za-z0-9]{8}$', provider_number):
+                self.information["Provider Number"] = provider_number
+            else:
+                # If validation fails, set Provider Number to None or handle accordingly
+                self.information["Provider Number"] = None
 
         return self.information
 
@@ -161,34 +166,63 @@ class RequestFormProcessor:
         """
         address_components = {"Address": None, "Suburb": None, "Postcode": None, "State": None}
 
-        # Extract postcode (last 4 digits) and remaining address
-        match = re.match(r'^(.*)\s(\d{4})$', full_address.strip())
-        if not match:
-            return address_components
+        # Extract postcode (assumed to be the last 4 digits)
+        match = re.search(r'(\d{4})$', full_address.strip())
+        if match:
+            postcode = match.group(1)
+            address_components["Postcode"] = postcode
 
-        raw_address, postcode = match.groups()
-        address_components["Postcode"] = postcode
+            # Remove postcode from the full address
+            full_address = full_address[:match.start()].strip()
 
-        # Correct state mapping
-        postcode_to_state = {
-            "2": "NSW",  # NSW postcodes
-            "3": "VIC",  # VIC postcodes
-            "4": "QLD",  # QLD postcodes
-            "5": "SA",   # SA postcodes
-            "6": "WA",   # WA postcodes
-            "7": "TAS",  # TAS postcodes
-            "8": "NT",   # NT postcodes
-            "9": "ACT",  # ACT postcodes
-        }
-        state = postcode_to_state.get(postcode[0], "NSW")  # Default to NSW if not found
-        address_components["State"] = state
-
-        # Split remaining address into street and suburb
-        parts = raw_address.rsplit(' ', 1)
-        if len(parts) == 2:
-            address_components["Address"], address_components["Suburb"] = parts
+            # Map postcode to state
+            postcode_to_state = {
+                "2": "NSW",
+                "3": "VIC",
+                "4": "QLD",
+                "5": "SA",
+                "6": "WA",
+                "7": "TAS",
+                "8": "NT",
+                "0": "NT",
+                "9": "ACT",
+            }
+            state = postcode_to_state.get(postcode[0], "NSW")
+            address_components["State"] = state
         else:
-            address_components["Address"] = raw_address
+            # Handle cases where postcode is missing
+            pass
+
+        # Define street types
+        street_types = [
+            'Street', 'St', 'Road', 'Rd', 'Avenue', 'Ave', 'Drive', 'Dr',
+            'Boulevard', 'Blvd', 'Lane', 'Ln', 'Terrace', 'Terr', 'Place',
+            'Pl', 'Court', 'Ct'
+        ]
+
+        # Tokenize the address
+        tokens = full_address.split()
+
+        # Initialize index
+        street_type_index = None
+
+        # Find the index of the street type
+        for i, token in enumerate(tokens):
+            clean_token = token.strip(",.").capitalize()
+            if clean_token in street_types:
+                street_type_index = i
+                break
+
+        if street_type_index is not None:
+            # Address includes tokens up to and including the street type
+            address_components["Address"] = ' '.join(tokens[:street_type_index + 1])
+            # Suburb is the remaining tokens
+            address_components["Suburb"] = ' '.join(tokens[street_type_index + 1:])
+        else:
+            # If no street type is found, make a reasonable assumption
+            # For example, the first two tokens are the address, rest is suburb
+            address_components["Address"] = ' '.join(tokens[:2])
+            address_components["Suburb"] = ' '.join(tokens[2:])
 
         return address_components
     
@@ -208,7 +242,9 @@ class RequestFormProcessor:
             if len(text) > 10:
                 text = f"{text[:10]} / {text[10:]}"
         elif field_name == "Address":
-            text = re.sub(r'(?<!^)(?=[A-Z0-9])', ' ', text)
+            # Insert spaces before capital letters only, excluding the first character
+            text = re.sub(r'(?<!^)(?=[A-Z])', ' ', text)
+            # Normalize multiple spaces to a single space
             text = re.sub(r'\s+', ' ', text).strip()
         elif field_name == "Doctor Information":
             # No need to insert spaces if we're extracting the Provider Number directly
