@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from typing import Optional, Any, Dict, Tuple
 import cv2
 import numpy as np
-from config import FIELD_REGIONS  # Import the FIELD_REGIONS
+from config import FIELD_REGIONS, MEDICARE_RELATIVE_OFFSETS
 from TextProcessor import TextProcessor
 import re
+from MedicareAnchorDetector import * 
+from RequestFormPreparer import RequestFormPreparer
 
 # Define allowed characters for each field
 allowed_characters = {
@@ -29,7 +31,7 @@ common_misreads = {
 }
 
 class RequestFormProcessor:
-    def __init__(self, processed_form: np.ndarray, debug_mode=False) -> None:
+    def __init__(self, image_path: str, debug_mode=False) -> None:
         """
         Initializes the RequestFormProcessor with the preprocessed form image and field configurations.
 
@@ -37,11 +39,13 @@ class RequestFormProcessor:
             processed_form: The preprocessed form image as a NumPy array.
             debug_mode: If True, enables debugging features.
         """
-        self.requestform = processed_form
+        self.form_preparer = RequestFormPreparer(image_path)
+        self.requestform = self.form_preparer.prepare_form()
         self.field_regions = FIELD_REGIONS  # Load from config.py
         self.debug_mode = debug_mode
         self.information = {field: None for field in self.field_regions.keys()}
         self.textprocessor = TextProcessor()
+        self.medicare_detector = MedicareDetector(debug_mode=debug_mode)
 
     def process_form(self) -> Dict[str, Any]:
         """
@@ -50,8 +54,17 @@ class RequestFormProcessor:
         Returns:
             Dict[str, Any]: Extracted and processed information from the form.
         """
-        for field_name, field_region in self.field_regions.items():
-            self.information[field_name] = self._extract_field(field_region)
+         # Step 1: Try using the Medicare anchor method
+        medicare_anchor = self.medicare_detector.find_medicare_number(self.requestform)
+
+        if medicare_anchor:
+            if self.debug_mode:
+                print(f"Medicare anchor detected: {medicare_anchor}")
+            self._process_fields_using_anchor(medicare_anchor)
+        else:
+            if self.debug_mode:
+                print("Medicare anchor not detected. Falling back to manual regions.")
+            self._process_fields_using_manual_regions()
 
         # Process specific fields
         # 1. Request Number Fix
@@ -263,3 +276,58 @@ class RequestFormProcessor:
             for wrong_char, correct_char in misreads.items():
                 text = text.replace(wrong_char, correct_char)
         return text
+    
+    def _process_fields_using_anchor(self, medicare_anchor: MedicareAnchor) -> None:
+        """
+        Processes fields based on the detected Medicare anchor using relative positions.
+        Visualizes the bounding boxes for debugging.
+
+        Args:
+            medicare_anchor: The detected Medicare anchor object containing its bounding box.
+        """
+        anchor_x, anchor_y, _, _ = medicare_anchor.bounding_box
+
+        visualized_form = self.requestform.copy()
+
+        for field_name, (rel_x, rel_y, field_width, field_height) in MEDICARE_RELATIVE_OFFSETS.items():
+            region_x1 = anchor_x + rel_x
+            region_y1 = anchor_y - rel_y
+            region_x2 = region_x1 + field_width
+            region_y2 = region_y1 + field_height
+
+            # Draw the bounding box on the visualized form
+            cv2.rectangle(
+                visualized_form, (region_x1, region_y1), (region_x2, region_y2), (0, 255, 0), 2
+            )
+            cv2.putText(
+                visualized_form,
+                field_name,
+                (region_x1, region_y1 - 5),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (0, 255, 0),
+                1,
+            )
+
+            # Extract the text from the region
+            region = self.requestform[region_y1:region_y2, region_x1:region_x2]
+            text, confidence = self.textprocessor.extract_text(region)
+
+            if self.debug_mode:
+                print(f"Field: {field_name}, Region: ({region_x1}, {region_y1}, {region_x2}, {region_y2}), "
+                    f"Text: '{text}', Confidence: {confidence}")
+
+            # Clean and validate the extracted text
+            self.information[field_name] = self._clean_text(field_name, text)
+
+        # Show the visualized regions
+        if self.debug_mode:
+            cv2.imwrite("field_regions_debug.png", visualized_form)
+            print("Debug image saved as 'field_regions_debug.png'")
+
+    def _process_fields_using_manual_regions(self) -> None:
+        """
+        Processes fields using manually defined regions as a fallback.
+        """
+        for field_name, field_region in self.field_regions.items():
+            self.information[field_name] = self._extract_field(field_region)    

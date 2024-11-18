@@ -19,3 +19,14 @@ FIELD_REGIONS = {
     "Address": FieldRegion("Address", (39, 145, 212, 213), None, 'text'),
     "Doctor Information": FieldRegion("Doctor Information", (466, 538, 864, 684), None, 'text')
 }
+
+MEDICARE_RELATIVE_OFFSETS = {
+    "Date of Birth": (126, -75, 150, 20),  # Corrected height
+    "Given Name(s)": (-239, -75, 200, 20),  # Corrected width and height
+    "Surname": (-504, -75, 200, 20),  # Corrected width and height
+    "Address": (-504, -114, 300, 60),  # Corrected width and height
+    "Doctor Information": (-22, -526, 357, 120),  # Corrected dimensions
+    "Phone Number": (123, -116, 200, 40),  # Adjusted width and height
+    "Request Date": (154, -451, 200, 20),  # Adjusted dimensions
+    "Sex": (77, -75, 40, 20),  # Adjusted dimensions
+}
