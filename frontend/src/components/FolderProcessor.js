@@ -3,25 +3,28 @@ import React, { useState, useEffect } from 'react';
 const FolderScanner = () => {
   const [folderInfo, setFolderInfo] = useState(null);
   const [folderPath, setFolderPath] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [currentAction, setCurrentAction] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
-  // Fetch default folder stats
   useEffect(() => {
     const fetchFolderStats = async () => {
       try {
-        const response = await fetch('/api/folder-stats', {
-          method: 'POST',
+        const response = await fetch('http://127.0.0.1:5000/api/patient-records', {
+          method: 'GET',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ folder_path: '/path/to/default/folder' }),
         });
         if (response.ok) {
           const data = await response.json();
-          setFolderInfo(data);
+          setFolderInfo({
+            total_images: data.records.length,
+            processed_images: data.records.length
+          });
         } else {
-          setFolderInfo({ total_images: 0, processed_images: 0 });
+          throw new Error('Failed to fetch folder stats');
         }
       } catch (err) {
         console.error('Error fetching folder stats:', err);
@@ -30,20 +33,30 @@ const FolderScanner = () => {
     };
 
     fetchFolderStats();
-  }, []);
+  }, [result]); // Refresh stats when result changes
 
   const handleNewFolderSelect = (event) => {
     const files = Array.from(event.target.files);
+  
     if (files.length === 0) {
       setFolderPath('');
-      alert('No folder selected!');
+      setSelectedFiles([]);
+      setError('No folder selected!');
       return;
     }
-
-    const folderName = files[0].webkitRelativePath.split('/')[0];
-    setFolderPath(folderName);
-    setResult(null);
-    setError(null);
+  
+    try {
+      const firstFilePath = files[0].webkitRelativePath;
+      const folderName = firstFilePath.split('/')[0];
+      
+      setFolderPath(folderName);
+      setSelectedFiles(files);
+      setError(null);
+      setResult(null);
+    } catch (error) {
+      console.error('Error selecting folder:', error);
+      setError('Unable to select folder. Ensure browser supports directory upload.');
+    }
   };
 
   const scanDefaultFolder = async () => {
@@ -51,61 +64,99 @@ const FolderScanner = () => {
     setProgress(10);
     setResult(null);
     setError(null);
-
+    setCurrentAction('Scanning default folder...');
+  
     try {
-      const response = await fetch('/api/scan-default-folder', {
+      const response = await fetch('http://127.0.0.1:5000/api/scan-default-folder', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({}) // Send empty object as body
       });
-
+  
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || 'Failed to scan default folder.');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to scan default folder');
       }
-
+  
       const data = await response.json();
       setProgress(100);
       setResult(data);
+      setCurrentAction('Scan completed');
     } catch (err) {
       console.error('Error scanning default folder:', err);
       setError(err.message);
+      setCurrentAction('Error occurred');
     } finally {
-      setProcessing(false);
-      setProgress(0);
+      setTimeout(() => {
+        setProcessing(false);
+        setProgress(0);
+        setCurrentAction('');
+      }, 1000);
     }
   };
 
   const scanNewFolder = async () => {
-    if (!folderPath) {
-      alert('Please select a folder first.');
+    if (!folderPath || selectedFiles.length === 0) {
+      setError('Please select a folder with files first.');
       return;
     }
-
+  
     setProcessing(true);
-    setProgress(10);
+    setProgress(0);
     setResult(null);
     setError(null);
-
+    setCurrentAction('Uploading files...');
+  
     try {
-      const response = await fetch('/api/scan-new-folder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ folder_path: folderPath }),
+      const formData = new FormData();
+      formData.append('folder_path', folderPath);
+      
+      let totalSize = 0;
+      let uploadedSize = 0;
+      selectedFiles.forEach(file => {
+        totalSize += file.size;
       });
 
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || 'Failed to scan selected folder.');
-      }
+      selectedFiles.forEach((file, index) => {
+        formData.append('files[]', file);
+        formData.append('relative_paths[]', file.webkitRelativePath);
+        uploadedSize += file.size;
+        const uploadProgress = (uploadedSize / totalSize) * 50;
+        setProgress(Math.round(uploadProgress));
+      });
 
+      setCurrentAction('Processing files...');
+      
+      const response = await fetch('http://127.0.0.1:5000/api/scan-new-folder', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to scan selected folder');
+      }
+  
+      setProgress(75);
+      setCurrentAction('Finalizing...');
+      
       const data = await response.json();
       setProgress(100);
       setResult(data);
+      setCurrentAction('Completed');
+      
     } catch (err) {
       console.error('Error scanning new folder:', err);
       setError(err.message);
+      setCurrentAction('Error occurred');
     } finally {
-      setProcessing(false);
-      setProgress(0);
+      setTimeout(() => {
+        setProcessing(false);
+        setProgress(0);
+        setCurrentAction('');
+      }, 1000);
     }
   };
 
@@ -115,17 +166,22 @@ const FolderScanner = () => {
         <div>
           <h2 className="text-xl font-bold text-blue-800">Folder Information</h2>
           <p className="text-blue-700 mt-2">
-            Total Files: {folderInfo?.total_images ?? 'Loading...'}
+            Total Files in Database: {folderInfo?.total_images ?? 'Loading...'}
           </p>
-          <p className="text-blue-700">Processed Files: {folderInfo?.processed_images ?? 'Loading...'}</p>
+          <p className="text-blue-700">
+            Processed Files: {folderInfo?.processed_images ?? 'Loading...'}
+          </p>
+          {selectedFiles.length > 0 && (
+            <p className="text-blue-700">Selected Files: {selectedFiles.length}</p>
+          )}
         </div>
       </div>
 
       <div className="space-y-4">
         <button
           onClick={scanDefaultFolder}
-          className={`w-full px-6 py-4 bg-green-500 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-green-600 ${
-            processing && 'opacity-50 cursor-not-allowed'
+          className={`w-full px-6 py-4 bg-green-500 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-green-600 transition-colors ${
+            processing ? 'opacity-50 cursor-not-allowed' : ''
           }`}
           disabled={processing}
         >
@@ -140,18 +196,21 @@ const FolderScanner = () => {
             id="new-folder-input"
             className="hidden"
             onChange={handleNewFolderSelect}
+            disabled={processing}
           />
           <label
             htmlFor="new-folder-input"
-            className={`w-full block px-6 py-4 bg-purple-500 text-white text-lg font-semibold text-center rounded-lg shadow-lg cursor-pointer hover:bg-purple-600`}
+            className={`w-full block px-6 py-4 bg-purple-500 text-white text-lg font-semibold text-center rounded-lg shadow-lg cursor-pointer hover:bg-purple-600 transition-colors ${
+              processing ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            {folderPath ? `Selected Folder: ${folderPath}` : 'Select New Folder'}
+            {folderPath ? `Selected: ${folderPath}` : 'Select New Folder'}
           </label>
         </div>
 
         <button
           onClick={scanNewFolder}
-          className={`w-full px-6 py-4 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-blue-600 ${
+          className={`w-full px-6 py-4 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-blue-600 transition-colors ${
             processing || !folderPath ? 'opacity-50 cursor-not-allowed' : ''
           }`}
           disabled={processing || !folderPath}
@@ -161,26 +220,42 @@ const FolderScanner = () => {
       </div>
 
       {processing && (
-        <div className="w-full bg-gray-200 rounded-lg h-4 mt-6">
-          <div
-            className="bg-blue-500 h-4 rounded-lg transition-all"
-            style={{ width: `${progress}%` }}
-          ></div>
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium text-gray-600">{currentAction}</span>
+            <span className="text-sm font-medium text-gray-600">{progress}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
         </div>
       )}
 
       {result && (
-        <div className="bg-green-100 p-6 rounded-lg shadow-inner mt-6">
-          <h3 className="text-lg font-bold text-green-800">Scan Completed</h3>
-          <p className="text-green-700 mt-2">Total Files: {result.total_images}</p>
-          <p className="text-green-700">Records Added: {result.records_added}</p>
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-start">
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-green-800">Scan Completed Successfully</h3>
+              <div className="mt-2 text-green-700">
+                <p>Total Files: {result.total_images}</p>
+                <p>Records Added: {result.records_added}</p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
       {error && (
-        <div className="bg-red-100 p-6 rounded-lg shadow-inner mt-6">
-          <h3 className="text-lg font-bold text-red-800">Error</h3>
-          <p className="text-red-700 mt-2">{error}</p>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-start">
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-red-800">Error</h3>
+              <p className="mt-2 text-red-700">{error}</p>
+            </div>
+          </div>
         </div>
       )}
     </div>

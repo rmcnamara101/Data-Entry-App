@@ -164,27 +164,92 @@ def optimize_database():
     
 @app.route('/api/scan-default-folder', methods=['POST'])
 def scan_default_folder():
-    default_folder = '/Users/rileymcnamara/CODE/2024/Data-Entry-App/test_scan_folder'  # Update this to your default folder path
+    default_folder = '/Users/rileymcnamara/CODE/2024/Data-Entry-App/test_scan_folder'
     try:
+        logging.info(f"Scanning default folder: {default_folder}")
         stats = process_folder(default_folder)
+        logging.info(f"Scan completed successfully: {stats}")
         return jsonify(stats), 200
     except Exception as e:
+        logging.error(f"Error scanning default folder: {e}")
         return jsonify({'message': str(e)}), 500
 
 
 @app.route('/api/scan-new-folder', methods=['POST'])
 def scan_new_folder():
-    data = request.json
-    folder_path = data.get('folder_path')
-
-    if not folder_path or not os.path.exists(folder_path):
-        return jsonify({'message': 'Invalid folder path'}), 400
-
     try:
-        stats = process_folder(folder_path)
+        # Check if files were uploaded
+        if 'files[]' not in request.files:
+            logging.error("No files part in the request")
+            return jsonify({'message': 'No files uploaded'}), 400
+
+        files = request.files.getlist('files[]')
+        relative_paths = request.form.getlist('relative_paths[]')
+        base_folder_path = request.form.get('folder_path')
+
+        if not files or not base_folder_path:
+            logging.error("No files or folder path provided")
+            return jsonify({'message': 'No files or folder path provided'}), 400
+
+        # Create temporary directory structure and save files
+        temp_base_path = os.path.join('temp_uploads', base_folder_path)
+        os.makedirs(temp_base_path, exist_ok=True)
+
+        processed_files = 0
+        for file, rel_path in zip(files, relative_paths):
+            if file.filename:
+                # Create the full path maintaining the folder structure
+                full_path = os.path.join('temp_uploads', rel_path)
+                os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                
+                # Save the file
+                file.save(full_path)
+                processed_files += 1
+                logging.info(f"Saved file: {full_path}")
+
+        # Process the uploaded folder
+        stats = process_folder(temp_base_path)
+        stats['processed_files'] = processed_files
+
+        logging.info(f"Scan completed successfully: {stats}")
         return jsonify(stats), 200
+
     except Exception as e:
-        return jsonify({'message': str(e)}), 500
+        logging.error(f"Error processing uploaded files: {str(e)}")
+        return jsonify({'message': f'Error processing files: {str(e)}'}), 500
+
+    finally:
+        # Clean up temporary files (optional)
+        try:
+            if os.path.exists('temp_uploads'):
+                import shutil
+                shutil.rmtree('temp_uploads')
+        except Exception as cleanup_error:
+            logging.error(f"Error cleaning up temporary files: {str(cleanup_error)}")
+
+    
+def serialize_record(record):
+    return {
+        'id': record.id,
+        'request_date': record.request_date.isoformat() if record.request_date else None,
+        'request_number': record.request_number or "Not Found",
+        'given_names': record.given_names or "Not Found",
+        'surname': record.surname or "Not Found",
+        'address': record.address or "Not Found",
+        'suburb': record.suburb or "Not Found",
+        'state': record.state or "Not Found",
+        'postcode': record.postcode or "Not Found",
+        'home_phone': record.home_phone or "Not Found",
+        'mobile_phone': record.mobile_phone or "Not Found",
+        'medicare_number': record.medicare_number or "Not Found",
+        'medicare_position': record.medicare_position or "Not Found",
+        'doctor_information': record.doctor_information or "Not Found",
+        'provider_number': record.provider_number or "Not Found",
+        'date_of_birth': record.date_of_birth.isoformat() if record.date_of_birth else None,
+        'scan_date': record.scan_date.isoformat() if record.scan_date else None,
+        'file_path': record.file_path or "Not Found",
+        'ocr_confidence': record.ocr_confidence or 0.0
+    }
 
 if __name__ == '__main__':
     app.run(debug=True)

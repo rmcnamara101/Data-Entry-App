@@ -20,18 +20,23 @@ def process_folder(folder_path):
     total_files = 0
 
     try:
+        logging.info(f"Starting folder processing: {folder_path}")
+        if not os.path.exists(folder_path):
+            logging.error(f"Folder does not exist: {folder_path}")
+            raise FileNotFoundError(f"Folder does not exist: {folder_path}")
+
         for file_name in os.listdir(folder_path):
             if file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff')):
                 total_files += 1
                 file_path = os.path.join(folder_path, file_name)
 
+                logging.info(f"Processing file: {file_name}")
+
                 try:
-                    # Process the file
                     processor = RequestFormProcessor(file_path)
                     processed_data = processor.process_form()
 
-                    if processed_data['data']:  # Ensure valid data
-                        # Use default values for missing fields
+                    if processed_data['data']:
                         record = PatientRecord(
                             request_date=processed_data['data'].get('Request Date', datetime.utcnow()),
                             request_number=processed_data['data'].get('Request Number', "Not Found"),
@@ -50,7 +55,7 @@ def process_folder(folder_path):
                             date_of_birth=processed_data['data'].get('Date of Birth'),
                             scan_date=datetime.utcnow(),
                             file_path=file_path,
-                            ocr_confidence=processed_data['data'].get('OCR Confidence', 0.0)
+                            ocr_confidence=processed_data['data'].get('OCR Confidence', 0.0),
                         )
                         session.add(record)
                         records_added += 1
@@ -60,17 +65,13 @@ def process_folder(folder_path):
                     logging.error(f"Error processing file {file_name}: {e}")
 
         session.commit()
-
-        return {
-            'folder_path': folder_path,
-            'total_images': total_files,
-            'records_added': records_added
-        }
+        logging.info(f"Folder processing complete. Total files: {total_files}, Records added: {records_added}")
+        return {'folder_path': folder_path, 'total_images': total_files, 'records_added': records_added}
 
     except Exception as e:
-        logging.error(f"Error processing folder: {e}")
+        logging.error(f"Error in process_folder: {e}")
         session.rollback()
-        raise
+        raise RuntimeError(f"Failed to process folder: {e}")
 
     finally:
         session.close()
