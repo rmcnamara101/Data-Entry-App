@@ -3,6 +3,7 @@ from typing import Optional, Tuple
 import cv2
 import re
 from TextProcessor import TextProcessor
+import numpy as np
 
 @dataclass
 class MedicareAnchor:
@@ -24,55 +25,43 @@ class MedicareDetector:
         self.step_size = 10  # Pixels to move each step
 
     def find_medicare_number(self, image) -> Optional[MedicareAnchor]:
-        """
-        Find Medicare number within the specified region of the preprocessed image.
-        """
-        # Extract the target region
+        # Extract target region using NumPy slicing
         x1, y1, x2, y2 = self.target_region
         target_area = image[y1:y2, x1:x2]
-        
-        if target_area is None or target_area.size == 0:
-            print("Error: Invalid target region")
-            return None
-        
+
+        # Create sliding windows using NumPy's efficient view
+        h, w = target_area.shape[:2]
+        windows = np.lib.stride_tricks.sliding_window_view(
+            target_area, 
+            (self.window_size[1], self.window_size[0], target_area.shape[2])
+        )[::self.step_size, ::self.step_size]
+
+        # Vectorize processing
         best_match = None
-        highest_confidence = 80  # Minimum confidence threshold
-        
-        # Sliding window within the target area
-        area_height, area_width = target_area.shape[:2]
-        
-        for y in range(0, area_height - self.window_size[1], self.step_size):
-            for x in range(0, area_width - self.window_size[0], self.step_size):
-                # Extract window
-                window = target_area[y:y + self.window_size[1], 
-                                   x:x + self.window_size[0]]
-                
-                # Perform OCR
+        highest_confidence = 80
+
+        for i in range(windows.shape[0]):
+            for j in range(windows.shape[1]):
+                window = windows[i, j]
                 text, confidence = self.text_processor.extract_text(window)
                 
-                # Clean the text (remove any non-digit/slash characters)
+                # Your existing matching logic
                 text = re.sub(r'[^0-9/]', '', text)
-                
-                if self.debug_mode:
-                    print(f"Window at ({x},{y}): '{text}' [Confidence: {confidence}]")
-                
-                # Check if text matches Medicare pattern
                 if (re.match(self.medicare_pattern, text) and 
                     confidence > highest_confidence):
                     
                     highest_confidence = confidence
-                    # Calculate coordinates in original image space
                     best_match = MedicareAnchor(
                         text=text,
                         confidence=confidence,
                         bounding_box=(
-                            x1 + x,                    # Global x1
-                            y1 + y,                    # Global y1
-                            x1 + x + self.window_size[0],  # Global x2
-                            y1 + y + self.window_size[1]   # Global y2
+                            x1 + j * self.step_size,
+                            y1 + i * self.step_size,
+                            x1 + j * self.step_size + self.window_size[0],
+                            y1 + i * self.step_size + self.window_size[1]
                         )
                     )
-        
+
         return best_match
 
     def visualize_result(self, image, medicare_anchor: Optional[MedicareAnchor]):

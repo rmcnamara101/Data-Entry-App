@@ -9,6 +9,8 @@ const FolderScanner = () => {
   const [currentAction, setCurrentAction] = useState('');
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [defaultFolder, setDefaultFolder] = useState('');
+  const [newDefaultFolder, setNewDefaultFolder] = useState('');
 
   useEffect(() => {
     const fetchFolderStats = async () => {
@@ -160,6 +162,45 @@ const FolderScanner = () => {
     }
   };
 
+  const handleSetDefaultFolder = async () => {
+    if (!newDefaultFolder) {
+      setError('Please enter a valid folder path.');
+      return;
+    }
+
+    setProcessing(true);
+    setError(null);
+    setCurrentAction('Setting default folder...');
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/set-default-folder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ default_folder: newDefaultFolder }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to set default folder');
+      }
+
+      const data = await response.json();
+      setDefaultFolder(data.default_folder);
+      setNewDefaultFolder('');
+      setCurrentAction('Default folder updated successfully.');
+    } catch (err) {
+      console.error('Error setting default folder:', err);
+      setError(err.message);
+      setCurrentAction('Error occurred');
+    } finally {
+      setTimeout(() => {
+        setProcessing(false);
+        setProgress(0);
+        setCurrentAction('');
+      }, 1000);
+    }
+  };
+
   return (
     <div className="bg-gray-50 p-8 rounded-lg shadow-lg max-w-5xl mx-auto space-y-8">
       <div className="bg-blue-100 p-6 rounded-lg shadow-inner flex justify-between items-center">
@@ -219,6 +260,33 @@ const FolderScanner = () => {
         </button>
       </div>
 
+      <div className="bg-yellow-100 p-6 rounded-lg shadow-inner">
+        <h2 className="text-xl font-bold text-yellow-800">Set Default Folder</h2>
+        <div className="mt-4 flex space-x-4">
+          <input
+            type="text"
+            value={newDefaultFolder}
+            onChange={(e) => setNewDefaultFolder(e.target.value)}
+            placeholder="Enter new default folder path"
+            className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            disabled={processing}
+          />
+          <button
+            onClick={handleSetDefaultFolder}
+            className={`px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow-lg hover:bg-yellow-600 transition-colors ${
+              processing ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={processing}
+          >
+            {processing ? 'Setting...' : 'Set Default'}
+          </button>
+        </div>
+        {defaultFolder && (
+          <p className="mt-2 text-yellow-700">Current Default Folder: {defaultFolder}</p>
+        )}
+      </div>
+
+
       {processing && (
         <div className="space-y-2">
           <div className="flex justify-between items-center">
@@ -259,6 +327,7 @@ const FolderScanner = () => {
         </div>
       )}
     </div>
+    
   );
 };
 

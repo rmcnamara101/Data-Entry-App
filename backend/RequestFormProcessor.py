@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, Any, Dict, Tuple, List
 import cv2
 import numpy as np
-from config import FIELD_REGIONS, MEDICARE_RELATIVE_OFFSETS
+from utils import FIELD_REGIONS, MEDICARE_RELATIVE_OFFSETS
 from TextProcessor import TextProcessor
 import re
 from MedicareAnchorDetector import * 
