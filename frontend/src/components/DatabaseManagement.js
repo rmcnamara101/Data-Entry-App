@@ -1,125 +1,135 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../ui/card';
-import { Database, RefreshCw, Archive, AlertTriangle } from 'lucide-react';
+// src/components/DatabaseManagement.js
 
+import React, { useState, useEffect } from 'react';
 
 const DatabaseManagement = () => {
-  const [isBackingUp, setIsBackingUp] = useState(false);
-  const [isOptimizing, setIsOptimizing] = useState(false);
-  const [lastBackup, setLastBackup] = useState(null);
+  const [patientRecords, setPatientRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleBackup = async () => {
-    setIsBackingUp(true);
+  useEffect(() => {
+    fetchPatientRecords();
+  }, []);
+
+  const fetchPatientRecords = async () => {
     try {
-      const response = await fetch('/api/backup-database', {
-        method: 'POST',
-      });
-      const data = await response.json();
-      if (data.success) {
-        setLastBackup(new Date().toLocaleString());
+      const response = await fetch('http://127.0.0.1:5000/api/patient-records');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+      const data = await response.json();
+      setPatientRecords(data.records);
+      setLoading(false);
     } catch (error) {
-      console.error('Backup failed:', error);
-    } finally {
-      setIsBackingUp(false);
+      console.error('Error fetching patient records:', error);
+      setError(error);
+      setLoading(false);
     }
   };
 
-  const handleOptimize = async () => {
-    setIsOptimizing(true);
-    try {
-      await fetch('/api/optimize-database', {
-        method: 'POST',
-      });
-    } catch (error) {
-      console.error('Optimization failed:', error);
-    } finally {
-      setIsOptimizing(false);
-    }
-  };
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="text-gray-500 text-lg">Loading patient records...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="text-red-500 text-lg">
+          Error fetching patient records: {error.message}
+        </div>
+      </div>
+    );
+  }
+
+  const totalForms = patientRecords.length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Database Management</h1>
+    <div className="p-8">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">Patient Records</h2>
+      
+      {/* Database Information Card */}
+      <div className="mb-8">
+        <div className="bg-white shadow rounded-lg p-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
+            <div>
+              <p className="text-gray-600">Total Loaded Forms</p>
+              <p className="text-2xl font-semibold text-gray-800">{totalForms}</p>
+            </div>
+            {/* You can add more statistics here if needed */}
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Archive className="h-5 w-5" />
-              <span>Backup Database</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <p className="text-gray-600">
-                Create a backup of the current database state. This includes all patient records
-                and processing history.
-              </p>
-              {lastBackup && (
-                <p className="text-sm text-gray-500">
-                  Last backup: {lastBackup}
-                </p>
-              )}
-              <button
-                onClick={handleBackup}
-                disabled={isBackingUp}
-                className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 
-                         disabled:bg-blue-300 disabled:cursor-not-allowed transition-colors"
+      {/* Table Container */}
+      <div className="bg-white shadow rounded-lg overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                {isBackingUp ? (
-                  <span className="flex items-center justify-center">
-                    <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                    Backing up...
-                  </span>
-                ) : (
-                  'Create Backup'
-                )}
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Database className="h-5 w-5" />
-              <span>Optimize Database</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <p className="text-gray-600">
-                Optimize the database for better performance. This process may take a few minutes.
-              </p>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <div className="flex items-center space-x-2">
-                  <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                  <p className="text-sm text-yellow-700">
-                    Ensure all processing jobs are complete before optimization.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={handleOptimize}
-                disabled={isOptimizing}
-                className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 
-                         disabled:bg-green-300 disabled:cursor-not-allowed transition-colors"
+                Request Number
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                {isOptimizing ? (
-                  <span className="flex items-center justify-center">
-                    <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                    Optimizing...
-                  </span>
-                ) : (
-                  'Optimize Database'
-                )}
-              </button>
-            </div>
-          </CardContent>
-        </Card>
+                Name
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Date of Birth
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                OCR Confidence
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {patientRecords.length > 0 ? (
+              patientRecords.map((record) => (
+                <tr key={record.id} className="hover:bg-gray-100 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {record.request_number}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {record.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {record.date_of_birth
+                      ? new Date(record.date_of_birth).toLocaleDateString()
+                      : 'N/A'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {record.ocr_confidence !== null
+                      ? record.ocr_confidence.toFixed(2)
+                      : 'N/A'}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              // Display a message or empty rows when there are no records
+              <tr>
+                <td
+                  className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
+                  colSpan="4"
+                >
+                  No patient records found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

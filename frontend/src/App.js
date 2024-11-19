@@ -1,27 +1,21 @@
-import React from 'react';
-import FolderProcessor from './components/FolderProcessor';
-import DatabaseManagement from './components/DatabaseManagement';
-import PatientRecordsDashboard from './components/PatientRecordsDashboard';
+// src/App.js
 
-const MainContent = ({ activeView }) => {
-  const renderContent = () => {
-    switch (activeView) {
-      case 'dashboard':
-        return <PatientRecordsDashboard />;
-      case 'upload':
-        return <FolderProcessor />;
-      case 'database':
-        return <DatabaseManagement />;
-      default:
-        return <PatientRecordsDashboard />;
-    }
-  };
+import React, { useState } from 'react';
+import MainContent from './components/MainContent';
+import SideNavigation from './components/SideNavigation';
+
+function App() {
+  const [activeView, setActiveView] = useState('dashboard'); // Set default to 'dashboard'
 
   return (
-    <div className="h-full">
-      {renderContent()}
+    <div className="flex h-screen bg-gray-100">
+      {/* Side Navigation */}
+      <SideNavigation activeView={activeView} setActiveView={setActiveView} />
+
+      {/* Main Content */}
+      <MainContent activeView={activeView} setActiveView={setActiveView} />
     </div>
   );
-};
+}
 
-export default MainContent;
+export default App;

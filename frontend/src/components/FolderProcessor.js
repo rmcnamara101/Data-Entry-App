@@ -1,96 +1,190 @@
-import React, { useState } from 'react';
-import { Folder, FileText, Database } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 
-const FolderProcessor = () => {
+const FolderScanner = () => {
+  const [folderInfo, setFolderInfo] = useState(null);
   const [folderPath, setFolderPath] = useState('');
-  const [folderStats, setFolderStats] = useState(null);
+  const [processing, setProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
 
-  const handleFolderSelect = async (event) => {
-    const selectedPath = event.target.files[0].path;
-    setFolderPath(selectedPath);
+  // Fetch default folder stats
+  useEffect(() => {
+    const fetchFolderStats = async () => {
+      try {
+        const response = await fetch('/api/folder-stats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder_path: '/path/to/default/folder' }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setFolderInfo(data);
+        } else {
+          setFolderInfo({ total_images: 0, processed_images: 0 });
+        }
+      } catch (err) {
+        console.error('Error fetching folder stats:', err);
+        setFolderInfo({ total_images: 0, processed_images: 0 });
+      }
+    };
+
+    fetchFolderStats();
+  }, []);
+
+  const handleNewFolderSelect = (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) {
+      setFolderPath('');
+      alert('No folder selected!');
+      return;
+    }
+
+    const folderName = files[0].webkitRelativePath.split('/')[0];
+    setFolderPath(folderName);
+    setResult(null);
+    setError(null);
+  };
+
+  const scanDefaultFolder = async () => {
+    setProcessing(true);
+    setProgress(10);
+    setResult(null);
+    setError(null);
 
     try {
-      const response = await fetch('/api/folder-stats', {
+      const response = await fetch('/api/scan-default-folder', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ folder_path: selectedPath })
       });
 
-      const stats = await response.json();
-      setFolderStats(stats);
-    } catch (error) {
-      console.error('Error fetching folder stats:', error);
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || 'Failed to scan default folder.');
+      }
+
+      const data = await response.json();
+      setProgress(100);
+      setResult(data);
+    } catch (err) {
+      console.error('Error scanning default folder:', err);
+      setError(err.message);
+    } finally {
+      setProcessing(false);
+      setProgress(0);
     }
   };
 
-  const processFolderImages = async () => {
+  const scanNewFolder = async () => {
+    if (!folderPath) {
+      alert('Please select a folder first.');
+      return;
+    }
+
+    setProcessing(true);
+    setProgress(10);
+    setResult(null);
+    setError(null);
+
     try {
-      const response = await fetch('/api/process-folder', {
+      const response = await fetch('/api/scan-new-folder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ folder_path: folderPath })
+        body: JSON.stringify({ folder_path: folderPath }),
       });
 
-      const result = await response.json();
-      setFolderStats(result);
-      alert('Folder processing complete!');
-    } catch (error) {
-      console.error('Error processing folder:', error);
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || 'Failed to scan selected folder.');
+      }
+
+      const data = await response.json();
+      setProgress(100);
+      setResult(data);
+    } catch (err) {
+      console.error('Error scanning new folder:', err);
+      setError(err.message);
+    } finally {
+      setProcessing(false);
+      setProgress(0);
     }
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg">
-      <h2 className="text-2xl font-bold mb-6">Folder Processor</h2>
-      
-      <input 
-        type="file" 
-        webkitdirectory="true" 
-        directory="true"
-        onChange={handleFolderSelect}
-        className="hidden" 
-        id="folder-input"
-      />
-      <label 
-        htmlFor="folder-input" 
-        className="flex items-center justify-center w-full px-4 py-3 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600 mb-4"
-      >
-        <Folder className="mr-2" />
-        Select Request Forms Folder
-      </label>
-
-      {folderPath && (
-        <div className="bg-gray-100 p-4 rounded-md mb-4">
-          <p className="font-semibold">Selected Folder:</p>
-          <p className="text-sm">{folderPath}</p>
+    <div className="bg-gray-50 p-8 rounded-lg shadow-lg max-w-5xl mx-auto space-y-8">
+      <div className="bg-blue-100 p-6 rounded-lg shadow-inner flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-blue-800">Folder Information</h2>
+          <p className="text-blue-700 mt-2">
+            Total Files: {folderInfo?.total_images ?? 'Loading...'}
+          </p>
+          <p className="text-blue-700">Processed Files: {folderInfo?.processed_images ?? 'Loading...'}</p>
         </div>
-      )}
+      </div>
 
-      {folderStats && (
-        <div className="grid grid-cols-3 gap-4">
-          <div className="bg-white p-4 rounded-md shadow">
-            <FileText className="text-blue-500 mb-2" />
-            <p className="font-semibold">Total Images</p>
-            <p className="text-2xl">{folderStats.total_images}</p>
-          </div>
-          <div className="bg-white p-4 rounded-md shadow">
-            <Database className="text-green-500 mb-2" />
-            <p className="font-semibold">Processed Images</p>
-            <p className="text-2xl">{folderStats.processed_images}</p>
-          </div>
-        </div>
-      )}
-
-      {folderPath && (
-        <button 
-          onClick={processFolderImages}
-          className="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 mt-4"
+      <div className="space-y-4">
+        <button
+          onClick={scanDefaultFolder}
+          className={`w-full px-6 py-4 bg-green-500 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-green-600 ${
+            processing && 'opacity-50 cursor-not-allowed'
+          }`}
+          disabled={processing}
         >
-          Process All Images
+          {processing ? 'Scanning Default Folder...' : 'Scan Default Folder'}
         </button>
+
+        <div className="relative">
+          <input
+            type="file"
+            webkitdirectory="true"
+            directory="true"
+            id="new-folder-input"
+            className="hidden"
+            onChange={handleNewFolderSelect}
+          />
+          <label
+            htmlFor="new-folder-input"
+            className={`w-full block px-6 py-4 bg-purple-500 text-white text-lg font-semibold text-center rounded-lg shadow-lg cursor-pointer hover:bg-purple-600`}
+          >
+            {folderPath ? `Selected Folder: ${folderPath}` : 'Select New Folder'}
+          </label>
+        </div>
+
+        <button
+          onClick={scanNewFolder}
+          className={`w-full px-6 py-4 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-blue-600 ${
+            processing || !folderPath ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+          disabled={processing || !folderPath}
+        >
+          {processing ? 'Scanning Selected Folder...' : 'Scan Selected Folder'}
+        </button>
+      </div>
+
+      {processing && (
+        <div className="w-full bg-gray-200 rounded-lg h-4 mt-6">
+          <div
+            className="bg-blue-500 h-4 rounded-lg transition-all"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+      )}
+
+      {result && (
+        <div className="bg-green-100 p-6 rounded-lg shadow-inner mt-6">
+          <h3 className="text-lg font-bold text-green-800">Scan Completed</h3>
+          <p className="text-green-700 mt-2">Total Files: {result.total_images}</p>
+          <p className="text-green-700">Records Added: {result.records_added}</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-100 p-6 rounded-lg shadow-inner mt-6">
+          <h3 className="text-lg font-bold text-red-800">Error</h3>
+          <p className="text-red-700 mt-2">{error}</p>
+        </div>
       )}
     </div>
   );
 };
 
-export default FolderProcessor;
+export default FolderScanner;

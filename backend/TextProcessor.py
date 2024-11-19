@@ -54,7 +54,7 @@ class TextProcessor:
         
         #custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789/'
         
-        print("\nOCR Results for different preprocessing methods:")
+        #print("\nOCR Results for different preprocessing methods:")
         for name, img in images.items():
             try:
                 text = pytesseract.image_to_string(img).strip()
@@ -62,9 +62,9 @@ class TextProcessor:
                 confidence = np.mean([conf for conf in data['conf'] if conf != -1]) if any(conf != -1 for conf in data['conf']) else -1
                 
                 results.append((name, text, confidence))
-                print(f"{name:10}: '{text}' (Confidence: {confidence:.1f})")
+                #print(f"{name:10}: '{text}' (Confidence: {confidence:.1f})")
             except Exception as e:
-                print(f"Error processing {name}: {e}")
+                string = f"Error processing {name}: {e}"
         
         return results
             
@@ -100,14 +100,14 @@ class TextProcessor:
             #custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789/'
             
             # Perform OCR with verbose output
-            print("\nAttempting OCR...")
+            #print("\nAttempting OCR...")
             data = pytesseract.image_to_data(binary, output_type=pytesseract.Output.DICT)
             
             # Print detailed OCR data
-            print("\nRaw OCR output:")
-            for i in range(len(data['text'])):
-                if data['conf'][i] != -1:  # Skip empty results
-                    print(f"Word: '{data['text'][i]}', Confidence: {data['conf'][i]}")
+            #print("\nRaw OCR output:")
+            #for i in range(len(data['text'])):
+                #if data['conf'][i] != -1:  # Skip empty results
+                    #print(f"Word: '{data['text'][i]}', Confidence: {data['conf'][i]}")
             
             # Filter and process results
             valid_indices = [i for i, conf in enumerate(data['conf']) if conf != -1 and data['text'][i].strip()]
@@ -119,11 +119,11 @@ class TextProcessor:
             text = "".join(data['text'][i].strip() for i in valid_indices)
             confidence = sum(data['conf'][i] for i in valid_indices) / len(valid_indices)
             
-            print(f"\nFinal result: '{text}' with confidence {confidence:.1f}")
+            #print(f"\nFinal result: '{text}' with confidence {confidence:.1f}")
             return text, confidence
             
         except Exception as e:
-            print(f"Error during text extraction: {e}")
+            #print(f"Error during text extraction: {e}")
             return "", -1
 
     def validate_text(self, field_name, text):
@@ -138,8 +138,8 @@ class TextProcessor:
 
     def process_medicare_number(self, image):
         """Process Medicare card number with debugging."""
-        print("\nStarting Medicare number processing...")
-        print("Image shape:", image.shape if image is not None else "None")
+        #print("\nStarting Medicare number processing...")
+        #print("Image shape:", image.shape if image is not None else "None")
         
         # Run debug process first
         debug_results = self.debug_image(image)

@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+/* src/App.css */
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+}
+
+input.error {
+  border-color: red;
+}

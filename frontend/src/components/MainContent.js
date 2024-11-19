@@ -1,29 +1,41 @@
+// src/components/MainContent.js
+
 import React from 'react';
 import Dashboard from './Dashboard';
-import FolderScanner from './FolderScanner';
+import FolderProcessor from './FolderProcessor';
 import BatchProcessing from './BatchProcessing';
 import DatabaseManagement from './DatabaseManagement';
+import Protocols from './Protocols';
+import InputData from './InputData';
 import Settings from './Settings';
 
-const MainContent = ({ activeView }) => { // Accept activeView prop
-  const renderView = () => {
+const MainContent = ({ activeView, setActiveView }) => {
+  const renderContent = () => {
     switch (activeView) {
       case 'dashboard':
-        return <Dashboard />;
+        return <Dashboard setActiveView={setActiveView} />;
       case 'folderScan':
-        return <FolderScanner />;
+        return <FolderProcessor />;
       case 'batchScan':
         return <BatchProcessing />;
       case 'database':
         return <DatabaseManagement />;
+      case 'protocols':
+        return <Protocols />;
+      case 'inputData':
+        return <InputData />;
       case 'settings':
         return <Settings />;
       default:
-        return null;
+        return <Dashboard setActiveView={setActiveView} />;
     }
   };
 
-  return <div>{renderView()}</div>;
+  return (
+    <div className="flex-1 overflow-auto">
+      {renderContent()}
+    </div>
+  );
 };
 
 export default MainContent;
