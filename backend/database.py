@@ -1,9 +1,9 @@
 # database.py
 
+import logging
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import logging
 from datetime import datetime
 from config import config_manager  # Ensure config.py is correctly imported
 
@@ -17,7 +17,7 @@ class PatientRecord(Base):
     request_number = Column(String)
     given_names = Column(String)
     surname = Column(String)
-    name = Column(String)  # Added name field
+    name = Column(String)  # Ensure this line exists
     address = Column(String)
     suburb = Column(String)
     state = Column(String)
@@ -28,8 +28,8 @@ class PatientRecord(Base):
     medicare_position = Column(String)
     doctor_information = Column(String)
     provider_number = Column(String)
-    date_of_birth = Column(DateTime)  # Changed to DateTime
-    scan_date = Column(DateTime, default=datetime.utcnow)  # Changed to DateTime with default
+    date_of_birth = Column(DateTime)
+    scan_date = Column(DateTime, default=datetime.utcnow)
     file_path = Column(String)
     ocr_confidence = Column(Float)
 
@@ -44,10 +44,14 @@ class DatabaseManager:
         """
         if db_url is None:
             db_url = config_manager.get('DATABASE_URI', 'sqlite:///pathology_records.db')
+        
+        # Log the database URI being used
+        logging.info(f"Using database at: {db_url}")
+        
         self.engine = create_engine(db_url, echo=False)
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
-
+    
     def add_patient_record(self, patient_info, file_path, ocr_confidence=None):
         """
         Adds a new patient record to the database.
@@ -59,12 +63,15 @@ class DatabaseManager:
         """
         session = self.Session()
         try:
+            logging.debug(f"Adding patient record with info: {patient_info}")
+            
             # Parse date_of_birth if it's a string
             date_of_birth = patient_info.get('date_of_birth')
             if isinstance(date_of_birth, str):
                 try:
                     date_of_birth = datetime.strptime(date_of_birth, '%d/%m/%Y')
                 except ValueError:
+                    logging.warning(f"Invalid date_of_birth format: {date_of_birth}")
                     date_of_birth = None  # or handle differently
 
             new_record = PatientRecord(
@@ -72,7 +79,7 @@ class DatabaseManager:
                 request_number=patient_info.get('request_number'),
                 given_names=patient_info.get('given_names'),
                 surname=patient_info.get('surname'),
-                name=patient_info.get('name'),  # Mapped name field
+                name=patient_info.get('name'),  # Ensure 'name' is mapped correctly
                 address=patient_info.get('address'),
                 suburb=patient_info.get('suburb'),
                 state=patient_info.get('state'),

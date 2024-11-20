@@ -53,6 +53,7 @@ def serialize_record(record):
         'request_number': record.request_number or "Not Found",
         'given_names': record.given_names or "Not Found",
         'surname': record.surname or "Not Found",
+        'name': record.name or "Not Found",
         'address': record.address or "Not Found",
         'suburb': record.suburb or "Not Found",
         'state': record.state or "Not Found",
