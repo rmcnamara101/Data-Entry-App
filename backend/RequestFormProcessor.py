@@ -1,3 +1,5 @@
+# RequestFormProcessor.py
+
 from dataclasses import dataclass
 from typing import Optional, Any, Dict, Tuple, List
 import cv2
@@ -7,22 +9,23 @@ from TextProcessor import TextProcessor
 import re
 from MedicareAnchorDetector import * 
 from RequestFormPreparer import RequestFormPreparer
+from datetime import datetime
 
 # Define allowed characters for each field
 allowed_characters = {
-    "Medicare Number": r"[^0-9/]",  # Allow digits and slash
-    "Home Phone Number": r"[^0-9]",      # Allow digits only
-    "Mobile Phone Number": r"[^0-9]",    # Allow digits only
-    "Address": r"[^A-Za-z0-9\s]",   # Allow letters, numbers, and spaces
-    "Doctor Information": r"[^A-Za-z0-9]",  # Allow letters and numbers
-    "Request Number": r"[^A-Za-z0-9]",      # Allow letters and digits
-    "Given Name(s)": r"[^A-Za-z\s]",        # Allow letters and spaces (modified to exclude quotes)
+    "medicare_number": r"[^0-9/]",  # Allow digits and slash
+    "home_phone_number": r"[^0-9]",      # Allow digits only
+    "mobile_phone_number": r"[^0-9]",    # Allow digits only
+    "address": r"[^A-Za-z0-9\s]",   # Allow letters, numbers, and spaces
+    "doctor_information": r"[^A-Za-z0-9]",  # Allow letters and numbers
+    "request_number": r"[^A-Za-z0-9]",      # Allow letters and digits
+    "given_names": r"[^A-Za-z\s]",        # Allow letters and spaces (modified to exclude quotes)
     # Add other fields as needed
 }
 
 # Define common OCR misreads for each field
 common_misreads = {
-    "Doctor Information": {
+    "doctor_information": {
         '§': '5',
         '$': '5',
         'O': '0',
@@ -38,7 +41,7 @@ class RequestFormProcessor:
         Initializes the RequestFormProcessor with the preprocessed form image and field configurations.
 
         Args:
-            processed_form: The preprocessed form image as a NumPy array.
+            image_path: The path to the image file.
             debug_mode: If True, enables debugging features.
         """
         self.form_preparer = RequestFormPreparer(image_path)
@@ -48,23 +51,40 @@ class RequestFormProcessor:
         self.textprocessor = TextProcessor()
         self.medicare_detector = MedicareDetector(debug_mode=debug_mode)
         self.information = {
-            "Request Number": None,
-            "Request Date": None,
-            "Given Names": None,
-            "Surname": None,
-            "Date of Birth": None,
-            "Medicare Number": None,
-            "Medicare Position": None,
-            "Home Phone Number": None,
-            "Mobile Phone Number": None,
-            "Address": None,
-            "Suburb": None,
-            "Postcode": None,
-            "State": None,
-            "Doctor Information": None,
-            "Provider Number": None,
-            "OCR Confidence": None  # New field for overall OCR confidence
+            "request_number": None,
+            "request_date": None,
+            "given_names": None,
+            "surname": None,
+            "name": None,  # Added name field
+            "date_of_birth": None,
+            "medicare_number": None,
+            "medicare_position": None,
+            "home_phone_number": None,
+            "mobile_phone_number": None,
+            "address": None,
+            "suburb": None,
+            "postcode": None,
+            "state": None,
+            "doctor_information": None,
+            "provider_number": None,
+            "ocr_confidence": None,  # New field for overall OCR confidence
+            "phone_number": None  # Added for phone processing
         }
+
+    def _to_snake_case(self, name: str) -> str:
+        """
+        Converts a field name to snake_case.
+
+        Args:
+            name (str): The field name to convert.
+
+        Returns:
+            str: The snake_case version of the field name.
+        """
+        name = name.lower()
+        name = re.sub(r'\s+', '_', name)
+        name = re.sub(r'\W+', '', name)  # Remove non-alphanumeric characters
+        return name
 
     def process_form(self) -> Dict[str, Any]:
         """
@@ -91,90 +111,107 @@ class RequestFormProcessor:
         # Post-processing specific fields
 
         # 1. Request Number Fix
-        if self.information.get("Request Number"):
-            request_number = self.information["Request Number"]
+        if self.information.get("request_number"):
+            request_number = self.information["request_number"]
             match = re.match(r'^24H\d{5}$', request_number)
             if match:
-                self.information["Request Number"] = match.group(0)
+                self.information["request_number"] = match.group(0)
             else:
-                self.information["Request Number"] = None
+                self.information["request_number"] = None
 
         # 2. Medicare Number Split
-        if self.information.get("Medicare Number"):
-            medicare_num = self.information["Medicare Number"]
+        if self.information.get("medicare_number"):
+            medicare_num = self.information["medicare_number"]
             match = re.match(r'^(\d{10})/(\d)$', medicare_num)
             if match:
-                self.information["Medicare Number"] = match.group(1)
-                self.information["Medicare Position"] = match.group(2)
+                self.information["medicare_number"] = match.group(1)
+                self.information["medicare_position"] = match.group(2)
 
         # 3. Phone Number Cleanup and Assignment
         home_phone, mobile_phone = self._process_phone_numbers()
-        self.information["Home Phone Number"] = home_phone
-        self.information["Mobile Phone Number"] = mobile_phone
+        self.information["home_phone_number"] = home_phone
+        self.information["mobile_phone_number"] = mobile_phone
 
         # 4. Address Parsing
-        if self.information.get("Address"):
-            address_parts = self._split_address(self.information["Address"])
+        if self.information.get("address"):
+            address_parts = self._split_address(self.information["address"])
             self.information.update(address_parts)
 
         # 5. Doctor Provider Number
-        if self.information.get("Doctor Information"):
-            doctor_info = self.information["Doctor Information"]
+        if self.information.get("doctor_information"):
+            doctor_info = self.information["doctor_information"]
 
             # Take the last 8 characters as the provider number
             provider_number = doctor_info[-8:]
 
             # Validate the provider number format
             if re.match(r'^[A-Za-z0-9]{8}$', provider_number):
-                self.information["Provider Number"] = provider_number
+                self.information["provider_number"] = provider_number
             else:
                 # If validation fails, set Provider Number to None or handle accordingly
-                self.information["Provider Number"] = None
+                self.information["provider_number"] = None
 
         # 6. Given Names Cleanup
-        if self.information.get("Given Names"):
-            given_names = self.information["Given Names"]
+        if self.information.get("given_names"):
+            given_names = self.information["given_names"]
             # Remove any text within quotes to extract the primary given name
             given_names = re.sub(r'\".*?\"', '', given_names).strip()
-            self.information["Given Names"] = given_names
+            self.information["given_names"] = given_names
 
-        # 7. Calculate Overall OCR Confidence
+        # 7. Total Name Mapping
+        if self.information.get("total_name"):
+            self.information["name"] = self.information["total_name"]
+            del self.information["total_name"]
+        elif self.information.get("given_names") and self.information.get("surname"):
+            # If total_name is not provided, construct name from given_names and surname
+            self.information["name"] = f"{self.information['given_names']} {self.information['surname']}"
+        else:
+            self.information["name"] = None  # Handle cases where name components are missing
+
+        # 8. Date of Birth Parsing
+        if self.information.get("date_of_birth"):
+            dob_str = self.information["date_of_birth"]
+            try:
+                dob = datetime.strptime(dob_str, '%d/%m/%Y')
+                self.information["date_of_birth"] = dob
+            except ValueError:
+                self.information["date_of_birth"] = None
+
+        # 9. Calculate Overall OCR Confidence
         if field_confidences:
             overall_confidence = sum(field_confidences) / len(field_confidences)
-            self.information["OCR Confidence"] = round(overall_confidence, 2)
+            self.information["ocr_confidence"] = round(overall_confidence, 2)
         else:
-            self.information["OCR Confidence"] = None
+            self.information["ocr_confidence"] = None
 
         validation_errors = {}
 
         # Validate Medicare Number
-        medicare_number = self.information.get("Medicare Number")
+        medicare_number = self.information.get("medicare_number")
         if medicare_number:
             if not self.is_valid_medicare_number(medicare_number):
-                validation_errors["Medicare Number"] = "Invalid Medicare Number format."
+                validation_errors["medicare_number"] = "Invalid Medicare Number format."
 
         # Validate Phone Numbers
-        home_phone = self.information.get("Home Phone Number")
-        mobile_phone = self.information.get("Mobile Phone Number")
+        home_phone = self.information.get("home_phone_number")
+        mobile_phone = self.information.get("mobile_phone_number")
         if home_phone:
             if not self.is_valid_phone_number(home_phone):
-                validation_errors["Home Phone Number"] = "Invalid Home Phone Number format."
+                validation_errors["home_phone_number"] = "Invalid Home Phone Number format."
         if mobile_phone:
             if not self.is_valid_phone_number(mobile_phone):
-                validation_errors["Mobile Phone Number"] = "Invalid Mobile Phone Number format."
+                validation_errors["mobile_phone_number"] = "Invalid Mobile Phone Number format."
 
         # Validate Request Number
-        request_number = self.information.get("Request Number")
+        request_number = self.information.get("request_number")
         if request_number:
             if not self.is_valid_request_number(request_number):
-                validation_errors["Request Number"] = "Invalid Request Number format."
+                validation_errors["request_number"] = "Invalid Request Number format."
 
         # Validate Overall OCR Confidence
-        if self.information["OCR Confidence"] is not None:
-            if self.information["OCR Confidence"] < 70.0:  # Threshold can be adjusted
-                validation_errors["OCR Confidence"] = "Overall OCR confidence is low."
-
-        
+        if self.information["ocr_confidence"] is not None:
+            if self.information["ocr_confidence"] < 70.0:  # Threshold can be adjusted
+                validation_errors["ocr_confidence"] = "Overall OCR confidence is low."
 
         return {
             "data": self.information,
@@ -202,7 +239,8 @@ class RequestFormProcessor:
             print(f"Raw text for {field_region.name}: {text} (Confidence: {confidence})")
 
         # Clean extracted text
-        text = self._clean_text(field_region.name, text)
+        snake_case_field = self._to_snake_case(field_region.name)
+        text = self._clean_text(snake_case_field, text)
 
         # Validate text if a pattern is defined
         if field_region.validation_pattern and not self._validate_text(field_region.validation_pattern, text):
@@ -248,13 +286,13 @@ class RequestFormProcessor:
         Returns:
             Dict[str, Any]: A dictionary with separate address components.
         """
-        address_components = {"Address": None, "Suburb": None, "Postcode": None, "State": None}
+        address_components = {"address": None, "suburb": None, "postcode": None, "state": None}
 
         # Extract postcode (assumed to be the last 4 digits)
         match = re.search(r'(\d{4})$', full_address.strip())
         if match:
             postcode = match.group(1)
-            address_components["Postcode"] = postcode
+            address_components["postcode"] = postcode
 
             # Remove postcode from the full address
             full_address = full_address[:match.start()].strip()
@@ -272,7 +310,7 @@ class RequestFormProcessor:
                 "9": "ACT",
             }
             state = postcode_to_state.get(postcode[0], "NSW")
-            address_components["State"] = state
+            address_components["state"] = state
         else:
             # Handle cases where postcode is missing
             pass
@@ -299,14 +337,14 @@ class RequestFormProcessor:
 
         if street_type_index is not None:
             # Address includes tokens up to and including the street type
-            address_components["Address"] = ' '.join(tokens[:street_type_index + 1])
+            address_components["address"] = ' '.join(tokens[:street_type_index + 1])
             # Suburb is the remaining tokens
-            address_components["Suburb"] = ' '.join(tokens[street_type_index + 1:])
+            address_components["suburb"] = ' '.join(tokens[street_type_index + 1:])
         else:
             # If no street type is found, make a reasonable assumption
             # For example, the first two tokens are the address, rest is suburb
-            address_components["Address"] = ' '.join(tokens[:2])
-            address_components["Suburb"] = ' '.join(tokens[2:])
+            address_components["address"] = ' '.join(tokens[:2])
+            address_components["suburb"] = ' '.join(tokens[2:])
 
         return address_components
 
@@ -320,19 +358,19 @@ class RequestFormProcessor:
             text = re.sub(pattern, '', text)
 
         # Additional cleaning per field
-        if field_name == "Medicare Number":
+        if field_name == "medicare_number":
             text = re.sub(r'\s+', '', text)
-        elif field_name in ["Home Phone Number", "Mobile Phone Number"]:
+        elif field_name in ["home_phone_number", "mobile_phone_number"]:
             text = re.sub(r'\D+', '', text)  # Remove non-digit characters
-        elif field_name == "Address":
+        elif field_name == "address":
             # Insert spaces before capital letters only, excluding the first character
             text = re.sub(r'(?<!^)(?=[A-Z])', ' ', text)
             # Normalize multiple spaces to a single space
             text = re.sub(r'\s+', ' ', text).strip()
-        elif field_name == "Doctor Information":
+        elif field_name == "doctor_information":
             # No need to insert spaces if we're extracting the Provider Number directly
             pass
-        elif field_name == "Request Number":
+        elif field_name == "request_number":
             text = re.sub(r'\s+', '', text)
             match = re.search(r'24H\d{5}', text)
             if match:
@@ -389,8 +427,9 @@ class RequestFormProcessor:
                       f"Text: '{text}', Confidence: {confidence}")
 
             # Clean and validate the extracted text
-            cleaned_text = self._clean_text(field_name, text)
-            self.information[field_name] = cleaned_text
+            snake_case_field = self._to_snake_case(field_name)
+            cleaned_text = self._clean_text(snake_case_field, text)
+            self.information[snake_case_field] = cleaned_text
             field_confidences.append(confidence)
 
         # Show the visualized regions
@@ -407,17 +446,18 @@ class RequestFormProcessor:
         """
         for field_name, field_region in self.field_regions.items():
             text, confidence = self._extract_field(field_region)
-            self.information[field_name] = text
+            snake_case_field = self._to_snake_case(field_name)
+            self.information[snake_case_field] = text
             field_confidences.append(confidence)
 
     def _process_phone_numbers(self) -> Tuple[Optional[str], Optional[str]]:
         """
-        Processes the 'Phone Number' field to extract and assign Home and Mobile phone numbers.
+        Processes the 'phone_number' field to extract and assign Home and Mobile phone numbers.
 
         Returns:
             A tuple containing (home_phone, mobile_phone)
         """
-        phone_field = self.information.get("Phone Number")
+        phone_field = self.information.get("phone_number")
         home_phone = None
         mobile_phone = None
 
@@ -454,7 +494,7 @@ class RequestFormProcessor:
                 home_phone = phone_entries[0]
                 if len(phone_entries) > 1:
                     mobile_phone = phone_entries[1]
-        
+
         return home_phone, mobile_phone
 
     def is_valid_medicare_number(self, medicare_number: str) -> bool:

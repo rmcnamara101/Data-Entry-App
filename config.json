@@ -1,0 +1,7 @@
+{
+  "DEFAULT_SCAN_FOLDER": "/Users/rileymcnamara/CODE/2024/Data-Entry-App/test_scan_folder",
+  "UPLOAD_FOLDER": "uploads",
+  "DATABASE_URI": "sqlite:///pathology_records.db",
+  "BACKUP_FOLDER": "backups",
+  "LOG_LEVEL": "DEBUG"
+}

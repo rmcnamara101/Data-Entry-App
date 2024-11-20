@@ -17,6 +17,7 @@ class PatientRecord(Base):
     request_number = Column(String)
     given_names = Column(String)
     surname = Column(String)
+    name = Column(String)  # Added name field
     address = Column(String)
     suburb = Column(String)
     state = Column(String)
@@ -27,8 +28,8 @@ class PatientRecord(Base):
     medicare_position = Column(String)
     doctor_information = Column(String)
     provider_number = Column(String)
-    date_of_birth = Column(DateTime)
-    scan_date = Column(DateTime, default=datetime.utcnow)
+    date_of_birth = Column(DateTime)  # Changed to DateTime
+    scan_date = Column(DateTime, default=datetime.utcnow)  # Changed to DateTime with default
     file_path = Column(String)
     ocr_confidence = Column(Float)
 
@@ -58,22 +59,31 @@ class DatabaseManager:
         """
         session = self.Session()
         try:
+            # Parse date_of_birth if it's a string
+            date_of_birth = patient_info.get('date_of_birth')
+            if isinstance(date_of_birth, str):
+                try:
+                    date_of_birth = datetime.strptime(date_of_birth, '%d/%m/%Y')
+                except ValueError:
+                    date_of_birth = None  # or handle differently
+
             new_record = PatientRecord(
                 request_date=patient_info.get('request_date'),
                 request_number=patient_info.get('request_number'),
                 given_names=patient_info.get('given_names'),
                 surname=patient_info.get('surname'),
+                name=patient_info.get('name'),  # Mapped name field
                 address=patient_info.get('address'),
                 suburb=patient_info.get('suburb'),
                 state=patient_info.get('state'),
                 postcode=patient_info.get('postcode'),
-                home_phone=patient_info.get('home_phone'),
-                mobile_phone=patient_info.get('mobile_phone'),
+                home_phone=patient_info.get('home_phone_number'),
+                mobile_phone=patient_info.get('mobile_phone_number'),
                 medicare_number=patient_info.get('medicare_number'),
                 medicare_position=patient_info.get('medicare_position'),
                 doctor_information=patient_info.get('doctor_information'),
                 provider_number=patient_info.get('provider_number'),
-                date_of_birth=patient_info.get('date_of_birth'),
+                date_of_birth=date_of_birth,
                 scan_date=datetime.utcnow(),
                 file_path=file_path,
                 ocr_confidence=ocr_confidence,

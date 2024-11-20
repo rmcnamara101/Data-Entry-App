@@ -10,14 +10,14 @@ class FieldRegion:
 
 # Define all fields in one place
 FIELD_REGIONS = {
-    "Request Number": FieldRegion("Request Number", (775, 30, 1006, 125), None, 'numbers'),
-    "Given Name(s)": FieldRegion("Given Name(s)", (280, 97, 470, 172), r'^[A-Za-z\s\-\']+$', 'text'),
-    "Surname": FieldRegion("Surname", (24, 96, 166, 151), r'^[A-Za-z\s\-\']+$', 'text'),
-    "Date of Birth": FieldRegion("Date of Birth", (655, 95, 788, 152), r'^\d{2}[/-]\d{2}[/-]\d{4}$', 'date'),
-    "Medicare Number": FieldRegion("Medicare Number", (540, 15, 788, 98), None, 'numbers'),
+    "request_number": FieldRegion("request_number", (775, 30, 1006, 125), None, 'numbers'),
+    "given_names": FieldRegion("given_names", (280, 97, 470, 172), r'^[A-Za-z\s\-\']+$', 'text'),
+    "surname": FieldRegion("surname", (24, 96, 166, 151), r'^[A-Za-z\s\-\']+$', 'text'),
+    "date_of_birth": FieldRegion("Date of Birth", (655, 95, 788, 152), r'^\d{2}[/-]\d{2}[/-]\d{4}$', 'date'),
+    "medicare_number": FieldRegion("Medicare Number", (540, 15, 788, 98), None, 'numbers'),
     "Phone Number": FieldRegion("Phone Number", (666, 149, 949, 292), None, 'numbers'),
-    "Address": FieldRegion("Address", (39, 145, 212, 213), None, 'text'),
-    "Doctor Information": FieldRegion("Doctor Information", (466, 538, 864, 684), None, 'text')
+    "address": FieldRegion("Address", (39, 145, 212, 213), None, 'text'),
+    "doctor_information": FieldRegion("Doctor Information", (466, 538, 864, 684), None, 'text')
 }
 
 MEDICARE_RELATIVE_OFFSETS = {
