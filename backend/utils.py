@@ -15,18 +15,19 @@ FIELD_REGIONS = {
     "surname": FieldRegion("surname", (24, 96, 166, 151), r'^[A-Za-z\s\-\']+$', 'text'),
     "date_of_birth": FieldRegion("Date of Birth", (655, 95, 788, 152), r'^\d{2}[/-]\d{2}[/-]\d{4}$', 'date'),
     "medicare_number": FieldRegion("Medicare Number", (540, 15, 788, 98), None, 'numbers'),
-    "Phone Number": FieldRegion("Phone Number", (666, 149, 949, 292), None, 'numbers'),
+    "phone_number": FieldRegion("Phone Number", (666, 149, 949, 292), None, 'numbers'),
     "address": FieldRegion("Address", (39, 145, 212, 213), None, 'text'),
-    "doctor_information": FieldRegion("Doctor Information", (466, 538, 864, 684), None, 'text')
+    "doctor_information": FieldRegion("Doctor Information", (466, 538, 864, 684), None, 'text'),
+    "barcode": FieldRegion("Barcode", (779, 0, 1024, 140), None, 'barcode')
 }
 
 MEDICARE_RELATIVE_OFFSETS = {
-    "Date of Birth": (126, -75, 150, 20),  # Corrected height
-    "Given Name(s)": (-239, -75, 200, 20),  # Corrected width and height
-    "Surname": (-504, -75, 200, 20),  # Corrected width and height
-    "Address": (-504, -114, 300, 60),  # Corrected width and height
-    "Doctor Information": (-22, -526, 357, 120),  # Corrected dimensions
-    "Phone Number": (123, -116, 200, 40),  # Adjusted width and height
-    "Request Date": (154, -451, 200, 20),  # Adjusted dimensions
-    "Sex": (77, -75, 40, 20),  # Adjusted dimensions
+    "date_of_birth": (126, -65, 150, 30),  # Corrected height
+    "given_names": (-239, -65, 200, 30),  # Corrected width and height
+    "surname": (-504, -65, 200, 30),  # Corrected width and height
+    "address": (-504, -104, 300, 70),  # Corrected width and height
+    "doctor_information": (-22, -516, 357, 130),  # Corrected dimensions
+    "phone_number": (123, -116, 200, 60),  # Adjusted width and height
+    "request_date": (154, -431, 200, 30),  # Adjusted dimensions
+    "sex": (77, -65, 40, 30),  # Adjusted dimensions
 }

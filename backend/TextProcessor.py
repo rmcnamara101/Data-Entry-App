@@ -68,7 +68,7 @@ class TextProcessor:
         
         return results
             
-    def extract_text(self, region_image):
+    def extract_text(self, region_image, psm=6):
         """
         Extract text from a given image region with improved preprocessing.
         
@@ -78,6 +78,8 @@ class TextProcessor:
         Returns:
             tuple: Extracted text and confidence score.
         """
+
+        custom_config = f'--psm {psm}'
         # Ensure image is properly loaded
         if region_image is None or region_image.size == 0:
             print("Error: Empty or invalid image")
@@ -101,7 +103,7 @@ class TextProcessor:
             
             # Perform OCR with verbose output
             #print("\nAttempting OCR...")
-            data = pytesseract.image_to_data(binary, output_type=pytesseract.Output.DICT)
+            data = pytesseract.image_to_data(binary, output_type=pytesseract.Output.DICT, config=custom_config)
             
             # Print detailed OCR data
             #print("\nRaw OCR output:")
@@ -125,27 +127,3 @@ class TextProcessor:
         except Exception as e:
             #print(f"Error during text extraction: {e}")
             return "", -1
-
-    def validate_text(self, field_name, text):
-        """Validate the extracted text based on field type."""
-        patterns = {
-            "Medicare Number": r"^\d{10}/\d{1}$"
-        }
-        
-        if field_name in patterns:
-            return bool(re.match(patterns[field_name], text))
-        return True
-
-    def process_medicare_number(self, image):
-        """Process Medicare card number with debugging."""
-        #print("\nStarting Medicare number processing...")
-        #print("Image shape:", image.shape if image is not None else "None")
-        
-        # Run debug process first
-        debug_results = self.debug_image(image)
-        
-        # Then run normal extraction
-        text, confidence = self.extract_text(image)
-        is_valid = self.validate_text("Medicare Number", text)
-        
-        return text, confidence, is_valid

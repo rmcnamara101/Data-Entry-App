@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, Form, Response
-from ImagePreprocessor import ImagePreprocessor
+from backend.not_using.ImagePreprocessor import ImagePreprocessor
 import json
 import cv2
 import numpy as np

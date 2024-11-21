@@ -1,7 +1,7 @@
 # database.py
 
 import logging
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, Boolean, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
@@ -32,6 +32,10 @@ class PatientRecord(Base):
     scan_date = Column(DateTime, default=datetime.utcnow)
     file_path = Column(String)
     ocr_confidence = Column(Float)
+    sex = Column(String)
+
+    needs_manual_review = Column(Boolean, default=False)
+    error_details = Column(Text, nullable=True)
 
 class DatabaseManager:
     def __init__(self, db_url=None):
@@ -94,6 +98,7 @@ class DatabaseManager:
                 scan_date=datetime.utcnow(),
                 file_path=file_path,
                 ocr_confidence=ocr_confidence,
+                sex=patient_info.get('sex')
             )
             session.add(new_record)
             session.commit()

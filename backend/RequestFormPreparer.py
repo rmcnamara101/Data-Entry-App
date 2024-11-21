@@ -17,7 +17,7 @@ class RequestFormPreparer:
 
     def prepare_form(self, target_size: Tuple[int, int] = (1024, 768)) -> np.ndarray:
         cropped_image = self.crop_to_content(self.image)
-        prepared_image = self.scale_image(cropped_image, target_size)
+        prepared_image = self.scale_image(cropped_image, target_size)        
         return prepared_image
 
     def crop_to_content(self, image: np.ndarray) -> np.ndarray:

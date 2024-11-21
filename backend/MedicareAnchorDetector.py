@@ -11,48 +11,80 @@ class MedicareAnchor:
     confidence: float
     bounding_box: Tuple[int, int, int, int]
 
-class MedicareDetector:
-    def __init__(self, debug_mode: bool = False):
+class MedicareAnchorDetector:
+    def __init__(self, target_region, window_size, step_size, text_processor, medicare_pattern, debug_mode: bool = False):
+        self.target_region = target_region
+        self.window_size = window_size
+        self.step_size = step_size
+        self.text_processor = text_processor
+        self.medicare_pattern = medicare_pattern
         self.debug_mode = debug_mode
-        self.text_processor = TextProcessor()
-        self.medicare_pattern = r"^\d{10}/\d$"
-        
-        # Define the exact region where Medicare number should be
-        self.target_region = (531, 15, 798, 98)  # (x1, y1, x2, y2)
-        
-        # Define window parameters
-        self.window_size = (120, 25)  # Width and height of scanning window
-        self.step_size = 10  # Pixels to move each step
 
     def find_medicare_number(self, image) -> Optional[MedicareAnchor]:
         # Extract target region using NumPy slicing
         x1, y1, x2, y2 = self.target_region
         target_area = image[y1:y2, x1:x2]
 
-        # Create sliding windows using NumPy's efficient view
-        h, w = target_area.shape[:2]
-        windows = np.lib.stride_tricks.sliding_window_view(
-            target_area, 
-            (self.window_size[1], self.window_size[0], target_area.shape[2])
-        )[::self.step_size, ::self.step_size]
+        if self.debug_mode:
+            print(f"Target region extracted: {self.target_region}")
+            print(f"Target area shape: {target_area.shape}")
 
-        # Vectorize processing
+        # Validate target_area dimensions
+        if target_area.size == 0:
+            if self.debug_mode:
+                print("Target area is empty. Check target_region coordinates.")
+            return None
+
+        # Create sliding windows using NumPy's efficient view
+        try:
+            windows = np.lib.stride_tricks.sliding_window_view(
+                target_area, 
+                (self.window_size[1], self.window_size[0], target_area.shape[2])
+            )[::self.step_size, ::self.step_size]
+        except ValueError as e:
+            if self.debug_mode:
+                print(f"Error creating sliding windows: {e}")
+            return None
+
+        if self.debug_mode:
+            print(f"Sliding windows created with shape: {windows.shape}")
+
+        # Initialize best match variables
         best_match = None
-        highest_confidence = 80
+        highest_confidence = 50  # Lowered from 80
 
         for i in range(windows.shape[0]):
             for j in range(windows.shape[1]):
-                window = windows[i, j]
-                text, confidence = self.text_processor.extract_text(window)
-                
-                # Your existing matching logic
-                text = re.sub(r'[^0-9/]', '', text)
-                if (re.match(self.medicare_pattern, text) and 
-                    confidence > highest_confidence):
-                    
+                window = windows[i, j, 0]  # Remove the extra dimension
+                if self.debug_mode:
+                    print(f"Processing window ({i}, {j}) with shape: {window.shape}")
+
+                # Convert color channels if necessary
+                try:
+                    window_rgb = cv2.cvtColor(window, cv2.COLOR_BGR2RGB)
+                except cv2.error as e:
+                    if self.debug_mode:
+                        print(f"Color conversion error for window ({i}, {j}): {e}")
+                    continue
+
+                # Ensure correct data type
+                if window_rgb.dtype != np.uint8:
+                    window_rgb = window_rgb.astype(np.uint8)
+
+                text, confidence = self.text_processor.extract_text(window_rgb)
+
+                if self.debug_mode:
+                    print(f"Extracted text: '{text}'")
+                    print(f"Confidence: {confidence}")
+
+                # Clean the extracted text
+                cleaned_text = re.sub(r'[^0-9/]', '', text)
+
+                # Match against the Medicare pattern
+                if re.match(self.medicare_pattern, cleaned_text) and confidence > highest_confidence:
                     highest_confidence = confidence
                     best_match = MedicareAnchor(
-                        text=text,
+                        text=cleaned_text,
                         confidence=confidence,
                         bounding_box=(
                             x1 + j * self.step_size,
@@ -62,7 +94,42 @@ class MedicareDetector:
                         )
                     )
 
+                    if self.debug_mode:
+                        print(f"New best match found: {best_match}")
+
+        if self.debug_mode:
+            if best_match:
+                print(f"Best match: {best_match}")
+            else:
+                print("No valid Medicare number found.")
+
         return best_match
+
+class MedicareDetector:
+    def __init__(self, debug_mode: bool = False):
+        self.debug_mode = debug_mode
+        self.text_processor = TextProcessor()
+        self.medicare_pattern = r"^\d{10}/\d$"  # Original
+        # Adjusted pattern to allow for optional spaces
+        self.medicare_pattern = r"^\d{10}\s*/\s*\d$"
+        
+        # Define the exact region where Medicare number should be
+        self.target_region = (531, 15, 798, 98)  # (x1, y1, x2, y2)
+        
+        # Define window parameters
+        self.window_size = (140, 20)  # Width and height of scanning window
+        self.step_size = 25  # Pixels to move each step
+
+    def find_medicare_number(self, image) -> Optional[MedicareAnchor]:
+        detector = MedicareAnchorDetector(
+            target_region=self.target_region,
+            window_size=self.window_size,
+            step_size=self.step_size,
+            text_processor=self.text_processor,
+            medicare_pattern=self.medicare_pattern,
+            debug_mode=self.debug_mode
+        )
+        return detector.find_medicare_number(image)
 
     def visualize_result(self, image, medicare_anchor: Optional[MedicareAnchor]):
         """
