@@ -77,7 +77,7 @@ class RequestFormProcessor:
         if self.original_image is None:
             self.logger.error(f"Failed to read image from path: {image_path}")
             raise FileNotFoundError(f"Image not found at path: {image_path}")
-
+        self.image_path = image_path
         self.form_preparer = RequestFormPreparer(image_path)
         self.requestform = self.form_preparer.prepare_form()
         self.field_regions = FIELD_REGIONS
@@ -131,12 +131,26 @@ class RequestFormProcessor:
         field_confidences = []
         bounding_boxes = []
 
+        request_number = self._extract_barcode(self.original_image)
+        if request_number and re.match(r'^24H\d{5}$', request_number):
+            self.information["request_number"] = request_number
+            self.logger.debug(f"Valid request number extracted from barcode: {request_number}")
+        else:
+            self.information["request_number"] = None
+            if request_number:
+                self.logger.warning(f"Invalid request number format extracted from barcode: {request_number}")
+            else:
+                self.logger.debug("No valid request number extracted from barcode.")
+
         # Step 1: Try using the Medicare anchor method
         medicare_anchor = self.medicare_detector.find_medicare_number(self.requestform)
 
         if medicare_anchor:
             self.logger.debug(f"Medicare anchor detected: {medicare_anchor}")
             bounding_boxes = self._process_fields_using_anchor(medicare_anchor, field_confidences)
+            medicare_extraction = medicare_anchor.text
+            self.information["medicare_number"] = medicare_extraction[:8]
+            self.information["medicare_position"] = medicare_extraction[-1]
         else:
             self.logger.debug("Medicare anchor not detected. Falling back to manual regions.")
             bounding_boxes = self._process_fields_using_manual_regions(field_confidences)
@@ -228,17 +242,6 @@ class RequestFormProcessor:
         if self.debug_mode:
             cv2.imwrite("field_regions_debug.png", visualized_form)
             self.logger.debug("Debug image saved as 'field_regions_debug.png'")
-
-        request_number = self._extract_barcode(self.requestform)
-        if request_number and re.match(r'^24H\d{5}$', request_number):
-            self.information["request_number"] = request_number
-            self.logger.debug(f"Valid request number extracted from barcode: {request_number}")
-        else:
-            self.information["request_number"] = None
-            if request_number:
-                self.logger.warning(f"Invalid request number format extracted from barcode: {request_number}")
-            else:
-                self.logger.debug("No valid request number extracted from barcode.")
 
         return bounding_boxes
 
@@ -758,7 +761,7 @@ class RequestFormProcessor:
         Returns:
             bool: True if valid, False otherwise.
         """
-        is_valid = bool(re.match(r'^\d{10}/\d$', medicare_number))
+        is_valid = bool(re.match(r'^\d{8}$', medicare_number))
         self.logger.debug(f"Medicare number validation for '{medicare_number}': {'Passed' if is_valid else 'Failed'}")
         return is_valid
 
