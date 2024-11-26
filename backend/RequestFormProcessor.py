@@ -179,23 +179,21 @@ class RequestFormProcessor:
 
     def _apply_background_mask(self, bounding_boxes: List[Tuple[int, int, int, int]]) -> np.ndarray:
         """
-        Applies a mask to the image, blacking out all areas except the specified bounding boxes.
+        Applies a mask to the image, creating a white background with only the specified bounding box regions visible.
 
         Args:
             bounding_boxes (List[Tuple[int, int, int, int]]): List of bounding box coordinates as (x1, y1, x2, y2).
 
         Returns:
-            np.ndarray: Masked image with background blacked out.
+            np.ndarray: Masked image with a white background and only the bounding box regions visible.
         """
-        # Create a black mask
-        mask = np.zeros_like(self.requestform)
+        # Create a blank white image with the same dimensions as the original
+        masked_image = np.full_like(self.requestform, 255)
 
-        # Fill the bounding box regions with white
-        for (x1, y1, x2, y2) in bounding_boxes:
-            cv2.rectangle(mask, (x1, y1), (x2, y2), (255, 255, 255), -1)
-
-        # Apply the mask to the original image
-        masked_image = cv2.bitwise_and(self.requestform, mask)
+        # Iterate through the bounding boxes and copy the original image content into the masked image
+        for x1, y1, x2, y2 in bounding_boxes:
+            roi = self.requestform[y1:y2, x1:x2]
+            masked_image[y1:y2, x1:x2] = roi
 
         if self.debug_mode:
             cv2.imwrite("masked_form.png", masked_image)
@@ -291,34 +289,26 @@ class RequestFormProcessor:
         # Unpack region coordinates
         x1, y1, x2, y2 = region_coords
 
-        # Step 1: Create a mask that retains only the specified region
-        mask = np.zeros_like(self.requestform)
-        cv2.rectangle(mask, (x1, y1), (x2, y2), (255, 255, 255), -1)
+        # Step 1: Create a blank white image
+        masked_image = np.full_like(self.requestform, 255)
 
-        # Step 2: Apply the mask to the original image to isolate the region
-        masked_region = cv2.bitwise_and(self.requestform, mask)
-
-        # No cropping to preserve full image resolution
-
-        # Step 3: Preprocess the masked image for better OCR results
-        #gray_region = cv2.cvtColor(masked_region, cv2.COLOR_BGR2GRAY)
-        #_, thresh_region = cv2.threshold(gray_region, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        # Step 2: Copy the specified region from the original image to the masked image
+        roi = self.requestform[y1:y2, x1:x2]
+        masked_image[y1:y2, x1:x2] = roi
 
         # Optional: Save the preprocessed region for debugging
         if self.debug_mode:
-            cv2.imwrite(f"preprocessed_{field_name}.png", masked_region)
+            cv2.imwrite(f"preprocessed_{field_name}.png", masked_image)
             self.logger.debug(f"Preprocessed image for field '{field_name}' saved as 'preprocessed_{field_name}.png'")
 
         # Step 4: Extract text using the text processor
         if field_name in ["given_names", "surname", "phone_number", "date_of_birth", "medicare_number", "request_date"]:
-            text, confidence = self.textprocessor.extract_text(masked_region, psm=7)
+            text, confidence = self.textprocessor.extract_text(masked_image, psm=7)
         elif field_name == 'sex':
-            text, confidence = self.textprocessor.extract_text(masked_region, psm=10)
+            text, confidence = self.textprocessor.extract_text(masked_image, psm=10)
         else:
-            text, confidence = self.textprocessor.extract_text(masked_region, psm=6)
+            text, confidence = self.textprocessor.extract_text(masked_image, psm=6)
 
-
-        # Step 5: Clean the extracted text based on field-specific rules
         cleaned_text = self._clean_text(self._to_snake_case(field_name), text)
 
         return cleaned_text, confidence

@@ -737,3 +737,674 @@
 2024-11-23 23:57:41,074 - RequestFormProcessor - DEBUG - Request number validation for '24H12800': Passed
 2024-11-23 23:57:41,074 - RequestFormProcessor - WARNING - Overall OCR confidence is low: 59.66
 2024-11-23 23:57:41,074 - RequestFormProcessor - DEBUG - Returning extracted data.
+2024-11-26 22:41:59,583 - RequestFormProcessor - DEBUG - Detected 2 barcodes in the barcode region.
+2024-11-26 22:41:59,584 - RequestFormProcessor - DEBUG - Barcode detected: BP000593-EF6F2F2C71 (Type: CODE128)
+2024-11-26 22:41:59,584 - RequestFormProcessor - WARNING - Invalid barcode format detected: BP000593-EF6F2F2C71
+2024-11-26 22:41:59,584 - RequestFormProcessor - DEBUG - Barcode detected: 24H12800 (Type: CODE128)
+2024-11-26 22:41:59,584 - RequestFormProcessor - DEBUG - Valid barcode data found: 24H12800
+2024-11-26 22:41:59,584 - RequestFormProcessor - DEBUG - Valid request number extracted from barcode: 24H12800
+2024-11-26 22:41:59,610 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xok6ros7_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xok6ros7', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:41:59,803 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_rnnjh__f_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_rnnjh__f', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:41:59,905 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_8_a1cai5_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_8_a1cai5', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:00,007 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7sy5gwoe_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7sy5gwoe', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:00,133 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_qibc4ym7_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_qibc4ym7', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:00,262 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4h5pt5ig_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4h5pt5ig', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:00,363 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_31wb_66r_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_31wb_66r', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:00,475 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_d9ifkcxu_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_d9ifkcxu', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:00,586 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_9fc_9tdz_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_9fc_9tdz', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:00,698 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_deg6hcaf_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_deg6hcaf', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:00,804 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4rktmwit_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4rktmwit', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:00,910 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_idrtbw0a_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_idrtbw0a', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:01,058 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_nf8okmnl_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_nf8okmnl', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:01,158 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_oynbngfg_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_oynbngfg', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:01,258 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_s0pxfkky_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_s0pxfkky', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:01,359 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7s07494m_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7s07494m', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:01,461 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xxhuvupd_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xxhuvupd', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:01,562 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_aglx76la_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_aglx76la', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:01,682 - RequestFormProcessor - DEBUG - Medicare anchor detected: MedicareAnchor(text='2236403629/1', confidence=92.0, bounding_box=(531, 40, 671, 60))
+2024-11-26 22:42:01,682 - RequestFormProcessor - DEBUG - Calculated relative region: (657, 105, 807, 135)
+2024-11-26 22:42:01,689 - RequestFormProcessor - DEBUG - Preprocessed image for field 'date_of_birth' saved as 'preprocessed_date_of_birth.png'
+2024-11-26 22:42:01,749 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_wsf_pz5q_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_wsf_pz5q', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:42:01,907 - RequestFormProcessor - DEBUG - Cleaned text for field 'date_of_birth': '14/01/1954'
+2024-11-26 22:42:01,907 - RequestFormProcessor - DEBUG - Field 'date_of_birth' extracted: 14/01/1954 (Confidence: 96.0)
+2024-11-26 22:42:01,907 - RequestFormProcessor - DEBUG - Drew bounding box for field 'date_of_birth' at region (657, 105, 807, 135)
+2024-11-26 22:42:01,907 - RequestFormProcessor - DEBUG - Calculated relative region: (292, 105, 492, 135)
+2024-11-26 22:42:01,914 - RequestFormProcessor - DEBUG - Preprocessed image for field 'given_names' saved as 'preprocessed_given_names.png'
+2024-11-26 22:42:01,975 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ilt1ugzg_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ilt1ugzg', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:42:02,122 - RequestFormProcessor - DEBUG - Cleaned text for field 'given_names': ''
+2024-11-26 22:42:02,122 - RequestFormProcessor - DEBUG - Field 'given_names' extracted:  (Confidence: -1)
+2024-11-26 22:42:02,122 - RequestFormProcessor - DEBUG - Drew bounding box for field 'given_names' at region (292, 105, 492, 135)
+2024-11-26 22:42:02,122 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 105, 227, 135)
+2024-11-26 22:42:02,129 - RequestFormProcessor - DEBUG - Preprocessed image for field 'surname' saved as 'preprocessed_surname.png'
+2024-11-26 22:42:02,190 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_476wufh__input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_476wufh_', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:42:02,369 - RequestFormProcessor - DEBUG - Cleaned text for field 'surname': 'Armstong'
+2024-11-26 22:42:02,370 - RequestFormProcessor - DEBUG - Field 'surname' extracted: Armstong (Confidence: 92.0)
+2024-11-26 22:42:02,370 - RequestFormProcessor - DEBUG - Drew bounding box for field 'surname' at region (27, 105, 227, 135)
+2024-11-26 22:42:02,370 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 144, 327, 214)
+2024-11-26 22:42:02,376 - RequestFormProcessor - DEBUG - Preprocessed image for field 'address' saved as 'preprocessed_address.png'
+2024-11-26 22:42:02,438 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5pviyhyz_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5pviyhyz', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:02,615 - RequestFormProcessor - DEBUG - Cleaned text for field 'address': '3 King Street Port Macquarie2444'
+2024-11-26 22:42:02,616 - RequestFormProcessor - DEBUG - Field 'address' extracted: 3 King Street Port Macquarie2444 (Confidence: 95.5)
+2024-11-26 22:42:02,616 - RequestFormProcessor - DEBUG - Drew bounding box for field 'address' at region (27, 144, 327, 214)
+2024-11-26 22:42:02,616 - RequestFormProcessor - DEBUG - Calculated relative region: (509, 556, 866, 686)
+2024-11-26 22:42:02,624 - RequestFormProcessor - DEBUG - Preprocessed image for field 'doctor_information' saved as 'preprocessed_doctor_information.png'
+2024-11-26 22:42:02,686 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_bm8g0eab_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_bm8g0eab', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:42:02,917 - RequestFormProcessor - DEBUG - Cleaned text for field 'doctor_information': 'DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K'
+2024-11-26 22:42:02,918 - RequestFormProcessor - DEBUG - Field 'doctor_information' extracted: DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K (Confidence: 85.27777777777777)
+2024-11-26 22:42:02,918 - RequestFormProcessor - DEBUG - Drew bounding box for field 'doctor_information' at region (509, 556, 866, 686)
+2024-11-26 22:42:02,918 - RequestFormProcessor - DEBUG - Calculated relative region: (654, 156, 854, 216)
+2024-11-26 22:42:02,924 - RequestFormProcessor - DEBUG - Preprocessed image for field 'phone_number' saved as 'preprocessed_phone_number.png'
+2024-11-26 22:42:02,986 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_qknpnaic_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_qknpnaic', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:42:03,141 - RequestFormProcessor - DEBUG - Cleaned text for field 'phone_number': '0487678246(M)'
+2024-11-26 22:42:03,142 - RequestFormProcessor - DEBUG - Field 'phone_number' extracted: 0487678246(M) (Confidence: 80.5)
+2024-11-26 22:42:03,142 - RequestFormProcessor - DEBUG - Drew bounding box for field 'phone_number' at region (654, 156, 854, 216)
+2024-11-26 22:42:03,142 - RequestFormProcessor - DEBUG - Calculated relative region: (685, 471, 885, 501)
+2024-11-26 22:42:03,149 - RequestFormProcessor - DEBUG - Preprocessed image for field 'request_date' saved as 'preprocessed_request_date.png'
+2024-11-26 22:42:03,209 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_h42m306o_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_h42m306o', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:42:03,367 - RequestFormProcessor - DEBUG - Cleaned text for field 'request_date': '©42811/2024'
+2024-11-26 22:42:03,367 - RequestFormProcessor - DEBUG - Field 'request_date' extracted: ©42811/2024 (Confidence: 19.0)
+2024-11-26 22:42:03,367 - RequestFormProcessor - DEBUG - Drew bounding box for field 'request_date' at region (685, 471, 885, 501)
+2024-11-26 22:42:03,367 - RequestFormProcessor - DEBUG - Calculated relative region: (608, 105, 648, 135)
+2024-11-26 22:42:03,374 - RequestFormProcessor - DEBUG - Preprocessed image for field 'sex' saved as 'preprocessed_sex.png'
+2024-11-26 22:42:03,435 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_g1uo844o_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_g1uo844o', '-c', 'tessedit_create_tsv=1', '--psm', '10']
+2024-11-26 22:42:03,585 - RequestFormProcessor - DEBUG - Cleaned text for field 'sex': '|'
+2024-11-26 22:42:03,586 - RequestFormProcessor - DEBUG - Field 'sex' extracted: | (Confidence: 10.0)
+2024-11-26 22:42:03,586 - RequestFormProcessor - DEBUG - Drew bounding box for field 'sex' at region (608, 105, 648, 135)
+2024-11-26 22:42:03,605 - RequestFormProcessor - DEBUG - Debug image saved as 'field_regions_debug.png'
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Masked image saved as 'masked_form.png'
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Background mask applied to the image.
+2024-11-26 22:42:03,624 - RequestFormProcessor - WARNING - Medicare number format invalid: 22364036
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Phone entries found: ['0487678246(M)']
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Assigned '0487678246' as Mobile phone based on label '(M)'.
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Final assignment - Home Phone: None, Mobile Phone: 0487678246
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Processed phone numbers - Home: None, Mobile: 0487678246
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Extracted postcode: 2444
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Mapped postcode to state: NSW
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Found street type 'Street' at index 2
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Address split based on street type: Address='3 King Street', Suburb='Port Macquarie'
+2024-11-26 22:42:03,624 - RequestFormProcessor - DEBUG - Parsed address into components: {'address': '3 King Street', 'suburb': 'Port Macquarie', 'postcode': '2444', 'state': 'NSW'}
+2024-11-26 22:42:03,625 - RequestFormProcessor - DEBUG - Provider number extracted: 5373001K
+2024-11-26 22:42:03,625 - RequestFormProcessor - WARNING - Insufficient data to construct the total name.
+2024-11-26 22:42:03,625 - RequestFormProcessor - DEBUG - Date of birth parsed successfully: 1954-01-14 00:00:00
+2024-11-26 22:42:03,625 - RequestFormProcessor - DEBUG - Sex field set to 'U' due to invalid value: |
+2024-11-26 22:42:03,625 - RequestFormProcessor - DEBUG - Overall OCR confidence calculated: 59.66
+2024-11-26 22:42:03,625 - RequestFormProcessor - DEBUG - Medicare number validation for '22364036': Passed
+2024-11-26 22:42:03,625 - RequestFormProcessor - DEBUG - Phone number validation for '0487678246': Passed
+2024-11-26 22:42:03,625 - RequestFormProcessor - DEBUG - Request number validation for '24H12800': Passed
+2024-11-26 22:42:03,625 - RequestFormProcessor - WARNING - Overall OCR confidence is low: 59.66
+2024-11-26 22:42:03,625 - RequestFormProcessor - DEBUG - Returning extracted data.
+2024-11-26 22:43:39,007 - RequestFormProcessor - DEBUG - Detected 2 barcodes in the barcode region.
+2024-11-26 22:43:39,008 - RequestFormProcessor - DEBUG - Barcode detected: BP000593-EF6F2F2C71 (Type: CODE128)
+2024-11-26 22:43:39,008 - RequestFormProcessor - WARNING - Invalid barcode format detected: BP000593-EF6F2F2C71
+2024-11-26 22:43:39,008 - RequestFormProcessor - DEBUG - Barcode detected: 24H12800 (Type: CODE128)
+2024-11-26 22:43:39,008 - RequestFormProcessor - DEBUG - Valid barcode data found: 24H12800
+2024-11-26 22:43:39,008 - RequestFormProcessor - DEBUG - Valid request number extracted from barcode: 24H12800
+2024-11-26 22:43:39,025 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_8b5x7aup_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_8b5x7aup', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:39,220 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_c8d7b9m6_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_c8d7b9m6', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:39,322 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_94_4urok_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_94_4urok', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:39,424 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__3bmka4t_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__3bmka4t', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:39,554 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_gb7p_hmb_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_gb7p_hmb', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:39,681 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_yx0b6b6__input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_yx0b6b6_', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:39,781 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_rzxqk_i__input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_rzxqk_i_', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:39,894 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_68x_hmbz_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_68x_hmbz', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,011 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xvpsoqbf_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xvpsoqbf', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,120 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_58mx4sty_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_58mx4sty', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,225 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_12r0sc7c_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_12r0sc7c', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,330 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_tcc4mpac_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_tcc4mpac', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,467 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__gohk3up_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__gohk3up', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,566 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_kefitw5i_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_kefitw5i', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,668 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_cbxi2e4j_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_cbxi2e4j', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,769 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_9kh39f91_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_9kh39f91', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,870 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ezu2vqvk_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ezu2vqvk', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:40,972 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_0za0e74f_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_0za0e74f', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:41,093 - RequestFormProcessor - DEBUG - Medicare anchor detected: MedicareAnchor(text='2236403629/1', confidence=92.0, bounding_box=(531, 40, 671, 60))
+2024-11-26 22:43:41,094 - RequestFormProcessor - DEBUG - Calculated relative region: (657, 105, 807, 135)
+2024-11-26 22:43:41,102 - RequestFormProcessor - DEBUG - Preprocessed image for field 'date_of_birth' saved as 'preprocessed_date_of_birth.png'
+2024-11-26 22:43:41,188 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_40ity_f2_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_40ity_f2', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:43:41,353 - RequestFormProcessor - DEBUG - Cleaned text for field 'date_of_birth': '14/01/1954'
+2024-11-26 22:43:41,354 - RequestFormProcessor - DEBUG - Field 'date_of_birth' extracted: 14/01/1954 (Confidence: 96.0)
+2024-11-26 22:43:41,354 - RequestFormProcessor - DEBUG - Drew bounding box for field 'date_of_birth' at region (657, 105, 807, 135)
+2024-11-26 22:43:41,354 - RequestFormProcessor - DEBUG - Calculated relative region: (292, 105, 492, 135)
+2024-11-26 22:43:41,360 - RequestFormProcessor - DEBUG - Preprocessed image for field 'given_names' saved as 'preprocessed_given_names.png'
+2024-11-26 22:43:41,502 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_do_23oab_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_do_23oab', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:43:41,656 - RequestFormProcessor - DEBUG - Cleaned text for field 'given_names': ''
+2024-11-26 22:43:41,656 - RequestFormProcessor - DEBUG - Field 'given_names' extracted:  (Confidence: -1)
+2024-11-26 22:43:41,656 - RequestFormProcessor - DEBUG - Drew bounding box for field 'given_names' at region (292, 105, 492, 135)
+2024-11-26 22:43:41,656 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 105, 227, 135)
+2024-11-26 22:43:41,663 - RequestFormProcessor - DEBUG - Preprocessed image for field 'surname' saved as 'preprocessed_surname.png'
+2024-11-26 22:43:41,723 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_eqh_5r5r_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_eqh_5r5r', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:43:41,892 - RequestFormProcessor - DEBUG - Cleaned text for field 'surname': 'Armstong'
+2024-11-26 22:43:41,893 - RequestFormProcessor - DEBUG - Field 'surname' extracted: Armstong (Confidence: 92.0)
+2024-11-26 22:43:41,893 - RequestFormProcessor - DEBUG - Drew bounding box for field 'surname' at region (27, 105, 227, 135)
+2024-11-26 22:43:41,893 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 144, 327, 214)
+2024-11-26 22:43:41,899 - RequestFormProcessor - DEBUG - Preprocessed image for field 'address' saved as 'preprocessed_address.png'
+2024-11-26 22:43:41,961 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_u8yo260r_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_u8yo260r', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:42,138 - RequestFormProcessor - DEBUG - Cleaned text for field 'address': '3 King Street Port Macquarie2444'
+2024-11-26 22:43:42,138 - RequestFormProcessor - DEBUG - Field 'address' extracted: 3 King Street Port Macquarie2444 (Confidence: 95.5)
+2024-11-26 22:43:42,138 - RequestFormProcessor - DEBUG - Drew bounding box for field 'address' at region (27, 144, 327, 214)
+2024-11-26 22:43:42,138 - RequestFormProcessor - DEBUG - Calculated relative region: (509, 556, 866, 686)
+2024-11-26 22:43:42,145 - RequestFormProcessor - DEBUG - Preprocessed image for field 'doctor_information' saved as 'preprocessed_doctor_information.png'
+2024-11-26 22:43:42,209 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_pb8vbjo9_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_pb8vbjo9', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:43:42,441 - RequestFormProcessor - DEBUG - Cleaned text for field 'doctor_information': 'DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K'
+2024-11-26 22:43:42,441 - RequestFormProcessor - DEBUG - Field 'doctor_information' extracted: DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K (Confidence: 85.27777777777777)
+2024-11-26 22:43:42,441 - RequestFormProcessor - DEBUG - Drew bounding box for field 'doctor_information' at region (509, 556, 866, 686)
+2024-11-26 22:43:42,441 - RequestFormProcessor - DEBUG - Calculated relative region: (654, 156, 854, 216)
+2024-11-26 22:43:42,448 - RequestFormProcessor - DEBUG - Preprocessed image for field 'phone_number' saved as 'preprocessed_phone_number.png'
+2024-11-26 22:43:42,510 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ze2kydyc_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ze2kydyc', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:43:42,665 - RequestFormProcessor - DEBUG - Cleaned text for field 'phone_number': '0487678246(M)'
+2024-11-26 22:43:42,666 - RequestFormProcessor - DEBUG - Field 'phone_number' extracted: 0487678246(M) (Confidence: 80.5)
+2024-11-26 22:43:42,666 - RequestFormProcessor - DEBUG - Drew bounding box for field 'phone_number' at region (654, 156, 854, 216)
+2024-11-26 22:43:42,666 - RequestFormProcessor - DEBUG - Calculated relative region: (685, 471, 885, 501)
+2024-11-26 22:43:42,672 - RequestFormProcessor - DEBUG - Preprocessed image for field 'request_date' saved as 'preprocessed_request_date.png'
+2024-11-26 22:43:42,733 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ihk51p80_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ihk51p80', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:43:42,892 - RequestFormProcessor - DEBUG - Cleaned text for field 'request_date': '©42811/2024'
+2024-11-26 22:43:42,892 - RequestFormProcessor - DEBUG - Field 'request_date' extracted: ©42811/2024 (Confidence: 19.0)
+2024-11-26 22:43:42,892 - RequestFormProcessor - DEBUG - Drew bounding box for field 'request_date' at region (685, 471, 885, 501)
+2024-11-26 22:43:42,892 - RequestFormProcessor - DEBUG - Calculated relative region: (608, 105, 648, 135)
+2024-11-26 22:43:42,899 - RequestFormProcessor - DEBUG - Preprocessed image for field 'sex' saved as 'preprocessed_sex.png'
+2024-11-26 22:43:42,959 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_rtpgbl8y_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_rtpgbl8y', '-c', 'tessedit_create_tsv=1', '--psm', '10']
+2024-11-26 22:43:43,113 - RequestFormProcessor - DEBUG - Cleaned text for field 'sex': '|'
+2024-11-26 22:43:43,113 - RequestFormProcessor - DEBUG - Field 'sex' extracted: | (Confidence: 10.0)
+2024-11-26 22:43:43,113 - RequestFormProcessor - DEBUG - Drew bounding box for field 'sex' at region (608, 105, 648, 135)
+2024-11-26 22:43:43,133 - RequestFormProcessor - DEBUG - Debug image saved as 'field_regions_debug.png'
+2024-11-26 22:43:43,141 - RequestFormProcessor - DEBUG - Masked image saved as 'masked_form.png'
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Background mask applied to the image.
+2024-11-26 22:43:43,142 - RequestFormProcessor - WARNING - Medicare number format invalid: 22364036
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Phone entries found: ['0487678246(M)']
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Assigned '0487678246' as Mobile phone based on label '(M)'.
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Final assignment - Home Phone: None, Mobile Phone: 0487678246
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Processed phone numbers - Home: None, Mobile: 0487678246
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Extracted postcode: 2444
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Mapped postcode to state: NSW
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Found street type 'Street' at index 2
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Address split based on street type: Address='3 King Street', Suburb='Port Macquarie'
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Parsed address into components: {'address': '3 King Street', 'suburb': 'Port Macquarie', 'postcode': '2444', 'state': 'NSW'}
+2024-11-26 22:43:43,142 - RequestFormProcessor - DEBUG - Provider number extracted: 5373001K
+2024-11-26 22:43:43,142 - RequestFormProcessor - WARNING - Insufficient data to construct the total name.
+2024-11-26 22:43:43,143 - RequestFormProcessor - DEBUG - Date of birth parsed successfully: 1954-01-14 00:00:00
+2024-11-26 22:43:43,143 - RequestFormProcessor - DEBUG - Sex field set to 'U' due to invalid value: |
+2024-11-26 22:43:43,143 - RequestFormProcessor - DEBUG - Overall OCR confidence calculated: 59.66
+2024-11-26 22:43:43,143 - RequestFormProcessor - DEBUG - Medicare number validation for '22364036': Passed
+2024-11-26 22:43:43,143 - RequestFormProcessor - DEBUG - Phone number validation for '0487678246': Passed
+2024-11-26 22:43:43,143 - RequestFormProcessor - DEBUG - Request number validation for '24H12800': Passed
+2024-11-26 22:43:43,143 - RequestFormProcessor - WARNING - Overall OCR confidence is low: 59.66
+2024-11-26 22:43:43,143 - RequestFormProcessor - DEBUG - Returning extracted data.
+2024-11-26 22:44:18,819 - RequestFormProcessor - DEBUG - Detected 2 barcodes in the barcode region.
+2024-11-26 22:44:18,820 - RequestFormProcessor - DEBUG - Barcode detected: BP000593-EF6F2F2C71 (Type: CODE128)
+2024-11-26 22:44:18,820 - RequestFormProcessor - WARNING - Invalid barcode format detected: BP000593-EF6F2F2C71
+2024-11-26 22:44:18,820 - RequestFormProcessor - DEBUG - Barcode detected: 24H12800 (Type: CODE128)
+2024-11-26 22:44:18,820 - RequestFormProcessor - DEBUG - Valid barcode data found: 24H12800
+2024-11-26 22:44:18,820 - RequestFormProcessor - DEBUG - Valid request number extracted from barcode: 24H12800
+2024-11-26 22:44:18,836 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_6xmb3gno_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_6xmb3gno', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:19,035 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_0m2fzioh_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_0m2fzioh', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:19,139 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_m7flnpr6_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_m7flnpr6', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:19,242 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_wpd78y38_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_wpd78y38', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:19,473 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_h1fvw5jr_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_h1fvw5jr', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:19,601 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4527ounc_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4527ounc', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:19,702 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_mro0xg94_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_mro0xg94', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:19,815 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_2_0bq00w_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_2_0bq00w', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:19,923 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ijgvymmb_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ijgvymmb', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:20,032 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__n1tfl12_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__n1tfl12', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:20,139 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7jufpz5u_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7jufpz5u', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:20,245 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_yqwcrc35_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_yqwcrc35', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:20,382 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_9ta6mtgj_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_9ta6mtgj', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:20,481 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_8gemeggr_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_8gemeggr', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:20,583 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ynp8lwmx_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ynp8lwmx', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:20,686 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ajimm2ez_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ajimm2ez', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:20,788 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_fmik_5xd_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_fmik_5xd', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:20,888 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_slctze9o_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_slctze9o', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:21,024 - RequestFormProcessor - DEBUG - Medicare anchor detected: MedicareAnchor(text='2236403629/1', confidence=92.0, bounding_box=(531, 40, 671, 60))
+2024-11-26 22:44:21,025 - RequestFormProcessor - DEBUG - Calculated relative region: (657, 105, 807, 135)
+2024-11-26 22:44:21,033 - RequestFormProcessor - DEBUG - Preprocessed image for field 'date_of_birth' saved as 'preprocessed_date_of_birth.png'
+2024-11-26 22:44:21,093 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_vi4ewitq_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_vi4ewitq', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:44:21,252 - RequestFormProcessor - DEBUG - Cleaned text for field 'date_of_birth': '14/01/1954'
+2024-11-26 22:44:21,253 - RequestFormProcessor - DEBUG - Field 'date_of_birth' extracted: 14/01/1954 (Confidence: 96.0)
+2024-11-26 22:44:21,254 - RequestFormProcessor - DEBUG - Drew bounding box for field 'date_of_birth' at region (657, 105, 807, 135)
+2024-11-26 22:44:21,254 - RequestFormProcessor - DEBUG - Calculated relative region: (292, 105, 492, 135)
+2024-11-26 22:44:21,260 - RequestFormProcessor - DEBUG - Preprocessed image for field 'given_names' saved as 'preprocessed_given_names.png'
+2024-11-26 22:44:21,321 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xt6z0e63_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xt6z0e63', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:44:21,472 - RequestFormProcessor - DEBUG - Cleaned text for field 'given_names': ''
+2024-11-26 22:44:21,472 - RequestFormProcessor - DEBUG - Field 'given_names' extracted:  (Confidence: -1)
+2024-11-26 22:44:21,472 - RequestFormProcessor - DEBUG - Drew bounding box for field 'given_names' at region (292, 105, 492, 135)
+2024-11-26 22:44:21,472 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 105, 227, 135)
+2024-11-26 22:44:21,479 - RequestFormProcessor - DEBUG - Preprocessed image for field 'surname' saved as 'preprocessed_surname.png'
+2024-11-26 22:44:21,541 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_6w859n58_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_6w859n58', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:44:21,720 - RequestFormProcessor - DEBUG - Cleaned text for field 'surname': 'Armstong'
+2024-11-26 22:44:21,720 - RequestFormProcessor - DEBUG - Field 'surname' extracted: Armstong (Confidence: 92.0)
+2024-11-26 22:44:21,721 - RequestFormProcessor - DEBUG - Drew bounding box for field 'surname' at region (27, 105, 227, 135)
+2024-11-26 22:44:21,721 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 144, 327, 214)
+2024-11-26 22:44:21,727 - RequestFormProcessor - DEBUG - Preprocessed image for field 'address' saved as 'preprocessed_address.png'
+2024-11-26 22:44:21,788 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4ek3hvar_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4ek3hvar', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:21,965 - RequestFormProcessor - DEBUG - Cleaned text for field 'address': '3 King Street Port Macquarie2444'
+2024-11-26 22:44:21,966 - RequestFormProcessor - DEBUG - Field 'address' extracted: 3 King Street Port Macquarie2444 (Confidence: 95.5)
+2024-11-26 22:44:21,966 - RequestFormProcessor - DEBUG - Drew bounding box for field 'address' at region (27, 144, 327, 214)
+2024-11-26 22:44:21,966 - RequestFormProcessor - DEBUG - Calculated relative region: (509, 556, 866, 686)
+2024-11-26 22:44:21,973 - RequestFormProcessor - DEBUG - Preprocessed image for field 'doctor_information' saved as 'preprocessed_doctor_information.png'
+2024-11-26 22:44:22,036 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_wkl0ynxq_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_wkl0ynxq', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:44:22,269 - RequestFormProcessor - DEBUG - Cleaned text for field 'doctor_information': 'DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K'
+2024-11-26 22:44:22,269 - RequestFormProcessor - DEBUG - Field 'doctor_information' extracted: DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K (Confidence: 85.27777777777777)
+2024-11-26 22:44:22,269 - RequestFormProcessor - DEBUG - Drew bounding box for field 'doctor_information' at region (509, 556, 866, 686)
+2024-11-26 22:44:22,269 - RequestFormProcessor - DEBUG - Calculated relative region: (654, 156, 854, 216)
+2024-11-26 22:44:22,276 - RequestFormProcessor - DEBUG - Preprocessed image for field 'phone_number' saved as 'preprocessed_phone_number.png'
+2024-11-26 22:44:22,337 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_v4xw8dhg_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_v4xw8dhg', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:44:22,491 - RequestFormProcessor - DEBUG - Cleaned text for field 'phone_number': '0487678246(M)'
+2024-11-26 22:44:22,491 - RequestFormProcessor - DEBUG - Field 'phone_number' extracted: 0487678246(M) (Confidence: 80.5)
+2024-11-26 22:44:22,491 - RequestFormProcessor - DEBUG - Drew bounding box for field 'phone_number' at region (654, 156, 854, 216)
+2024-11-26 22:44:22,491 - RequestFormProcessor - DEBUG - Calculated relative region: (685, 471, 885, 501)
+2024-11-26 22:44:22,498 - RequestFormProcessor - DEBUG - Preprocessed image for field 'request_date' saved as 'preprocessed_request_date.png'
+2024-11-26 22:44:22,559 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_02p6mdps_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_02p6mdps', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:44:22,718 - RequestFormProcessor - DEBUG - Cleaned text for field 'request_date': '©42811/2024'
+2024-11-26 22:44:22,719 - RequestFormProcessor - DEBUG - Field 'request_date' extracted: ©42811/2024 (Confidence: 19.0)
+2024-11-26 22:44:22,719 - RequestFormProcessor - DEBUG - Drew bounding box for field 'request_date' at region (685, 471, 885, 501)
+2024-11-26 22:44:22,719 - RequestFormProcessor - DEBUG - Calculated relative region: (608, 105, 648, 135)
+2024-11-26 22:44:22,727 - RequestFormProcessor - DEBUG - Preprocessed image for field 'sex' saved as 'preprocessed_sex.png'
+2024-11-26 22:44:22,787 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ya13k0ds_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ya13k0ds', '-c', 'tessedit_create_tsv=1', '--psm', '10']
+2024-11-26 22:44:22,943 - RequestFormProcessor - DEBUG - Cleaned text for field 'sex': '|'
+2024-11-26 22:44:22,944 - RequestFormProcessor - DEBUG - Field 'sex' extracted: | (Confidence: 10.0)
+2024-11-26 22:44:22,944 - RequestFormProcessor - DEBUG - Drew bounding box for field 'sex' at region (608, 105, 648, 135)
+2024-11-26 22:44:22,963 - RequestFormProcessor - DEBUG - Debug image saved as 'field_regions_debug.png'
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Masked image saved as 'masked_form.png'
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Background mask applied to the image.
+2024-11-26 22:44:22,982 - RequestFormProcessor - WARNING - Medicare number format invalid: 22364036
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Phone entries found: ['0487678246(M)']
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Assigned '0487678246' as Mobile phone based on label '(M)'.
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Final assignment - Home Phone: None, Mobile Phone: 0487678246
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Processed phone numbers - Home: None, Mobile: 0487678246
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Extracted postcode: 2444
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Mapped postcode to state: NSW
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Found street type 'Street' at index 2
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Address split based on street type: Address='3 King Street', Suburb='Port Macquarie'
+2024-11-26 22:44:22,982 - RequestFormProcessor - DEBUG - Parsed address into components: {'address': '3 King Street', 'suburb': 'Port Macquarie', 'postcode': '2444', 'state': 'NSW'}
+2024-11-26 22:44:22,983 - RequestFormProcessor - DEBUG - Provider number extracted: 5373001K
+2024-11-26 22:44:22,983 - RequestFormProcessor - WARNING - Insufficient data to construct the total name.
+2024-11-26 22:44:22,983 - RequestFormProcessor - DEBUG - Date of birth parsed successfully: 1954-01-14 00:00:00
+2024-11-26 22:44:22,983 - RequestFormProcessor - DEBUG - Sex field set to 'U' due to invalid value: |
+2024-11-26 22:44:22,983 - RequestFormProcessor - DEBUG - Overall OCR confidence calculated: 59.66
+2024-11-26 22:44:22,983 - RequestFormProcessor - DEBUG - Medicare number validation for '22364036': Passed
+2024-11-26 22:44:22,983 - RequestFormProcessor - DEBUG - Phone number validation for '0487678246': Passed
+2024-11-26 22:44:22,983 - RequestFormProcessor - DEBUG - Request number validation for '24H12800': Passed
+2024-11-26 22:44:22,983 - RequestFormProcessor - WARNING - Overall OCR confidence is low: 59.66
+2024-11-26 22:44:22,983 - RequestFormProcessor - DEBUG - Returning extracted data.
+2024-11-26 22:48:13,096 - RequestFormProcessor - DEBUG - Detected 2 barcodes in the barcode region.
+2024-11-26 22:48:13,097 - RequestFormProcessor - DEBUG - Barcode detected: BP000593-EF6F2F2C71 (Type: CODE128)
+2024-11-26 22:48:13,097 - RequestFormProcessor - WARNING - Invalid barcode format detected: BP000593-EF6F2F2C71
+2024-11-26 22:48:13,097 - RequestFormProcessor - DEBUG - Barcode detected: 24H12800 (Type: CODE128)
+2024-11-26 22:48:13,097 - RequestFormProcessor - DEBUG - Valid barcode data found: 24H12800
+2024-11-26 22:48:13,097 - RequestFormProcessor - DEBUG - Valid request number extracted from barcode: 24H12800
+2024-11-26 22:48:13,114 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_vagap4gd_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_vagap4gd', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:13,321 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4ucb9vuz_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4ucb9vuz', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:13,424 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_zwtqwoeg_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_zwtqwoeg', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:13,528 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_jufdisd0_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_jufdisd0', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:13,654 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_374fw2nf_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_374fw2nf', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:13,781 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_zao5ijgy_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_zao5ijgy', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:13,881 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__6etk4dk_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__6etk4dk', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:13,995 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_fkhg9adp_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_fkhg9adp', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:14,107 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_k1ymbq5m_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_k1ymbq5m', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:14,215 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xmhxmoz3_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_xmhxmoz3', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:14,321 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_00dwjb67_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_00dwjb67', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:14,426 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_a3bb7hcn_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_a3bb7hcn', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:14,561 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5vnk0seh_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5vnk0seh', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:14,660 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4846upnw_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4846upnw', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:14,762 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_g8i5wrws_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_g8i5wrws', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:14,862 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_23k_m07m_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_23k_m07m', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:14,964 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5s7_3i0s_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5s7_3i0s', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:15,065 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_cd42_092_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_cd42_092', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:15,184 - RequestFormProcessor - DEBUG - Medicare anchor detected: MedicareAnchor(text='2236403629/1', confidence=92.0, bounding_box=(531, 40, 671, 60))
+2024-11-26 22:48:15,184 - RequestFormProcessor - DEBUG - Calculated relative region: (657, 105, 807, 135)
+2024-11-26 22:48:15,193 - RequestFormProcessor - DEBUG - Preprocessed image for field 'date_of_birth' saved as 'preprocessed_date_of_birth.png'
+2024-11-26 22:48:15,253 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_m7i7yc3k_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_m7i7yc3k', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:48:15,409 - RequestFormProcessor - DEBUG - Cleaned text for field 'date_of_birth': '14/01/1954'
+2024-11-26 22:48:15,410 - RequestFormProcessor - DEBUG - Field 'date_of_birth' extracted: 14/01/1954 (Confidence: 96.0)
+2024-11-26 22:48:15,410 - RequestFormProcessor - DEBUG - Drew bounding box for field 'date_of_birth' at region (657, 105, 807, 135)
+2024-11-26 22:48:15,410 - RequestFormProcessor - DEBUG - Calculated relative region: (292, 105, 492, 135)
+2024-11-26 22:48:15,417 - RequestFormProcessor - DEBUG - Preprocessed image for field 'given_names' saved as 'preprocessed_given_names.png'
+2024-11-26 22:48:15,478 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_af5p5mku_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_af5p5mku', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:48:15,627 - RequestFormProcessor - DEBUG - Cleaned text for field 'given_names': ''
+2024-11-26 22:48:15,627 - RequestFormProcessor - DEBUG - Field 'given_names' extracted:  (Confidence: -1)
+2024-11-26 22:48:15,627 - RequestFormProcessor - DEBUG - Drew bounding box for field 'given_names' at region (292, 105, 492, 135)
+2024-11-26 22:48:15,627 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 105, 227, 135)
+2024-11-26 22:48:15,634 - RequestFormProcessor - DEBUG - Preprocessed image for field 'surname' saved as 'preprocessed_surname.png'
+2024-11-26 22:48:15,694 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_vdyudax0_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_vdyudax0', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:48:15,861 - RequestFormProcessor - DEBUG - Cleaned text for field 'surname': 'Armstong'
+2024-11-26 22:48:15,861 - RequestFormProcessor - DEBUG - Field 'surname' extracted: Armstong (Confidence: 92.0)
+2024-11-26 22:48:15,861 - RequestFormProcessor - DEBUG - Drew bounding box for field 'surname' at region (27, 105, 227, 135)
+2024-11-26 22:48:15,862 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 144, 327, 214)
+2024-11-26 22:48:15,868 - RequestFormProcessor - DEBUG - Preprocessed image for field 'address' saved as 'preprocessed_address.png'
+2024-11-26 22:48:15,929 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4cmtepsu_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4cmtepsu', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:16,106 - RequestFormProcessor - DEBUG - Cleaned text for field 'address': '3 King Street Port Macquarie2444'
+2024-11-26 22:48:16,106 - RequestFormProcessor - DEBUG - Field 'address' extracted: 3 King Street Port Macquarie2444 (Confidence: 95.5)
+2024-11-26 22:48:16,106 - RequestFormProcessor - DEBUG - Drew bounding box for field 'address' at region (27, 144, 327, 214)
+2024-11-26 22:48:16,106 - RequestFormProcessor - DEBUG - Calculated relative region: (509, 556, 866, 686)
+2024-11-26 22:48:16,114 - RequestFormProcessor - DEBUG - Preprocessed image for field 'doctor_information' saved as 'preprocessed_doctor_information.png'
+2024-11-26 22:48:16,177 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5oqqdr2__input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5oqqdr2_', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:48:16,406 - RequestFormProcessor - DEBUG - Cleaned text for field 'doctor_information': 'DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K'
+2024-11-26 22:48:16,407 - RequestFormProcessor - DEBUG - Field 'doctor_information' extracted: DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K (Confidence: 85.27777777777777)
+2024-11-26 22:48:16,407 - RequestFormProcessor - DEBUG - Drew bounding box for field 'doctor_information' at region (509, 556, 866, 686)
+2024-11-26 22:48:16,407 - RequestFormProcessor - DEBUG - Calculated relative region: (654, 156, 854, 216)
+2024-11-26 22:48:16,414 - RequestFormProcessor - DEBUG - Preprocessed image for field 'phone_number' saved as 'preprocessed_phone_number.png'
+2024-11-26 22:48:16,475 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5jff0uia_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5jff0uia', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:48:16,629 - RequestFormProcessor - DEBUG - Cleaned text for field 'phone_number': '0487678246(M)'
+2024-11-26 22:48:16,630 - RequestFormProcessor - DEBUG - Field 'phone_number' extracted: 0487678246(M) (Confidence: 80.5)
+2024-11-26 22:48:16,630 - RequestFormProcessor - DEBUG - Drew bounding box for field 'phone_number' at region (654, 156, 854, 216)
+2024-11-26 22:48:16,630 - RequestFormProcessor - DEBUG - Calculated relative region: (685, 471, 885, 501)
+2024-11-26 22:48:16,636 - RequestFormProcessor - DEBUG - Preprocessed image for field 'request_date' saved as 'preprocessed_request_date.png'
+2024-11-26 22:48:16,696 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_1c_1m279_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_1c_1m279', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:48:16,854 - RequestFormProcessor - DEBUG - Cleaned text for field 'request_date': '©42811/2024'
+2024-11-26 22:48:16,854 - RequestFormProcessor - DEBUG - Field 'request_date' extracted: ©42811/2024 (Confidence: 19.0)
+2024-11-26 22:48:16,854 - RequestFormProcessor - DEBUG - Drew bounding box for field 'request_date' at region (685, 471, 885, 501)
+2024-11-26 22:48:16,854 - RequestFormProcessor - DEBUG - Calculated relative region: (608, 105, 648, 135)
+2024-11-26 22:48:16,861 - RequestFormProcessor - DEBUG - Preprocessed image for field 'sex' saved as 'preprocessed_sex.png'
+2024-11-26 22:48:16,920 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_fvfd9na4_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_fvfd9na4', '-c', 'tessedit_create_tsv=1', '--psm', '10']
+2024-11-26 22:48:17,068 - RequestFormProcessor - DEBUG - Cleaned text for field 'sex': '|'
+2024-11-26 22:48:17,068 - RequestFormProcessor - DEBUG - Field 'sex' extracted: | (Confidence: 10.0)
+2024-11-26 22:48:17,068 - RequestFormProcessor - DEBUG - Drew bounding box for field 'sex' at region (608, 105, 648, 135)
+2024-11-26 22:48:17,088 - RequestFormProcessor - DEBUG - Debug image saved as 'field_regions_debug.png'
+2024-11-26 22:48:17,107 - RequestFormProcessor - DEBUG - Masked image saved as 'masked_form.png'
+2024-11-26 22:48:17,107 - RequestFormProcessor - DEBUG - Background mask applied to the image.
+2024-11-26 22:48:17,107 - RequestFormProcessor - WARNING - Medicare number format invalid: 22364036
+2024-11-26 22:48:17,107 - RequestFormProcessor - DEBUG - Phone entries found: ['0487678246(M)']
+2024-11-26 22:48:17,107 - RequestFormProcessor - DEBUG - Assigned '0487678246' as Mobile phone based on label '(M)'.
+2024-11-26 22:48:17,107 - RequestFormProcessor - DEBUG - Final assignment - Home Phone: None, Mobile Phone: 0487678246
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Processed phone numbers - Home: None, Mobile: 0487678246
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Extracted postcode: 2444
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Mapped postcode to state: NSW
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Found street type 'Street' at index 2
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Address split based on street type: Address='3 King Street', Suburb='Port Macquarie'
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Parsed address into components: {'address': '3 King Street', 'suburb': 'Port Macquarie', 'postcode': '2444', 'state': 'NSW'}
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Provider number extracted: 5373001K
+2024-11-26 22:48:17,108 - RequestFormProcessor - WARNING - Insufficient data to construct the total name.
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Date of birth parsed successfully: 1954-01-14 00:00:00
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Sex field set to 'U' due to invalid value: |
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Overall OCR confidence calculated: 59.66
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Medicare number validation for '22364036': Passed
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Phone number validation for '0487678246': Passed
+2024-11-26 22:48:17,108 - RequestFormProcessor - DEBUG - Request number validation for '24H12800': Passed
+2024-11-26 22:48:17,108 - RequestFormProcessor - WARNING - Overall OCR confidence is low: 59.66
+2024-11-26 22:48:17,109 - RequestFormProcessor - DEBUG - Returning extracted data.
+2024-11-26 22:50:48,289 - RequestFormProcessor - DEBUG - Detected 2 barcodes in the barcode region.
+2024-11-26 22:50:48,290 - RequestFormProcessor - DEBUG - Barcode detected: BP000593-EF6F2F2C71 (Type: CODE128)
+2024-11-26 22:50:48,291 - RequestFormProcessor - WARNING - Invalid barcode format detected: BP000593-EF6F2F2C71
+2024-11-26 22:50:48,291 - RequestFormProcessor - DEBUG - Barcode detected: 24H12800 (Type: CODE128)
+2024-11-26 22:50:48,291 - RequestFormProcessor - DEBUG - Valid barcode data found: 24H12800
+2024-11-26 22:50:48,291 - RequestFormProcessor - DEBUG - Valid request number extracted from barcode: 24H12800
+2024-11-26 22:50:48,307 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_8ywbrajd_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_8ywbrajd', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:48,499 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_mkoqkcw4_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_mkoqkcw4', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:48,602 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7ntjhft1_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7ntjhft1', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:48,707 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_aq7l9zwe_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_aq7l9zwe', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:48,833 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_m5mdzok4_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_m5mdzok4', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:48,961 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_h1ib99of_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_h1ib99of', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:49,062 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_tef4a5xp_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_tef4a5xp', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:49,173 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_e4b3pje8_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_e4b3pje8', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:49,284 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_r6rhr62o_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_r6rhr62o', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:49,395 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_jg4c12da_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_jg4c12da', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:49,501 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7sqi7apf_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7sqi7apf', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:49,605 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ejxjh4cx_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ejxjh4cx', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:49,741 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_dwp_fkuf_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_dwp_fkuf', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:49,842 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_g1fiul_b_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_g1fiul_b', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:49,942 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_v1o0s18s_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_v1o0s18s', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:50,044 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7gbet_av_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7gbet_av', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:50,145 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4uzwh9k__input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4uzwh9k_', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:50,264 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_zqpbho6q_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_zqpbho6q', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:50,385 - RequestFormProcessor - DEBUG - Medicare anchor detected: MedicareAnchor(text='2236403629/1', confidence=92.0, bounding_box=(531, 40, 671, 60))
+2024-11-26 22:50:50,386 - RequestFormProcessor - DEBUG - Calculated relative region: (657, 105, 807, 135)
+2024-11-26 22:50:50,394 - RequestFormProcessor - DEBUG - Preprocessed image for field 'date_of_birth' saved as 'preprocessed_date_of_birth.png'
+2024-11-26 22:50:50,454 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ruj7kd1d_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ruj7kd1d', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:50:50,611 - RequestFormProcessor - DEBUG - Cleaned text for field 'date_of_birth': '14/01/1954'
+2024-11-26 22:50:50,611 - RequestFormProcessor - DEBUG - Field 'date_of_birth' extracted: 14/01/1954 (Confidence: 96.0)
+2024-11-26 22:50:50,612 - RequestFormProcessor - DEBUG - Drew bounding box for field 'date_of_birth' at region (657, 105, 807, 135)
+2024-11-26 22:50:50,612 - RequestFormProcessor - DEBUG - Calculated relative region: (292, 105, 492, 135)
+2024-11-26 22:50:50,618 - RequestFormProcessor - DEBUG - Preprocessed image for field 'given_names' saved as 'preprocessed_given_names.png'
+2024-11-26 22:50:50,679 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_m3ydv9ri_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_m3ydv9ri', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:50:50,828 - RequestFormProcessor - DEBUG - Cleaned text for field 'given_names': ''
+2024-11-26 22:50:50,828 - RequestFormProcessor - DEBUG - Field 'given_names' extracted:  (Confidence: -1)
+2024-11-26 22:50:50,828 - RequestFormProcessor - DEBUG - Drew bounding box for field 'given_names' at region (292, 105, 492, 135)
+2024-11-26 22:50:50,828 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 105, 227, 135)
+2024-11-26 22:50:50,835 - RequestFormProcessor - DEBUG - Preprocessed image for field 'surname' saved as 'preprocessed_surname.png'
+2024-11-26 22:50:50,894 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_uubxh4y3_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_uubxh4y3', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:50:51,063 - RequestFormProcessor - DEBUG - Cleaned text for field 'surname': 'Armstong'
+2024-11-26 22:50:51,064 - RequestFormProcessor - DEBUG - Field 'surname' extracted: Armstong (Confidence: 92.0)
+2024-11-26 22:50:51,064 - RequestFormProcessor - DEBUG - Drew bounding box for field 'surname' at region (27, 105, 227, 135)
+2024-11-26 22:50:51,064 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 144, 327, 214)
+2024-11-26 22:50:51,070 - RequestFormProcessor - DEBUG - Preprocessed image for field 'address' saved as 'preprocessed_address.png'
+2024-11-26 22:50:51,131 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_17cb4vcx_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_17cb4vcx', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:51,307 - RequestFormProcessor - DEBUG - Cleaned text for field 'address': '3 King Street Port Macquarie2444'
+2024-11-26 22:50:51,308 - RequestFormProcessor - DEBUG - Field 'address' extracted: 3 King Street Port Macquarie2444 (Confidence: 95.5)
+2024-11-26 22:50:51,308 - RequestFormProcessor - DEBUG - Drew bounding box for field 'address' at region (27, 144, 327, 214)
+2024-11-26 22:50:51,308 - RequestFormProcessor - DEBUG - Calculated relative region: (509, 556, 866, 686)
+2024-11-26 22:50:51,315 - RequestFormProcessor - DEBUG - Preprocessed image for field 'doctor_information' saved as 'preprocessed_doctor_information.png'
+2024-11-26 22:50:51,377 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_440gk1sx_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_440gk1sx', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:50:51,610 - RequestFormProcessor - DEBUG - Cleaned text for field 'doctor_information': 'DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K'
+2024-11-26 22:50:51,610 - RequestFormProcessor - DEBUG - Field 'doctor_information' extracted: DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K (Confidence: 85.27777777777777)
+2024-11-26 22:50:51,610 - RequestFormProcessor - DEBUG - Drew bounding box for field 'doctor_information' at region (509, 556, 866, 686)
+2024-11-26 22:50:51,610 - RequestFormProcessor - DEBUG - Calculated relative region: (654, 156, 854, 216)
+2024-11-26 22:50:51,617 - RequestFormProcessor - DEBUG - Preprocessed image for field 'phone_number' saved as 'preprocessed_phone_number.png'
+2024-11-26 22:50:51,677 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7cvq775m_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7cvq775m', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:50:51,832 - RequestFormProcessor - DEBUG - Cleaned text for field 'phone_number': '0487678246(M)'
+2024-11-26 22:50:51,833 - RequestFormProcessor - DEBUG - Field 'phone_number' extracted: 0487678246(M) (Confidence: 80.5)
+2024-11-26 22:50:51,833 - RequestFormProcessor - DEBUG - Drew bounding box for field 'phone_number' at region (654, 156, 854, 216)
+2024-11-26 22:50:51,833 - RequestFormProcessor - DEBUG - Calculated relative region: (685, 471, 885, 501)
+2024-11-26 22:50:51,840 - RequestFormProcessor - DEBUG - Preprocessed image for field 'request_date' saved as 'preprocessed_request_date.png'
+2024-11-26 22:50:51,899 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_lz231blt_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_lz231blt', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:50:52,056 - RequestFormProcessor - DEBUG - Cleaned text for field 'request_date': '©42811/2024'
+2024-11-26 22:50:52,057 - RequestFormProcessor - DEBUG - Field 'request_date' extracted: ©42811/2024 (Confidence: 19.0)
+2024-11-26 22:50:52,057 - RequestFormProcessor - DEBUG - Drew bounding box for field 'request_date' at region (685, 471, 885, 501)
+2024-11-26 22:50:52,057 - RequestFormProcessor - DEBUG - Calculated relative region: (608, 105, 648, 135)
+2024-11-26 22:50:52,063 - RequestFormProcessor - DEBUG - Preprocessed image for field 'sex' saved as 'preprocessed_sex.png'
+2024-11-26 22:50:52,122 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_er_gvju1_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_er_gvju1', '-c', 'tessedit_create_tsv=1', '--psm', '10']
+2024-11-26 22:50:52,272 - RequestFormProcessor - DEBUG - Cleaned text for field 'sex': '|'
+2024-11-26 22:50:52,273 - RequestFormProcessor - DEBUG - Field 'sex' extracted: | (Confidence: 10.0)
+2024-11-26 22:50:52,273 - RequestFormProcessor - DEBUG - Drew bounding box for field 'sex' at region (608, 105, 648, 135)
+2024-11-26 22:50:52,293 - RequestFormProcessor - DEBUG - Debug image saved as 'field_regions_debug.png'
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Masked image saved as 'masked_form.png'
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Background mask applied to the image.
+2024-11-26 22:50:52,312 - RequestFormProcessor - WARNING - Medicare number format invalid: 22364036
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Phone entries found: ['0487678246(M)']
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Assigned '0487678246' as Mobile phone based on label '(M)'.
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Final assignment - Home Phone: None, Mobile Phone: 0487678246
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Processed phone numbers - Home: None, Mobile: 0487678246
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Extracted postcode: 2444
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Mapped postcode to state: NSW
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Found street type 'Street' at index 2
+2024-11-26 22:50:52,312 - RequestFormProcessor - DEBUG - Address split based on street type: Address='3 King Street', Suburb='Port Macquarie'
+2024-11-26 22:50:52,313 - RequestFormProcessor - DEBUG - Parsed address into components: {'address': '3 King Street', 'suburb': 'Port Macquarie', 'postcode': '2444', 'state': 'NSW'}
+2024-11-26 22:50:52,313 - RequestFormProcessor - DEBUG - Provider number extracted: 5373001K
+2024-11-26 22:50:52,313 - RequestFormProcessor - WARNING - Insufficient data to construct the total name.
+2024-11-26 22:50:52,313 - RequestFormProcessor - DEBUG - Date of birth parsed successfully: 1954-01-14 00:00:00
+2024-11-26 22:50:52,313 - RequestFormProcessor - DEBUG - Sex field set to 'U' due to invalid value: |
+2024-11-26 22:50:52,313 - RequestFormProcessor - DEBUG - Overall OCR confidence calculated: 59.66
+2024-11-26 22:50:52,313 - RequestFormProcessor - DEBUG - Medicare number validation for '22364036': Passed
+2024-11-26 22:50:52,313 - RequestFormProcessor - DEBUG - Phone number validation for '0487678246': Passed
+2024-11-26 22:50:52,313 - RequestFormProcessor - DEBUG - Request number validation for '24H12800': Passed
+2024-11-26 22:50:52,313 - RequestFormProcessor - WARNING - Overall OCR confidence is low: 59.66
+2024-11-26 22:50:52,313 - RequestFormProcessor - DEBUG - Returning extracted data.
+2024-11-26 22:55:56,273 - RequestFormProcessor - DEBUG - Detected 2 barcodes in the barcode region.
+2024-11-26 22:55:56,274 - RequestFormProcessor - DEBUG - Barcode detected: BP000593-EF6F2F2C71 (Type: CODE128)
+2024-11-26 22:55:56,275 - RequestFormProcessor - WARNING - Invalid barcode format detected: BP000593-EF6F2F2C71
+2024-11-26 22:55:56,275 - RequestFormProcessor - DEBUG - Barcode detected: 24H12800 (Type: CODE128)
+2024-11-26 22:55:56,275 - RequestFormProcessor - DEBUG - Valid barcode data found: 24H12800
+2024-11-26 22:55:56,275 - RequestFormProcessor - DEBUG - Valid request number extracted from barcode: 24H12800
+2024-11-26 22:55:56,291 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_g1e4uk_v_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_g1e4uk_v', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:56,484 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ao7c_7ez_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ao7c_7ez', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:56,587 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_r71701y6_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_r71701y6', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:56,690 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7hylg1am_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_7hylg1am', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:56,815 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_upu1x40j_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_upu1x40j', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:56,943 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_bmtbe1q9_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_bmtbe1q9', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:57,043 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4bk12_dv_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_4bk12_dv', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:57,156 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_gutpmazr_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_gutpmazr', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:57,268 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_coottky__input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_coottky_', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:57,376 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_fopwk_j7_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_fopwk_j7', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:57,484 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_e2drxx_1_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_e2drxx_1', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:57,587 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_0zd2y8c8_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_0zd2y8c8', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:57,724 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_hetb8sdh_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_hetb8sdh', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:57,822 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_0ltxfexw_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_0ltxfexw', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:57,923 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_we1nnl9n_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_we1nnl9n', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:58,027 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_f6b8y1sz_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_f6b8y1sz', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:58,128 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_p26nliqi_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_p26nliqi', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:58,228 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_e0ua3kil_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_e0ua3kil', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:58,346 - RequestFormProcessor - DEBUG - Medicare anchor detected: MedicareAnchor(text='2236403629/1', confidence=92.0, bounding_box=(531, 40, 671, 60))
+2024-11-26 22:55:58,347 - RequestFormProcessor - DEBUG - Calculated relative region: (657, 105, 807, 135)
+2024-11-26 22:55:58,355 - RequestFormProcessor - DEBUG - Preprocessed image for field 'date_of_birth' saved as 'preprocessed_date_of_birth.png'
+2024-11-26 22:55:58,492 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_eg6ujgn3_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_eg6ujgn3', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:55:58,667 - RequestFormProcessor - DEBUG - Cleaned text for field 'date_of_birth': '14/01/1954'
+2024-11-26 22:55:58,668 - RequestFormProcessor - DEBUG - Field 'date_of_birth' extracted: 14/01/1954 (Confidence: 96.0)
+2024-11-26 22:55:58,668 - RequestFormProcessor - DEBUG - Drew bounding box for field 'date_of_birth' at region (657, 105, 807, 135)
+2024-11-26 22:55:58,668 - RequestFormProcessor - DEBUG - Calculated relative region: (292, 105, 492, 135)
+2024-11-26 22:55:58,676 - RequestFormProcessor - DEBUG - Preprocessed image for field 'given_names' saved as 'preprocessed_given_names.png'
+2024-11-26 22:55:58,738 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_uox6sydg_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_uox6sydg', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:55:58,895 - RequestFormProcessor - DEBUG - Cleaned text for field 'given_names': ''
+2024-11-26 22:55:58,895 - RequestFormProcessor - DEBUG - Field 'given_names' extracted:  (Confidence: -1)
+2024-11-26 22:55:58,895 - RequestFormProcessor - DEBUG - Drew bounding box for field 'given_names' at region (292, 105, 492, 135)
+2024-11-26 22:55:58,895 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 105, 227, 135)
+2024-11-26 22:55:58,903 - RequestFormProcessor - DEBUG - Preprocessed image for field 'surname' saved as 'preprocessed_surname.png'
+2024-11-26 22:55:58,966 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5n3kklda_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_5n3kklda', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:55:59,141 - RequestFormProcessor - DEBUG - Cleaned text for field 'surname': 'Armstong'
+2024-11-26 22:55:59,141 - RequestFormProcessor - DEBUG - Field 'surname' extracted: Armstong (Confidence: 92.0)
+2024-11-26 22:55:59,141 - RequestFormProcessor - DEBUG - Drew bounding box for field 'surname' at region (27, 105, 227, 135)
+2024-11-26 22:55:59,141 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 144, 327, 214)
+2024-11-26 22:55:59,148 - RequestFormProcessor - DEBUG - Preprocessed image for field 'address' saved as 'preprocessed_address.png'
+2024-11-26 22:55:59,209 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_9xwri1d2_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_9xwri1d2', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:59,385 - RequestFormProcessor - DEBUG - Cleaned text for field 'address': '3 King Street Port Macquarie2444'
+2024-11-26 22:55:59,386 - RequestFormProcessor - DEBUG - Field 'address' extracted: 3 King Street Port Macquarie2444 (Confidence: 95.5)
+2024-11-26 22:55:59,386 - RequestFormProcessor - DEBUG - Drew bounding box for field 'address' at region (27, 144, 327, 214)
+2024-11-26 22:55:59,386 - RequestFormProcessor - DEBUG - Calculated relative region: (509, 556, 866, 686)
+2024-11-26 22:55:59,393 - RequestFormProcessor - DEBUG - Preprocessed image for field 'doctor_information' saved as 'preprocessed_doctor_information.png'
+2024-11-26 22:55:59,456 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_h2mn46xj_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_h2mn46xj', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 22:55:59,688 - RequestFormProcessor - DEBUG - Cleaned text for field 'doctor_information': 'DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K'
+2024-11-26 22:55:59,688 - RequestFormProcessor - DEBUG - Field 'doctor_information' extracted: DrJasonHeise54PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K (Confidence: 85.27777777777777)
+2024-11-26 22:55:59,688 - RequestFormProcessor - DEBUG - Drew bounding box for field 'doctor_information' at region (509, 556, 866, 686)
+2024-11-26 22:55:59,688 - RequestFormProcessor - DEBUG - Calculated relative region: (654, 156, 854, 216)
+2024-11-26 22:55:59,695 - RequestFormProcessor - DEBUG - Preprocessed image for field 'phone_number' saved as 'preprocessed_phone_number.png'
+2024-11-26 22:55:59,756 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_yft4e906_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_yft4e906', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:55:59,911 - RequestFormProcessor - DEBUG - Cleaned text for field 'phone_number': '0487678246(M)'
+2024-11-26 22:55:59,911 - RequestFormProcessor - DEBUG - Field 'phone_number' extracted: 0487678246(M) (Confidence: 80.5)
+2024-11-26 22:55:59,912 - RequestFormProcessor - DEBUG - Drew bounding box for field 'phone_number' at region (654, 156, 854, 216)
+2024-11-26 22:55:59,912 - RequestFormProcessor - DEBUG - Calculated relative region: (685, 471, 885, 501)
+2024-11-26 22:55:59,918 - RequestFormProcessor - DEBUG - Preprocessed image for field 'request_date' saved as 'preprocessed_request_date.png'
+2024-11-26 22:55:59,981 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_qjx_ek7h_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_qjx_ek7h', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 22:56:00,140 - RequestFormProcessor - DEBUG - Cleaned text for field 'request_date': '©42811/2024'
+2024-11-26 22:56:00,140 - RequestFormProcessor - DEBUG - Field 'request_date' extracted: ©42811/2024 (Confidence: 19.0)
+2024-11-26 22:56:00,140 - RequestFormProcessor - DEBUG - Drew bounding box for field 'request_date' at region (685, 471, 885, 501)
+2024-11-26 22:56:00,140 - RequestFormProcessor - DEBUG - Calculated relative region: (608, 105, 648, 135)
+2024-11-26 22:56:00,147 - RequestFormProcessor - DEBUG - Preprocessed image for field 'sex' saved as 'preprocessed_sex.png'
+2024-11-26 22:56:00,207 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_gt1deha9_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_gt1deha9', '-c', 'tessedit_create_tsv=1', '--psm', '10']
+2024-11-26 22:56:00,355 - RequestFormProcessor - DEBUG - Cleaned text for field 'sex': '|'
+2024-11-26 22:56:00,356 - RequestFormProcessor - DEBUG - Field 'sex' extracted: | (Confidence: 10.0)
+2024-11-26 22:56:00,356 - RequestFormProcessor - DEBUG - Drew bounding box for field 'sex' at region (608, 105, 648, 135)
+2024-11-26 22:56:00,375 - RequestFormProcessor - DEBUG - Debug image saved as 'field_regions_debug.png'
+2024-11-26 22:56:00,383 - RequestFormProcessor - DEBUG - Masked image saved as 'masked_form.png'
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Background mask applied to the image.
+2024-11-26 22:56:00,384 - RequestFormProcessor - WARNING - Medicare number format invalid: 22364036
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Phone entries found: ['0487678246(M)']
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Assigned '0487678246' as Mobile phone based on label '(M)'.
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Final assignment - Home Phone: None, Mobile Phone: 0487678246
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Processed phone numbers - Home: None, Mobile: 0487678246
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Extracted postcode: 2444
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Mapped postcode to state: NSW
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Found street type 'Street' at index 2
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Address split based on street type: Address='3 King Street', Suburb='Port Macquarie'
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Parsed address into components: {'address': '3 King Street', 'suburb': 'Port Macquarie', 'postcode': '2444', 'state': 'NSW'}
+2024-11-26 22:56:00,384 - RequestFormProcessor - DEBUG - Provider number extracted: 5373001K
+2024-11-26 22:56:00,384 - RequestFormProcessor - WARNING - Insufficient data to construct the total name.
+2024-11-26 22:56:00,385 - RequestFormProcessor - DEBUG - Date of birth parsed successfully: 1954-01-14 00:00:00
+2024-11-26 22:56:00,385 - RequestFormProcessor - DEBUG - Sex field set to 'U' due to invalid value: |
+2024-11-26 22:56:00,385 - RequestFormProcessor - DEBUG - Overall OCR confidence calculated: 59.66
+2024-11-26 22:56:00,385 - RequestFormProcessor - DEBUG - Medicare number validation for '22364036': Passed
+2024-11-26 22:56:00,385 - RequestFormProcessor - DEBUG - Phone number validation for '0487678246': Passed
+2024-11-26 22:56:00,385 - RequestFormProcessor - DEBUG - Request number validation for '24H12800': Passed
+2024-11-26 22:56:00,385 - RequestFormProcessor - WARNING - Overall OCR confidence is low: 59.66
+2024-11-26 22:56:00,385 - RequestFormProcessor - DEBUG - Returning extracted data.
+2024-11-26 23:01:55,207 - RequestFormProcessor - DEBUG - Detected 2 barcodes in the barcode region.
+2024-11-26 23:01:55,208 - RequestFormProcessor - DEBUG - Barcode detected: BP000593-EF6F2F2C71 (Type: CODE128)
+2024-11-26 23:01:55,208 - RequestFormProcessor - WARNING - Invalid barcode format detected: BP000593-EF6F2F2C71
+2024-11-26 23:01:55,208 - RequestFormProcessor - DEBUG - Barcode detected: 24H12800 (Type: CODE128)
+2024-11-26 23:01:55,208 - RequestFormProcessor - DEBUG - Valid barcode data found: 24H12800
+2024-11-26 23:01:55,208 - RequestFormProcessor - DEBUG - Valid request number extracted from barcode: 24H12800
+2024-11-26 23:01:55,224 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_1uwog4wc_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_1uwog4wc', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:55,417 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_j4arzld6_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_j4arzld6', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:55,521 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_lqvyi2id_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_lqvyi2id', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:55,623 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_96uftcyr_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_96uftcyr', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:55,749 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_laulbwe0_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_laulbwe0', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:55,876 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__3pchb7j_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__3pchb7j', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:55,981 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_dja6ilhy_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_dja6ilhy', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:56,093 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ebp8d3m3_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_ebp8d3m3', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:56,205 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_nppsp1jt_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_nppsp1jt', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:56,315 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_6xbkkm3u_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_6xbkkm3u', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:56,420 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__txbfa24_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__txbfa24', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:56,524 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_hfo0n7d1_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_hfo0n7d1', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:56,661 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_btpdthl9_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_btpdthl9', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:56,759 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_psespayv_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_psespayv', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:56,861 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_nqg0toe8_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_nqg0toe8', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:56,963 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__8bq9do7_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess__8bq9do7', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:57,064 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_rpc1syzm_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_rpc1syzm', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:57,166 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_vgiyd1gx_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_vgiyd1gx', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:57,284 - RequestFormProcessor - DEBUG - Medicare anchor detected: MedicareAnchor(text='2236403629/1', confidence=92.0, bounding_box=(531, 40, 671, 60))
+2024-11-26 23:01:57,285 - RequestFormProcessor - DEBUG - Calculated relative region: (657, 105, 807, 135)
+2024-11-26 23:01:57,292 - RequestFormProcessor - DEBUG - Preprocessed image for field 'date_of_birth' saved as 'preprocessed_date_of_birth.png'
+2024-11-26 23:01:57,355 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_2483m9yz_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_2483m9yz', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 23:01:57,513 - RequestFormProcessor - DEBUG - Cleaned text for field 'date_of_birth': '14/01/1954'
+2024-11-26 23:01:57,514 - RequestFormProcessor - DEBUG - Field 'date_of_birth' extracted: 14/01/1954 (Confidence: 96.0)
+2024-11-26 23:01:57,514 - RequestFormProcessor - DEBUG - Drew bounding box for field 'date_of_birth' at region (657, 105, 807, 135)
+2024-11-26 23:01:57,515 - RequestFormProcessor - DEBUG - Calculated relative region: (292, 105, 492, 135)
+2024-11-26 23:01:57,521 - RequestFormProcessor - DEBUG - Preprocessed image for field 'given_names' saved as 'preprocessed_given_names.png'
+2024-11-26 23:01:57,585 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_2mgkv2bl_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_2mgkv2bl', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 23:01:57,735 - RequestFormProcessor - DEBUG - Cleaned text for field 'given_names': 'Chris'
+2024-11-26 23:01:57,736 - RequestFormProcessor - DEBUG - Field 'given_names' extracted: Chris (Confidence: 96.0)
+2024-11-26 23:01:57,736 - RequestFormProcessor - DEBUG - Drew bounding box for field 'given_names' at region (292, 105, 492, 135)
+2024-11-26 23:01:57,736 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 105, 227, 135)
+2024-11-26 23:01:57,742 - RequestFormProcessor - DEBUG - Preprocessed image for field 'surname' saved as 'preprocessed_surname.png'
+2024-11-26 23:01:57,806 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_b34qyyuj_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_b34qyyuj', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 23:01:57,966 - RequestFormProcessor - DEBUG - Cleaned text for field 'surname': 'Armstrong'
+2024-11-26 23:01:57,967 - RequestFormProcessor - DEBUG - Field 'surname' extracted: Armstrong (Confidence: 96.0)
+2024-11-26 23:01:57,967 - RequestFormProcessor - DEBUG - Drew bounding box for field 'surname' at region (27, 105, 227, 135)
+2024-11-26 23:01:57,967 - RequestFormProcessor - DEBUG - Calculated relative region: (27, 144, 327, 214)
+2024-11-26 23:01:57,973 - RequestFormProcessor - DEBUG - Preprocessed image for field 'address' saved as 'preprocessed_address.png'
+2024-11-26 23:01:58,038 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_dn41bneh_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_dn41bneh', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:58,212 - RequestFormProcessor - DEBUG - Cleaned text for field 'address': '3 King Street Port Macquarie2444'
+2024-11-26 23:01:58,212 - RequestFormProcessor - DEBUG - Field 'address' extracted: 3 King Street Port Macquarie2444 (Confidence: 96.0)
+2024-11-26 23:01:58,212 - RequestFormProcessor - DEBUG - Drew bounding box for field 'address' at region (27, 144, 327, 214)
+2024-11-26 23:01:58,212 - RequestFormProcessor - DEBUG - Calculated relative region: (509, 556, 866, 686)
+2024-11-26 23:01:58,219 - RequestFormProcessor - DEBUG - Preprocessed image for field 'doctor_information' saved as 'preprocessed_doctor_information.png'
+2024-11-26 23:01:58,286 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_bim_chr6_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_bim_chr6', '-c', 'tessedit_create_tsv=1', '--psm', '6']
+2024-11-26 23:01:58,509 - RequestFormProcessor - DEBUG - Cleaned text for field 'doctor_information': 'QyJasonHeise4PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K'
+2024-11-26 23:01:58,509 - RequestFormProcessor - DEBUG - Field 'doctor_information' extracted: QyJasonHeise4PacificDrivePortMacquarie2444Ph0265838844Fax02658310105373001K (Confidence: 90.6470588235294)
+2024-11-26 23:01:58,509 - RequestFormProcessor - DEBUG - Drew bounding box for field 'doctor_information' at region (509, 556, 866, 686)
+2024-11-26 23:01:58,509 - RequestFormProcessor - DEBUG - Calculated relative region: (654, 156, 854, 216)
+2024-11-26 23:01:58,516 - RequestFormProcessor - DEBUG - Preprocessed image for field 'phone_number' saved as 'preprocessed_phone_number.png'
+2024-11-26 23:01:58,580 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_lwx2wd6n_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_lwx2wd6n', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 23:01:58,734 - RequestFormProcessor - DEBUG - Cleaned text for field 'phone_number': '0487878246(M)'
+2024-11-26 23:01:58,734 - RequestFormProcessor - DEBUG - Field 'phone_number' extracted: 0487878246(M) (Confidence: 81.5)
+2024-11-26 23:01:58,734 - RequestFormProcessor - DEBUG - Drew bounding box for field 'phone_number' at region (654, 156, 854, 216)
+2024-11-26 23:01:58,734 - RequestFormProcessor - DEBUG - Calculated relative region: (685, 471, 885, 501)
+2024-11-26 23:01:58,740 - RequestFormProcessor - DEBUG - Preprocessed image for field 'request_date' saved as 'preprocessed_request_date.png'
+2024-11-26 23:01:58,828 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_jikmqb13_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_jikmqb13', '-c', 'tessedit_create_tsv=1', '--psm', '7']
+2024-11-26 23:01:58,989 - RequestFormProcessor - DEBUG - Cleaned text for field 'request_date': ''ESHOM4/2024'
+2024-11-26 23:01:58,989 - RequestFormProcessor - DEBUG - Field 'request_date' extracted: 'ESHOM4/2024 (Confidence: 24.0)
+2024-11-26 23:01:58,989 - RequestFormProcessor - DEBUG - Drew bounding box for field 'request_date' at region (685, 471, 885, 501)
+2024-11-26 23:01:58,989 - RequestFormProcessor - DEBUG - Calculated relative region: (608, 105, 648, 135)
+2024-11-26 23:01:58,996 - RequestFormProcessor - DEBUG - Preprocessed image for field 'sex' saved as 'preprocessed_sex.png'
+2024-11-26 23:01:59,060 - pytesseract - DEBUG - ['tesseract', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_p6g0e6hg_input.PNG', '/var/folders/kc/9mxzt7ln3k3bgs1m1hbyfzb80000gn/T/tess_p6g0e6hg', '-c', 'tessedit_create_tsv=1', '--psm', '10']
+2024-11-26 23:01:59,206 - RequestFormProcessor - DEBUG - Cleaned text for field 'sex': 'M'
+2024-11-26 23:01:59,206 - RequestFormProcessor - DEBUG - Field 'sex' extracted: M (Confidence: 90.0)
+2024-11-26 23:01:59,206 - RequestFormProcessor - DEBUG - Drew bounding box for field 'sex' at region (608, 105, 648, 135)
+2024-11-26 23:01:59,226 - RequestFormProcessor - DEBUG - Debug image saved as 'field_regions_debug.png'
+2024-11-26 23:01:59,234 - RequestFormProcessor - DEBUG - Masked image saved as 'masked_form.png'
+2024-11-26 23:01:59,234 - RequestFormProcessor - DEBUG - Background mask applied to the image.
+2024-11-26 23:01:59,234 - RequestFormProcessor - WARNING - Medicare number format invalid: 22364036
+2024-11-26 23:01:59,234 - RequestFormProcessor - DEBUG - Phone entries found: ['0487878246(M)']
+2024-11-26 23:01:59,234 - RequestFormProcessor - DEBUG - Assigned '0487878246' as Mobile phone based on label '(M)'.
+2024-11-26 23:01:59,234 - RequestFormProcessor - DEBUG - Final assignment - Home Phone: None, Mobile Phone: 0487878246
+2024-11-26 23:01:59,234 - RequestFormProcessor - DEBUG - Processed phone numbers - Home: None, Mobile: 0487878246
+2024-11-26 23:01:59,234 - RequestFormProcessor - DEBUG - Extracted postcode: 2444
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Mapped postcode to state: NSW
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Found street type 'Street' at index 2
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Address split based on street type: Address='3 King Street', Suburb='Port Macquarie'
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Parsed address into components: {'address': '3 King Street', 'suburb': 'Port Macquarie', 'postcode': '2444', 'state': 'NSW'}
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Provider number extracted: 5373001K
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Given names cleaned: Chris
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Total name constructed from given names and surname: Chris Armstrong
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Date of birth parsed successfully: 1954-01-14 00:00:00
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Overall OCR confidence calculated: 83.77
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Medicare number validation for '22364036': Passed
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Phone number validation for '0487878246': Passed
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Request number validation for '24H12800': Passed
+2024-11-26 23:01:59,235 - RequestFormProcessor - DEBUG - Returning extracted data.
