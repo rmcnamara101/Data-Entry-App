@@ -6,6 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from config import config_manager  # Ensure config.py is correctly imported
+from sqlalchemy.dialects.postgresql import JSON
 
 Base = declarative_base()
 
@@ -35,7 +36,7 @@ class PatientRecord(Base):
     sex = Column(String)
 
     needs_manual_review = Column(Boolean, default=False)
-    error_details = Column(Text, nullable=True)
+    error_details = Column(JSON, nullable=True)
 
 class DatabaseManager:
     def __init__(self, db_url=None):
@@ -56,19 +57,20 @@ class DatabaseManager:
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
     
-    def add_patient_record(self, patient_info, file_path, ocr_confidence=None):
+    def add_patient_record(self, patient_info, file_path, ocr_confidence=None, validation_errors=None):
         """
         Adds a new patient record to the database.
-        
+
         Args:
             patient_info (dict): Dictionary containing patient information.
             file_path (str): Path to the processed file.
             ocr_confidence (float, optional): OCR confidence score. Defaults to None.
+            validation_errors (dict, optional): Validation errors, if any.
         """
         session = self.Session()
         try:
             logging.debug(f"Adding patient record with info: {patient_info}")
-            
+
             # Parse date_of_birth if it's a string
             date_of_birth = patient_info.get('date_of_birth')
             if isinstance(date_of_birth, str):
@@ -78,12 +80,23 @@ class DatabaseManager:
                     logging.warning(f"Invalid date_of_birth format: {date_of_birth}")
                     date_of_birth = None  # or handle differently
 
+            # Parse request_date
+            request_date = patient_info.get('request_date')
+            if isinstance(request_date, str):
+                try:
+                    request_date = datetime.strptime(request_date, '%d/%m/%Y')
+                except ValueError:
+                    logging.warning(f"Invalid request_date format: {request_date}")
+                    request_date = None
+
+            needs_manual_review = bool(validation_errors)
+
             new_record = PatientRecord(
                 request_date=patient_info.get('request_date'),
                 request_number=patient_info.get('request_number'),
                 given_names=patient_info.get('given_names'),
                 surname=patient_info.get('surname'),
-                name=patient_info.get('name'),  # Ensure 'name' is mapped correctly
+                name=patient_info.get('name'),
                 address=patient_info.get('address'),
                 suburb=patient_info.get('suburb'),
                 state=patient_info.get('state'),
@@ -98,7 +111,9 @@ class DatabaseManager:
                 scan_date=datetime.utcnow(),
                 file_path=file_path,
                 ocr_confidence=ocr_confidence,
-                sex=patient_info.get('sex')
+                sex=patient_info.get('sex'),
+                needs_manual_review=needs_manual_review,
+                error_details=validation_errors  # Store validation errors
             )
             session.add(new_record)
             session.commit()
@@ -153,6 +168,40 @@ class DatabaseManager:
             return processed_count
         except Exception as e:
             logging.error(f"Error counting processed images: {e}")
+            raise
+        finally:
+            session.close()
+
+    def get_flagged_entries(self):
+        """
+        Retrieves all patient records that need manual review.
+
+        Returns:
+            list: A list of dictionaries containing flagged patient records.
+        """
+        session = self.Session()
+        try:
+            flagged_records = session.query(PatientRecord).filter(
+                PatientRecord.needs_manual_review == True
+            ).all()
+
+            # Convert records to dictionaries
+            flagged_entries = []
+            for record in flagged_records:
+                entry = {
+                    'id': record.id,
+                    'request_number': record.request_number,
+                    'given_names': record.given_names,
+                    'surname': record.surname,
+                    'name': record.name,
+                    'validation_errors': record.error_details,
+                    # Add other fields as needed
+                }
+                flagged_entries.append(entry)
+
+            return flagged_entries
+        except Exception as e:
+            logging.error(f"Error fetching flagged entries: {e}")
             raise
         finally:
             session.close()

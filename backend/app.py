@@ -10,6 +10,8 @@ import sqlite3
 from datetime import datetime
 import shutil
 import logging
+from sqlalchemy import delete
+from flask import Flask, request, jsonify, send_file
 
 # Configure logging based on config
 from config import config_manager
@@ -265,11 +267,10 @@ def get_default_folder():
 @app.route('/api/clear-database', methods=['POST'])
 def clear_database():
     try:
-        # Optional: Implement authentication/authorization checks here
-
         session = db.Session()
-        deleted_records = session.query(PatientRecord).delete()
+        result = session.execute(delete(PatientRecord))
         session.commit()
+        deleted_records = result.rowcount
         logging.info(f"Database cleared: {deleted_records} records deleted.")
         return jsonify({'success': True, 'deleted_records': deleted_records}), 200
     except Exception as e:
@@ -278,6 +279,25 @@ def clear_database():
         return jsonify({'success': False, 'error': str(e)}), 500
     finally:
         session.close()
+
+@app.route('/api/flagged-entries', methods=['GET'])
+def get_flagged_entries():
+    try:
+        flagged_entries = db.get_flagged_entries()
+        return jsonify(flagged_entries), 200
+    except Exception as e:
+        logging.error(f"Error fetching flagged entries: {str(e)}")
+        return jsonify({'message': 'Internal Server Error'}), 500
+    
+@app.route('/api/submit-corrections', methods=['POST'])
+def submit_corrections():
+    try:
+        data = request.get_json()
+        db.update_entry_with_corrections(data)
+        return jsonify({'message': 'Corrections submitted successfully'}), 200
+    except Exception as e:
+        logging.error(f"Error submitting corrections: {str(e)}")
+        return jsonify({'message': 'Internal Server Error'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

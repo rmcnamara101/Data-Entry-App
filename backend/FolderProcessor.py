@@ -43,10 +43,6 @@ def process_folder(folder_path):
                     processed_data = processor.process_form()
 
                     if processed_data['data']:
-                        patient_info = processed_data['data']
-                        print(patient_info)
-                        ocr_confidence = patient_info.get('ocr_confidence', 0.0)
-                        db.add_patient_record(patient_info, file_path, ocr_confidence)
                         records_added += 1
                         logging.debug(f"Record added for file: {file_name}")
                     else:

@@ -13,6 +13,7 @@ from utils import FIELD_REGIONS, MEDICARE_RELATIVE_OFFSETS
 from TextProcessor import TextProcessor
 from MedicareAnchorDetector import MedicareDetector
 from RequestFormPreparer import RequestFormPreparer
+from database import DatabaseManager
 
 # Define allowed characters for each field
 ALLOWED_CHARACTERS = {
@@ -105,6 +106,8 @@ class RequestFormProcessor:
             "phone_number": None
         }
 
+        self.db_manager = DatabaseManager()
+
     @staticmethod
     def _to_snake_case(name: str) -> str:
         """
@@ -149,7 +152,7 @@ class RequestFormProcessor:
             self.logger.debug(f"Medicare anchor detected: {medicare_anchor}")
             bounding_boxes = self._process_fields_using_anchor(medicare_anchor, field_confidences)
             medicare_extraction = medicare_anchor.text
-            self.information["medicare_number"] = medicare_extraction[:8]
+            self.information["medicare_number"] = medicare_extraction[:10]
             self.information["medicare_position"] = medicare_extraction[-1]
         else:
             self.logger.debug("Medicare anchor not detected. Falling back to manual regions.")
@@ -171,6 +174,8 @@ class RequestFormProcessor:
 
         # Validate Extracted Information
         validation_errors = self._validate_information()
+
+        self._save_to_database(validation_errors)
 
         return {
             "data": self.information,
@@ -277,7 +282,8 @@ class RequestFormProcessor:
 
     def read_region(self, region_coords: Tuple[int, int, int, int], field_name: str) -> Tuple[Optional[str], float]:
         """
-        Masks out the background except for the specified region, extracts text from it, and returns the text.
+        Masks out the background except for the specified region, applies padding around the region,
+        and extracts text from the cropped and masked image.
 
         Args:
             region_coords (Tuple[int, int, int, int]): Coordinates of the region as (x1, y1, x2, y2).
@@ -289,6 +295,13 @@ class RequestFormProcessor:
         # Unpack region coordinates
         x1, y1, x2, y2 = region_coords
 
+        # Define padding (adjust as needed for optimal OCR performance)
+        padding = 50  # Pixels to pad around the region
+        padded_x1 = max(0, x1 - padding)
+        padded_y1 = max(0, y1 - padding)
+        padded_x2 = min(self.requestform.shape[1], x2 + padding)
+        padded_y2 = min(self.requestform.shape[0], y2 + padding)
+
         # Step 1: Create a blank white image
         masked_image = np.full_like(self.requestform, 255)
 
@@ -296,19 +309,23 @@ class RequestFormProcessor:
         roi = self.requestform[y1:y2, x1:x2]
         masked_image[y1:y2, x1:x2] = roi
 
+        # Step 3: Crop the padded region from the masked image
+        cropped_image = masked_image[padded_y1:padded_y2, padded_x1:padded_x2]
+
         # Optional: Save the preprocessed region for debugging
         if self.debug_mode:
-            cv2.imwrite(f"preprocessed_{field_name}.png", masked_image)
+            cv2.imwrite(f"preprocessed_{field_name}.png", cropped_image)
             self.logger.debug(f"Preprocessed image for field '{field_name}' saved as 'preprocessed_{field_name}.png'")
 
         # Step 4: Extract text using the text processor
-        if field_name in ["given_names", "surname", "phone_number", "date_of_birth", "medicare_number", "request_date"]:
-            text, confidence = self.textprocessor.extract_text(masked_image, psm=7)
+        if field_name in ["given_names", "surname", "date_of_birth", "medicare_number", "request_date"]:
+            text, confidence = self.textprocessor.extract_text(cropped_image, psm=7)
         elif field_name == 'sex':
-            text, confidence = self.textprocessor.extract_text(masked_image, psm=10)
+            text, confidence = self.textprocessor.extract_text(cropped_image, psm=10)
         else:
-            text, confidence = self.textprocessor.extract_text(masked_image, psm=6)
+            text, confidence = self.textprocessor.extract_text(cropped_image, psm=6)
 
+        # Clean the extracted text
         cleaned_text = self._clean_text(self._to_snake_case(field_name), text)
 
         return cleaned_text, confidence
@@ -320,9 +337,6 @@ class RequestFormProcessor:
         Args:
             masked_image (np.ndarray): The image with background masked out.
         """
-
-        # Split Medicare Number
-        self._split_medicare_number()
 
         # Process Phone Numbers
         home_phone, mobile_phone = self._process_phone_numbers()
@@ -346,7 +360,10 @@ class RequestFormProcessor:
         self._map_total_name()
 
         # Parse Date of Birth
-        self._parse_date_of_birth()
+        self._parse_date(self.information["date_of_birth"], "date_of_birth")
+
+        # Parse Request Date
+        self._parse_date(self.information["request_date"], "request_date")
 
         # Parse Sex Field
         self._parse_sex_field()
@@ -466,8 +483,30 @@ class RequestFormProcessor:
         return text
 
     def _validate_information(self) -> Dict[str, str]:
-        """Validates the extracted information and returns any validation errors."""
+        """
+        Validates the extracted information and returns any validation errors.
+
+        Ensures that all vital fields are checked for correctness.
+        """
         validation_errors = {}
+
+        # Define required fields
+        required_fields = [
+            "given_names",
+            "surname",
+            "date_of_birth",
+            "request_date",
+            "medicare_number",
+            "request_number",
+            "provider_number",
+        ]
+
+        # Check for missing required fields
+        for field in required_fields:
+            value = self.information.get(field)
+            if not value:
+                validation_errors[field] = f"{field.replace('_', ' ').title()} is required."
+                self.logger.error(f"Missing required field: {field.replace('_', ' ').title()}")
 
         # Validate Medicare Number
         medicare_number = self.information.get("medicare_number")
@@ -488,13 +527,26 @@ class RequestFormProcessor:
             validation_errors["request_number"] = "Invalid Request Number format."
             self.logger.error(f"Request number validation failed: {request_number}")
 
+        # Validate Provider Number
+        provider_number = self.information.get("provider_number")
+        if provider_number and not self.is_valid_provider_number(provider_number):
+            validation_errors["provider_number"] = "Invalid Provider Number format."
+            self.logger.error(f"Provider number validation failed: {provider_number}")
+
+        # Validate Date Fields
+        for date_field in ["date_of_birth", "request_date"]:
+            date_value = self.information.get(date_field)
+            if date_value and not self.is_valid_date(date_value):
+                validation_errors[date_field] = f"Invalid {date_field.replace('_', ' ').title()} format."
+                self.logger.error(f"{date_field.replace('_', ' ').title()} validation failed: {date_value}")
+
         # Validate Overall OCR Confidence
         ocr_confidence = self.information.get("ocr_confidence")
         if ocr_confidence is not None and ocr_confidence < 70.0:
             validation_errors["ocr_confidence"] = "Overall OCR confidence is low."
             self.logger.warning(f"Overall OCR confidence is low: {ocr_confidence}")
 
-        return validation_errors
+        return validation_errors if validation_errors else None
 
     def _calculate_ocr_confidence(self, field_confidences: List[float]):
         """Calculates the overall OCR confidence."""
@@ -505,18 +557,6 @@ class RequestFormProcessor:
         else:
             self.information["ocr_confidence"] = None
             self.logger.warning("No field confidences available to calculate overall OCR confidence.")
-
-    def _split_medicare_number(self):
-        """Splits the Medicare number into number and position."""
-        medicare_num = self.information.get("medicare_number")
-        if medicare_num:
-            match = re.match(r'^(\d{10})/(\d)$', medicare_num)
-            if match:
-                self.information["medicare_number"] = match.group(1)
-                self.information["medicare_position"] = match.group(2)
-                self.logger.debug(f"Medicare number split - Number: {match.group(1)}, Position: {match.group(2)}")
-            else:
-                self.logger.warning(f"Medicare number format invalid: {medicare_num}")
 
     def _extract_provider_number(self):
         """Extracts and validates the provider number from doctor information."""
@@ -550,17 +590,17 @@ class RequestFormProcessor:
             self.information["name"] = None
             self.logger.warning("Insufficient data to construct the total name.")
 
-    def _parse_date_of_birth(self):
+    def _parse_date(self, date: str, field_name: str):
         """Parses the date of birth field into a datetime object."""
-        dob_str = self.information.get("date_of_birth")
-        if dob_str:
+        date_str = date
+        if date_str:
             try:
-                dob = datetime.strptime(dob_str, '%d/%m/%Y')
-                self.information["date_of_birth"] = dob
+                dob = datetime.strptime(date_str, '%d/%m/%Y')
+                self.information[field_name] = dob
                 self.logger.debug(f"Date of birth parsed successfully: {dob}")
             except ValueError:
-                self.information["date_of_birth"] = None
-                self.logger.warning(f"Invalid date of birth format: {dob_str}")
+                self.information[field_name] = None
+                self.logger.warning(f"Invalid date of birth format: {date_str}")
 
     def _parse_sex_field(self):
         """Parses the sex field and sets it to 'U' if not valid."""
@@ -633,9 +673,10 @@ class RequestFormProcessor:
         """
         Processes the 'phone_number' field to extract and assign Home and Mobile phone numbers.
 
-        The phone numbers can be in various formats:
-        1. Single phone number.
-        2. Two phone numbers, either labeled with (H) and (M) or distinguished by their format.
+        Handles cases where:
+        1. Single phone number is provided.
+        2. Two phone numbers are concatenated and labeled with (H) and (M).
+        3. Other mixed or unexpected formats.
 
         Returns:
             Tuple[Optional[str], Optional[str]]: (home_phone, mobile_phone)
@@ -647,96 +688,34 @@ class RequestFormProcessor:
             self.logger.debug("No phone number field found to process.")
             return home_phone, mobile_phone
 
-        # Split the phone_field by common delimiters
-        phone_entries = re.split(r'\n|/', phone_field)
-        phone_entries = [entry.strip() for entry in phone_entries if entry.strip()]
-        self.logger.debug(f"Phone entries found: {phone_entries}")
+        # Use regex to find all phone numbers and their labels
+        phone_matches = re.findall(r'(\d+)\((H|M)\)', phone_field)
+        self.logger.debug(f"Extracted phone matches: {phone_matches}")
 
-        # Temporary storage for identified phone numbers
-        temp_home = None
-        temp_mobile = None
+        for number, label in phone_matches:
+            # Normalize the number by removing unwanted characters
+            number = re.sub(r'[^\d+]', '', number).strip()
 
-        for entry in phone_entries:
-            # Check for labels (H) or (M)
-            label_match = re.search(r'\((H|M)\)', entry, re.IGNORECASE)
-            if label_match:
-                label = label_match.group(1).upper()
-                # Remove the label from the entry to isolate the number
-                number = re.sub(r'\(H\)|\(M\)', '', entry, flags=re.IGNORECASE).strip()
-                # Clean the number by removing non-digit characters except '+'
-                number = re.sub(r'[^\d+]', '', number)
+            # Normalize mobile numbers starting with +614 to 04
+            if number.startswith('+614'):
+                number = '0' + number[4:]
 
-                # Normalize mobile numbers starting with +614 to 04
-                if number.startswith('+614'):
-                    number = '0' + number[4:]
-
-                if label == 'H':
-                    # Assign to home_phone
-                    if not temp_home:
-                        temp_home = number
-                        self.logger.debug(f"Assigned '{number}' as Home phone based on label '(H)'.")
-                    else:
-                        self.logger.warning(f"Multiple Home numbers detected. Existing: '{temp_home}', New: '{number}'. Ignoring new Home number.")
-                elif label == 'M':
-                    # Assign to mobile_phone
-                    if not temp_mobile:
-                        temp_mobile = number
-                        self.logger.debug(f"Assigned '{number}' as Mobile phone based on label '(M)'.")
-                    else:
-                        self.logger.warning(f"Multiple Mobile numbers detected. Existing: '{temp_mobile}', New: '{number}'. Ignoring new Mobile number.")
-            else:
-                # No labels; determine based on number format
-                number = re.sub(r'[^\d+]', '', entry).strip()
-
-                # Normalize mobile numbers starting with +614 to 04
-                if number.startswith('+614'):
-                    number = '0' + number[4:]
-
-                # Determine if the number is Mobile or Home
-                if re.match(r'^04\d{8}$', number):
-                    # Mobile number
-                    if not temp_mobile:
-                        temp_mobile = number
-                        self.logger.debug(f"Assigned '{number}' as Mobile phone based on format (starts with '04' and 10 digits).")
-                    else:
-                        # Check if it's another mobile number
-                        if re.match(r'^04\d{8}$', number):
-                            self.logger.debug(f"Detected second Mobile number '{number}'. Ignoring as per requirements.")
-                            continue  # Ignore additional mobile numbers
-                elif re.match(r'^\d{8}$', number):
-                    # Home number
-                    if not temp_home:
-                        temp_home = number
-                        self.logger.debug(f"Assigned '{number}' as Home phone based on format (8 digits).")
-                    else:
-                        self.logger.warning(f"Multiple Home numbers detected. Existing: '{temp_home}', New: '{number}'. Ignoring new Home number.")
+            if label.upper() == 'H':
+                # Assign to home_phone
+                if not home_phone:
+                    home_phone = number
+                    self.logger.debug(f"Assigned '{number}' as Home phone based on label '(H)'.")
                 else:
-                    # Ambiguous format; attempt to classify
-                    if re.match(r'^04\d{8}$', number):
-                        # Mobile number
-                        if not temp_mobile:
-                            temp_mobile = number
-                            self.logger.debug(f"Assigned '{number}' as Mobile phone based on format (starts with '04' and 10 digits).")
-                    elif re.match(r'^\d{10}$', number):
-                        # Could be Mobile starting with '0X' where X != 4 or other Mobile formats
-                        # Assuming mobile numbers are 10 digits long
-                        if not temp_mobile:
-                            temp_mobile = number
-                            self.logger.debug(f"Assigned '{number}' as Mobile phone based on 10-digit format.")
-                    elif re.match(r'^\d{7,9}$', number):
-                        # Likely a Home number
-                        if not temp_home:
-                            temp_home = number
-                            self.logger.debug(f"Assigned '{number}' as Home phone based on length ({len(number)} digits).")
-                    else:
-                        self.logger.warning(f"Unable to classify phone number '{number}'. Ignoring.")
-                        continue  # Unable to classify
+                    self.logger.warning(f"Multiple Home numbers detected. Existing: '{home_phone}', New: '{number}'. Ignoring new Home number.")
+            elif label.upper() == 'M':
+                # Assign to mobile_phone
+                if not mobile_phone:
+                    mobile_phone = number
+                    self.logger.debug(f"Assigned '{number}' as Mobile phone based on label '(M)'.")
+                else:
+                    self.logger.warning(f"Multiple Mobile numbers detected. Existing: '{mobile_phone}', New: '{number}'. Ignoring new Mobile number.")
 
-        # Assign the temporary variables to the return variables
-        home_phone = temp_home
-        mobile_phone = temp_mobile
-
-        # Final assignment based on the processed numbers
+        # Log final assignments
         self.logger.debug(f"Final assignment - Home Phone: {home_phone}, Mobile Phone: {mobile_phone}")
 
         return home_phone, mobile_phone
@@ -751,7 +730,7 @@ class RequestFormProcessor:
         Returns:
             bool: True if valid, False otherwise.
         """
-        is_valid = bool(re.match(r'^\d{8}$', medicare_number))
+        is_valid = bool(re.match(r'^\d{10}$', medicare_number))
         self.logger.debug(f"Medicare number validation for '{medicare_number}': {'Passed' if is_valid else 'Failed'}")
         return is_valid
 
@@ -783,6 +762,27 @@ class RequestFormProcessor:
         self.logger.debug(f"Request number validation for '{request_number}': {'Passed' if is_valid else 'Failed'}")
         return is_valid
 
+    def is_valid_provider_number(self, provider_number: str) -> bool:
+        """
+        Validates the provider number format.
+
+        Args:
+            provider_number (str): The provider number to validate.
+
+        Returns:
+            bool: True if valid, False otherwise.
+        """
+        is_valid = bool(re.match(r'^[A-Za-z0-9]{8}$', provider_number))
+        self.logger.debug(f"Provider number validation for '{provider_number}': {'Passed' if is_valid else 'Failed'}")
+        return is_valid
+
+    def is_valid_date(self, date: datetime) -> bool:
+        if type(date) is not datetime:
+            return False
+        else:
+            return True
+            
+
     def _draw_bounding_box(self, image: np.ndarray, region: Tuple[int, int, int, int], label: str) -> None:
         """
         Draws a bounding box and label on the image for debugging.
@@ -796,3 +796,25 @@ class RequestFormProcessor:
         cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
         cv2.putText(image, label, (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
         self.logger.debug(f"Drew bounding box for field '{label}' at region ({x1}, {y1}, {x2}, {y2})")
+
+    def _save_to_database(self, validation_errors: Dict[str, str]):
+        """
+        Saves the extracted data to the database, including any validation errors.
+
+        Args:
+            validation_errors (Dict[str, str]): Validation errors from processing.
+        """
+        file_path = self.image_path  # Use the image path as the file path
+        ocr_confidence = self.information.get("ocr_confidence")
+
+        # Save the data to the database
+        try:
+            self.db_manager.add_patient_record(
+                patient_info=self.information,
+                file_path=file_path,
+                ocr_confidence=ocr_confidence,
+                validation_errors=validation_errors
+            )
+            self.logger.info(f"Data saved to database for file: {file_path}")
+        except Exception as e:
+            self.logger.error(f"Failed to save data to database: {e}")

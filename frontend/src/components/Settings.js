@@ -36,13 +36,9 @@ const SettingsPage = () => {
     const handleClearDatabase = () => {
         const confirmClear = window.confirm("Are you sure you want to clear the database? This action cannot be undone.");
         if (confirmClear) {
-            axios.post('/api/clear-database', {}, {
-                headers: {
-                    'x-api-key': 'your_secure_api_key'  // Replace with your method of providing the API key
-                }
-            })
+            axios.post('/api/clear-database')
                 .then(response => {
-                    if (response.data.success) {
+                    if (response.status === 200 && response.data.success) {
                         setMessage(`Database cleared successfully. ${response.data.deleted_records} records deleted.`);
                     } else {
                         setMessage('Failed to clear the database.');

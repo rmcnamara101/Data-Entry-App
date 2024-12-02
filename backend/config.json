@@ -3,5 +3,6 @@
   "UPLOAD_FOLDER": "uploads",
   "DATABASE_URI": "sqlite:///pathology_records.db",
   "BACKUP_FOLDER": "backups",
-  "LOG_LEVEL": "DEBUG"
+  "LOG_LEVEL": "DEBUG",
+  "API_KEY": "your_secure_api_key"
 }
