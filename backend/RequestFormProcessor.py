@@ -818,3 +818,92 @@ class RequestFormProcessor:
             self.logger.info(f"Data saved to database for file: {file_path}")
         except Exception as e:
             self.logger.error(f"Failed to save data to database: {e}")
+
+if __name__ == '__main__':
+    import argparse
+    import os
+    import sys
+    import pandas as pd
+
+    parser = argparse.ArgumentParser(description="Batch test RequestFormProcessor on a folder of images and export results to Excel.")
+    parser.add_argument("folder_path", help="Path to the folder containing input images")
+    parser.add_argument("--output_excel", default="form_test_results.xlsx", help="Output Excel file to save the results.")
+    parser.add_argument("--debug", action="store_true", help="Enable debug mode.")
+    args = parser.parse_args()
+
+    # Validate the input folder
+    if not os.path.isdir(args.folder_path):
+        print(f"Error: The folder '{args.folder_path}' does not exist or is not a directory.")
+        sys.exit(1)
+
+    # Prepare a list to store result dictionaries for each file
+    results = []
+
+    # Process each file in the provided folder
+    for filename in os.listdir(args.folder_path):
+        input_path = os.path.join(args.folder_path, filename)
+
+        # Skip directories and non-image files by attempting to read as image
+        if not os.path.isfile(input_path):
+            continue
+
+        # Attempt to load image (quick check)
+        test_image = cv2.imread(input_path)
+        if test_image is None:
+            # Not a valid image file
+            continue
+
+        # Process the form
+        try:
+            processor = RequestFormProcessor(input_path, debug_mode=args.debug)
+            result = processor.process_form()  # returns {"data": {...}, "validation_errors": {...} or None}
+            data = result["data"]
+            validation_errors = result["validation_errors"]
+
+            # Flatten validation_errors into a string if they exist
+            if validation_errors is not None:
+                error_summary = "; ".join([f"{k}: {v}" for k, v in validation_errors.items()])
+            else:
+                error_summary = ""
+
+            # Collect results in a single dictionary
+            record = {
+                "filename": filename,
+                "ocr_confidence": data.get("ocr_confidence", None),
+                "validation_errors": error_summary
+            }
+
+            # Include all extracted fields from data
+            for field, value in data.items():
+                if field not in record:  # Avoid overwriting keys like 'ocr_confidence'
+                    record[field] = value
+
+            results.append(record)
+
+        except Exception as e:
+            # If any file fails to process for some reason, record it
+            results.append({
+                "filename": filename,
+                "ocr_confidence": None,
+                "validation_errors": f"Processing failed: {str(e)}"
+            })
+
+    # Convert results to a DataFrame and save to Excel
+    df = pd.DataFrame(results)
+    df.to_excel(args.output_excel, index=False)
+    print(f"Results saved to {args.output_excel}")
+
+    # Compute some summary statistics
+    total_forms = len(df)
+    successful_forms = df[df["validation_errors"] == ""].shape[0]
+    failed_forms = total_forms - successful_forms
+    avg_confidence = df["ocr_confidence"].mean() if "ocr_confidence" in df.columns and not df["ocr_confidence"].isnull().all() else None
+
+    print("Summary Statistics:")
+    print(f"Total forms processed: {total_forms}")
+    print(f"Successful forms (no validation errors): {successful_forms}")
+    print(f"Forms with validation errors: {failed_forms}")
+    if avg_confidence is not None:
+        print(f"Average OCR Confidence: {avg_confidence:.2f}")
+    else:
+        print("No OCR Confidence data available.")

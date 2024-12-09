@@ -21,26 +21,35 @@ class RequestFormPreparer:
         return prepared_image
 
     def crop_to_content(self, image: np.ndarray) -> np.ndarray:
-        # Convert to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        # Apply adaptive thresholding to binarize the image
-        thresh = cv2.adaptiveThreshold(
-            gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
-            cv2.THRESH_BINARY_INV, blockSize=15, C=10
-        )
+        # Attempt 1: Otsu thresholding
+        # This often works well for documents with clear text.
+        _, otsu_thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
 
-        # Dilate to merge text regions
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-        dilated = cv2.dilate(thresh, kernel, iterations=1)
-
-        # Find contours
-        contours, _ = cv2.findContours(
-            dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
+        contours, _ = cv2.findContours(otsu_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         if not contours:
-            print("No text regions found. Returning original image.")
+            # Attempt 2: Adaptive Thresholding (as before)
+            adaptive_thresh = cv2.adaptiveThreshold(
+                gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C,
+                cv2.THRESH_BINARY_INV, blockSize=15, C=10
+            )
+
+            contours, _ = cv2.findContours(adaptive_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        if not contours:
+            # Attempt 3: Use morphological operations to highlight text regions further
+            # For example, try a morphological top-hat to isolate bright text on darker backgrounds
+            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+            tophat = cv2.morphologyEx(gray, cv2.MORPH_TOPHAT, kernel)
+            _, morph_thresh = cv2.threshold(tophat, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+
+            contours, _ = cv2.findContours(morph_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        if not contours:
+            # No text regions found with these methods
+            print("No text regions found after multiple attempts. Returning original image.")
             return image
 
         # Compute the bounding rectangle of all contours
@@ -55,16 +64,13 @@ class RequestFormPreparer:
         h = min(image.shape[0] - y, h + 2 * padding)
 
         if self.debug_mode:
-            # Draw the bounding box on the image for visualization
             debug_image = image.copy()
             cv2.rectangle(debug_image, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.imshow('Cropped Form', debug_image)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
 
-        # Crop and return the image
         cropped_image = image[y:y + h, x:x + w]
-
         return cropped_image
 
     def scale_image(self, image: np.ndarray, target_size: Tuple[int, int],
