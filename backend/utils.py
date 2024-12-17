@@ -10,7 +10,6 @@ class FieldRegion:
 
 # Define all fields in one place
 FIELD_REGIONS = {
-    "request_number": FieldRegion("request_number", (775, 30, 1006, 125), None, 'numbers'),
     "given_names": FieldRegion("given_names", (280, 97, 470, 172), r'^[A-Za-z\s\-\']+$', 'text'),
     "surname": FieldRegion("surname", (24, 96, 166, 151), r'^[A-Za-z\s\-\']+$', 'text'),
     "date_of_birth": FieldRegion("Date of Birth", (655, 95, 788, 152), r'^\d{2}[/-]\d{2}[/-]\d{4}$', 'date'),
@@ -18,7 +17,7 @@ FIELD_REGIONS = {
     "phone_number": FieldRegion("Phone Number", (666, 149, 949, 292), None, 'numbers'),
     "address": FieldRegion("Address", (39, 145, 212, 213), None, 'text'),
     "doctor_information": FieldRegion("Doctor Information", (466, 538, 864, 684), None, 'text'),
-    "barcode": FieldRegion("Barcode", (779, 0, 1024, 140), None, 'barcode')
+    "sex": FieldRegion('sex', (617, 80, 828, 128), r'^[MFU]$', 'text'),
 }
 
 MEDICARE_RELATIVE_OFFSETS = {

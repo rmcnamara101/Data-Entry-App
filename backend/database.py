@@ -18,7 +18,6 @@ class PatientRecord(Base):
     request_number = Column(String)
     given_names = Column(String)
     surname = Column(String)
-    name = Column(String)  # Ensure this line exists
     address = Column(String)
     suburb = Column(String)
     state = Column(String)
@@ -27,16 +26,16 @@ class PatientRecord(Base):
     mobile_phone = Column(String)
     medicare_number = Column(String)
     medicare_position = Column(String)
-    doctor_information = Column(String)
     provider_number = Column(String)
     date_of_birth = Column(DateTime)
     scan_date = Column(DateTime, default=datetime.utcnow)
     file_path = Column(String)
     ocr_confidence = Column(Float)
     sex = Column(String)
-
     needs_manual_review = Column(Boolean, default=False)
     error_details = Column(JSON, nullable=True)
+    field_regions = Column(JSON, nullable=True)  # New column for field regions
+
 
 class DatabaseManager:
     def __init__(self, db_url=None):
@@ -78,25 +77,17 @@ class DatabaseManager:
                     date_of_birth = datetime.strptime(date_of_birth, '%d/%m/%Y')
                 except ValueError:
                     logging.warning(f"Invalid date_of_birth format: {date_of_birth}")
-                    date_of_birth = None  # or handle differently
+                    date_of_birth = None
 
-            # Parse request_date
-            request_date = patient_info.get('request_date')
-            if isinstance(request_date, str):
-                try:
-                    request_date = datetime.strptime(request_date, '%d/%m/%Y')
-                except ValueError:
-                    logging.warning(f"Invalid request_date format: {request_date}")
-                    request_date = None
-
+            # Determine if the record needs manual review
             needs_manual_review = bool(validation_errors)
 
+            # Create a new PatientRecord instance
             new_record = PatientRecord(
                 request_date=patient_info.get('request_date'),
                 request_number=patient_info.get('request_number'),
                 given_names=patient_info.get('given_names'),
                 surname=patient_info.get('surname'),
-                name=patient_info.get('name'),
                 address=patient_info.get('address'),
                 suburb=patient_info.get('suburb'),
                 state=patient_info.get('state'),
@@ -105,7 +96,6 @@ class DatabaseManager:
                 mobile_phone=patient_info.get('mobile_phone_number'),
                 medicare_number=patient_info.get('medicare_number'),
                 medicare_position=patient_info.get('medicare_position'),
-                doctor_information=patient_info.get('doctor_information'),
                 provider_number=patient_info.get('provider_number'),
                 date_of_birth=date_of_birth,
                 scan_date=datetime.utcnow(),
@@ -113,17 +103,23 @@ class DatabaseManager:
                 ocr_confidence=ocr_confidence,
                 sex=patient_info.get('sex'),
                 needs_manual_review=needs_manual_review,
-                error_details=validation_errors  # Store validation errors
+                error_details=validation_errors,  # Store validation errors
+                field_regions=patient_info.get('field_regions')  # Store field regions
             )
+
+            # Add the record to the session and commit it
             session.add(new_record)
             session.commit()
             logging.debug(f"Added patient record: {new_record}")
+
         except Exception as e:
+            # Rollback the transaction in case of error
             session.rollback()
             logging.error(f"Error adding patient record: {e}")
             raise
         finally:
             session.close()
+
 
     def get_folder_stats(self, folder_path):
         """

@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Tuple
-from RequestFormPreparer import RequestFormPreparer
+from backend.FormImagePreparer import RequestFormPreparer
 
 
 @dataclass

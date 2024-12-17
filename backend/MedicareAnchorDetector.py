@@ -21,21 +21,17 @@ class MedicareAnchorDetector:
         self.debug_mode = debug_mode
 
     def find_medicare_number(self, image) -> Optional[MedicareAnchor]:
-        # Extract target region using NumPy slicing
         x1, y1, x2, y2 = self.target_region
         target_area = image[y1:y2, x1:x2]
 
         if self.debug_mode:
-            print(f"Target region extracted: {self.target_region}")
-            print(f"Target area shape: {target_area.shape}")
+            print(f"Target region: {self.target_region}, shape: {target_area.shape}")
 
-        # Validate target_area dimensions
         if target_area.size == 0:
             if self.debug_mode:
-                print("Target area is empty. Check target_region coordinates.")
+                print("Error: Target area is empty. Check target_region coordinates.")
             return None
 
-        # Create sliding windows using NumPy's efficient view
         try:
             windows = np.lib.stride_tricks.sliding_window_view(
                 target_area, 
@@ -47,19 +43,17 @@ class MedicareAnchorDetector:
             return None
 
         if self.debug_mode:
-            print(f"Sliding windows created with shape: {windows.shape}")
+            print(f"Windows shape: {windows.shape}")
 
-        # Initialize best match variables
         best_match = None
-        highest_confidence = 50  # Lowered from 80
+        highest_confidence = 80 # Minimum confidence threshold
 
         for i in range(windows.shape[0]):
             for j in range(windows.shape[1]):
-                window = windows[i, j, 0]  # Remove the extra dimension
+                window = windows[i, j, 0]
                 if self.debug_mode:
-                    print(f"Processing window ({i}, {j}) with shape: {window.shape}")
+                    print(f"Window ({i}, {j}) shape: {window.shape}")
 
-                # Convert color channels if necessary
                 try:
                     window_rgb = cv2.cvtColor(window, cv2.COLOR_BGR2RGB)
                 except cv2.error as e:
@@ -67,20 +61,16 @@ class MedicareAnchorDetector:
                         print(f"Color conversion error for window ({i}, {j}): {e}")
                     continue
 
-                # Ensure correct data type
-                if window_rgb.dtype != np.uint8:
-                    window_rgb = window_rgb.astype(np.uint8)
-
-                text, confidence = self.text_processor.extract_text(window_rgb)
+                window_rgb = window_rgb.astype(np.uint8)
+                lang = "eng"
+                psm = 6
+                text, confidence = self.text_processor.extract_text(window_rgb, lang, psm)
 
                 if self.debug_mode:
-                    print(f"Extracted text: '{text}'")
-                    print(f"Confidence: {confidence}")
+                    print(f"Extracted text: '{text}', Confidence: {confidence}")
 
-                # Clean the extracted text
                 cleaned_text = re.sub(r'[^0-9/]', '', text)
 
-                # Match against the Medicare pattern
                 if re.match(self.medicare_pattern, cleaned_text) and confidence > highest_confidence:
                     highest_confidence = confidence
                     best_match = MedicareAnchor(
@@ -95,7 +85,7 @@ class MedicareAnchorDetector:
                     )
 
                     if self.debug_mode:
-                        print(f"New best match found: {best_match}")
+                        print(f"New best match: {best_match}")
 
         if self.debug_mode:
             if best_match:
@@ -105,12 +95,11 @@ class MedicareAnchorDetector:
 
         return best_match
 
+
 class MedicareDetector:
-    def __init__(self, debug_mode: bool = False):
+    def __init__(self, debug_mode: bool = True):
         self.debug_mode = debug_mode
         self.text_processor = TextProcessor()
-        self.medicare_pattern = r"^\d{10}/\d$"  # Original
-        # Adjusted pattern to allow for optional spaces
         self.medicare_pattern = r"^\d{10}\s*/\s*\d$"
         
         # Define the exact region where Medicare number should be
