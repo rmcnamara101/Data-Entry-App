@@ -21,9 +21,10 @@ FIELD_REGIONS = {
 }
 
 MEDICARE_RELATIVE_OFFSETS = {
+    # Field: (x1, y1, width, height)
     "date_of_birth": (126, -65, 150, 30),  # Corrected height
     "given_names": (-239, -65, 200, 30),  # Corrected width and height
-    "surname": (-504, -65, 200, 30),  # Corrected width and height
+    "surname": (-498, -62, 200, 40),  # Corrected width and height
     "address": (-504, -104, 300, 70),  # Corrected width and height
     "doctor_information": (-22, -516, 357, 130),  # Corrected dimensions
     "phone_number": (123, -116, 200, 60),  # Adjusted width and height

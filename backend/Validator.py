@@ -17,6 +17,8 @@ class Validator:
         Returns:
             bool: True if valid, False otherwise.
         """
+        if medicare_number is None:
+            return False
         return bool(re.match(r'^\d{10}$', medicare_number))
 
     @staticmethod
@@ -30,6 +32,10 @@ class Validator:
         Returns:
             bool: True if valid, False otherwise.
         """
+        if phone_number is None:
+            return False
+        
+        print(phone_number)
         return bool(re.match(r'^\d{10}$', phone_number))
 
     @staticmethod
@@ -43,6 +49,8 @@ class Validator:
         Returns:
             bool: True if valid, False otherwise.
         """
+        if request_number is None:
+            return False
         return bool(re.match(r'^24H\d{5}$', request_number))
 
     @staticmethod
@@ -56,6 +64,8 @@ class Validator:
         Returns:
             bool: True if valid, False otherwise.
         """
+        if provider_number is None:
+            return False
         return bool(re.match(r'^[A-Za-z0-9]{8}$', provider_number))
 
     @staticmethod
@@ -70,6 +80,8 @@ class Validator:
         Returns:
             bool: True if valid, False otherwise.
         """
+        if date_str is None:
+            return False
         try:
             datetime.strptime(date_str, date_format)
             return True
@@ -88,33 +100,38 @@ class Validator:
             dict: A dictionary containing validation results (field: error message or None).
         """
         errors = {}
+        print("Starting validation...")  # Debug
 
         if "medicare_number" in data:
-            if not Validator.is_valid_medicare_number(data["medicare_number"]):
+            print(f"Validating Medicare Number: {data.get('medicare_number')}")  # Debug
+            if data["medicare_number"] is None or not Validator.is_valid_medicare_number(data["medicare_number"][0]):
                 errors["medicare_number"] = "Invalid Medicare Number format."
 
         if "home_phone_number" in data:
-            if not Validator.is_valid_phone_number(data["home_phone_number"]):
+            print(f"Validating Home Phone Number: {data.get('home_phone_number')}")  # Debug
+            if data["home_phone_number"] is None or not Validator.is_valid_phone_number(data["home_phone_number"][0]):
                 errors["home_phone_number"] = "Invalid Home Phone Number format."
 
         if "mobile_phone_number" in data:
-            if not Validator.is_valid_phone_number(data["mobile_phone_number"]):
+            print(f"Validating Mobile Phone Number: {data.get('mobile_phone_number')}")  # Debug
+            if data["mobile_phone_number"] is None or not Validator.is_valid_phone_number(data["mobile_phone_number"][0]):
                 errors["mobile_phone_number"] = "Invalid Mobile Phone Number format."
 
-        if "request_number" in data:
-            if not Validator.is_valid_request_number(data["request_number"]):
-                errors["request_number"] = "Invalid Request Number format."
-
         if "provider_number" in data:
-            if not Validator.is_valid_provider_number(data["provider_number"]):
+            print(f"Validating Provider Number: {data.get('provider_number')}")  # Debug
+            if data["provider_number"] is None or not Validator.is_valid_provider_number(data["provider_number"][0]):
                 errors["provider_number"] = "Invalid Provider Number format."
 
         if "date_of_birth" in data:
-            if not Validator.is_valid_date(data["date_of_birth"]):
+            print(f"Validating Date of Birth: {data.get('date_of_birth')}")  # Debug
+            if data["date_of_birth"] is None or not Validator.is_valid_date(data["date_of_birth"][0]):
                 errors["date_of_birth"] = "Invalid Date of Birth format."
 
         if "request_date" in data:
-            if not Validator.is_valid_date(data["request_date"]):
+            print(f"Validating Request Date: {data.get('request_date')}")  # Debug
+            if data["request_date"] is None or not Validator.is_valid_date(data["request_date"][0]):
                 errors["request_date"] = "Invalid Request Date format."
 
+        print(f"Validation errors: {errors}")  # Debug
         return errors
+

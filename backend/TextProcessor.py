@@ -6,6 +6,7 @@ from typing import Any, Tuple
 
 class TextProcessor:
     def __init__(self):
+        self.ocr_result = None
         # Verify Tesseract is working
         try:
             pytesseract.get_tesseract_version()
@@ -30,10 +31,12 @@ class TextProcessor:
         custom_config = f"--psm {psm} -l {lang} --oem 3"
 
         # Perform OCR
-        ocr_result = pytesseract.image_to_data(image, config=custom_config, output_type=pytesseract.Output.DICT)
-        text = " ".join(ocr_result["text"]).strip()
-        confidences = [int(c) for c, t in zip(ocr_result["conf"], ocr_result["text"]) if t.strip() and int(c) >= 0]
+        self.ocr_result = pytesseract.image_to_data(image, config=custom_config, output_type=pytesseract.Output.DICT)
+        text = " ".join(self.ocr_result["text"]).strip()
+        confidences = [int(c) for c, t in zip(self.ocr_result["conf"], self.ocr_result["text"]) if t.strip() and int(c) >= 0]
         confidence = sum(confidences) / len(confidences) if confidences else 0.0
 
         return text, confidence
             
+    def get_ocr_result(self):
+        return self.ocr_result
