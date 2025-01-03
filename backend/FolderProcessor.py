@@ -1,6 +1,6 @@
 # folderprocessor.py
 
-from database import DatabaseManager, PatientRecord
+from database import DatabaseManager
 from RequestFormProcessor import RequestFormProcessor
 from config import config_manager
 import os

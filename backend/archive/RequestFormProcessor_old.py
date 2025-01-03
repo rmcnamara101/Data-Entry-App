@@ -813,7 +813,7 @@ class RequestFormProcessor:
 
         # Save the data to the database
         try:
-            self.db_manager.add_patient_record(
+            self.db_manager.add_record(
                 patient_info=self.information,
                 file_path=file_path,
                 ocr_confidence=ocr_confidence,

@@ -56,7 +56,7 @@ class DatabaseManager:
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
     
-    def add_patient_record(self, patient_info, file_path, ocr_confidence=None, validation_errors=None):
+    def add_record(self, patient_info, file_path, ocr_confidence=None, validation_errors=None):
         """
         Adds a new patient record to the database.
 
