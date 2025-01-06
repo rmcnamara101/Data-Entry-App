@@ -1,4 +1,3 @@
-    Main script to test the RequestFormProcessor.
 import os
 import sys
 import pandas as pd
