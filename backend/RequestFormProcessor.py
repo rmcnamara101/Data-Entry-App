@@ -1,15 +1,15 @@
 from typing import Dict, Any
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 import logging
 import cv2
 from datetime import datetime
-from FormImagePreparer import FormImagePreparer
-from FieldExtractor import FieldExtractor
-from DataPostProcessor import DataPostProcessor
-from Validator import Validator
-from database import DatabaseManager
-from MedicareAnchorDetector import MedicareDetector
-from constants import OCR_CONFIGS
+from backend.FormImagePreparer import FormImagePreparer
+from backend.FieldExtractor import FieldExtractor
+from backend.DataPostProcessor import DataPostProcessor
+from backend.Validator import Validator
+from backend.database import DatabaseManager
+from backend.MedicareAnchorDetector import MedicareDetector
+from backend.constants import OCR_CONFIGS
 from pyzbar.pyzbar import decode
 
 import numpy as np
@@ -24,7 +24,7 @@ class FieldData:
 
 @dataclass
 class ProcessedForm:
-    image: np.ndarray
+    image_path: Optional[str] = None
     request_number: Optional[FieldData] = None
     request_date: Optional[FieldData] = None
     # collection_date removed as requested
@@ -55,7 +55,6 @@ class RequestFormProcessor:
         self.form_preparer = FormImagePreparer(image_path, debug_mode)
         self.data_post_processor = DataPostProcessor(debug_mode)
         self.validator = Validator()
-        self.db_manager = DatabaseManager()
         self.medicare_anchor_detector = MedicareDetector(debug_mode=self.debug_mode)
 
         # Each field stored as (value, confidence, bounding_box) after cleaning
@@ -65,7 +64,7 @@ class RequestFormProcessor:
             # "collection_date": None,  # Removed as requested
             "received_date": None,
             "surname": None,
-            "given_name": None,
+            "given_names": None,
             "sex": None,  # Added sex field
             "address": None,
             "suburb": None,
@@ -143,7 +142,7 @@ class RequestFormProcessor:
 
             # Convert self.information into a ProcessedForm
             print("Creating processed form object...")
-            processed_form = self._create_processed_form(form_image)
+            processed_form = self._create_processed_form()
             print("Processed form object created.")
 
             return {
@@ -255,7 +254,7 @@ class RequestFormProcessor:
         """
         Converts a field from self.information to FieldData.
         """
-        data = self.information.get(field_name)
+        data = self.information[field_name]
         if not data or len(data) < 3:
             return None
         value, confidence, bbox = data
@@ -263,17 +262,17 @@ class RequestFormProcessor:
             return None
         return FieldData(value=value, confidence=confidence, bounding_box=bbox)
 
-    def _create_processed_form(self, image: np.ndarray) -> ProcessedForm:
+    def _create_processed_form(self) -> ProcessedForm:
         """
         Create a ProcessedForm dataclass instance from self.information.
         """
         return ProcessedForm(
-            image=image,
+            image_path=self.image_path,
             request_number=self._field_to_fielddata("request_number"),
             request_date=self._field_to_fielddata("request_date"),
             received_date=self._field_to_fielddata("received_date"),
             surname=self._field_to_fielddata("surname"),
-            given_name=self._field_to_fielddata("given_name"),
+            given_name=self._field_to_fielddata("given_names"),
             address=self._field_to_fielddata("address"),
             suburb=self._field_to_fielddata("suburb"),
             postcode=self._field_to_fielddata("postcode"),
@@ -316,3 +315,14 @@ class RequestFormProcessor:
         """
         for key, value in self.information.items():
             print(f"{key}: {value}")
+
+    def get_ocr(self) -> float:
+        ocr = 0
+        
+        for i, field in enumerate(self.information):
+            if self.information[field] is not None:
+                ocr += self.information[field][1]
+                i += 1
+
+        ocr /= i + 1
+        return ocr

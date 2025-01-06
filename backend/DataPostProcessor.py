@@ -1,7 +1,7 @@
 from typing import Dict, Any, Optional
 from datetime import datetime
 import re
-from constants import ALLOWED_CHARACTERS, COMMON_MISREADS, POSTCODE_TO_STATE, STREET_TYPES
+from backend.constants import ALLOWED_CHARACTERS, COMMON_MISREADS, POSTCODE_TO_STATE, STREET_TYPES
 
 class DataPostProcessor:
     def __init__(self, debug_mode: bool = False) -> None:

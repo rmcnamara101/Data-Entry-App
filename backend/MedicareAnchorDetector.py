@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 import cv2
 import re
 import numpy as np
-from TextProcessor import TextProcessor
+from backend.TextProcessor import TextProcessor
 
 @dataclass
 class MedicareAnchor:

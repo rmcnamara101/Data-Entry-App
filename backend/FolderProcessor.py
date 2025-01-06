@@ -1,20 +1,21 @@
 # folderprocessor.py
 
-from database import DatabaseManager
-from RequestFormProcessor import RequestFormProcessor
-from config import config_manager
+from backend.database import DatabaseManager
+from backend.RequestFormProcessor import RequestFormProcessor
+from backend.config import config_manager
 import os
 import logging
 from datetime import datetime
 
-def process_folder(folder_path):
+def process_folder(folder_path, progress_callback=None):
     """
     Processes image files in the specified folder, extracts patient data using OCR,
-    and adds records to the database.
-    
+    and adds records to the database, while updating progress via a callback.
+
     Args:
         folder_path (str): Path to the folder containing image files.
-    
+        progress_callback (callable, optional): Function to update progress. Receives an integer (0-100).
+
     Returns:
         dict: Statistics about the processing (total_images, records_added).
     
@@ -24,6 +25,7 @@ def process_folder(folder_path):
     db = DatabaseManager(db_url=config_manager.get('DATABASE_URI', 'sqlite:///pathology_records.db'))
     records_added = 0
     total_files = 0
+    processed_files = 0
 
     try:
         logging.info(f"Starting folder processing: {folder_path}")
@@ -31,26 +33,47 @@ def process_folder(folder_path):
             logging.error(f"Folder does not exist: {folder_path}")
             raise FileNotFoundError(f"Folder does not exist: {folder_path}")
 
-        for file_name in os.listdir(folder_path):
-            if file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff')):
-                total_files += 1
-                file_path = os.path.join(folder_path, file_name)
+        # Get all valid image files in the folder
+        image_files = [
+            file_name for file_name in os.listdir(folder_path)
+            if file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff'))
+        ]
+        total_files = len(image_files)
 
-                logging.info(f"Processing file: {file_name}")
+        if total_files == 0:
+            logging.warning(f"No image files found in folder: {folder_path}")
+            return {'folder_path': folder_path, 'total_images': 0, 'records_added': 0}
 
-                try:
-                    processor = RequestFormProcessor(file_path)
-                    processed_data = processor.process_form()
+        # Process each file
+        for idx, file_name in enumerate(image_files):
+            file_path = os.path.join(folder_path, file_name)
+            logging.info(f"Processing file: {file_name}")
 
-                    if processed_data['data']:
-                        records_added += 1
-                        logging.debug(f"Record added for file: {file_name}")
-                    else:
-                        logging.warning(f"No valid data found in file: {file_name}")
-                except Exception as e:
-                    logging.error(f"Error processing file {file_name}: {e}")
+            try:
+                processor = RequestFormProcessor(file_path)
+                processed_data = processor.process_form()
 
-        stats = {'folder_path': folder_path, 'total_images': total_files, 'records_added': records_added}
+                if processed_data['data']:
+                    db.add_record(processed_data['data'], processed_data['validation_errors'], processor.get_ocr())
+                    records_added += 1
+                    logging.debug(f"Record added for file: {file_name}")
+                else:
+                    logging.warning(f"No valid data found in file: {file_name}")
+            except Exception as e:
+                logging.error(f"Error processing file {file_name}: {e}")
+
+            processed_files += 1
+
+            # Update progress via callback if provided
+            if progress_callback:
+                progress = int((processed_files / total_files) * 100)
+                progress_callback.emit(progress)  # Use emit here
+
+        stats = {
+            'folder_path': folder_path,
+            'total_images': total_files,
+            'records_added': records_added
+        }
         logging.info(f"Folder processing complete. Total files: {total_files}, Records added: {records_added}")
         return stats
 

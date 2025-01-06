@@ -5,8 +5,9 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from config import config_manager  # Ensure config.py is correctly imported
+from backend.config import config_manager  # Ensure config.py is correctly imported
 from sqlalchemy.dialects.postgresql import JSON
+import numpy as np
 
 Base = declarative_base()
 
@@ -29,12 +30,11 @@ class PatientRecord(Base):
     provider_number = Column(String)
     date_of_birth = Column(DateTime)
     scan_date = Column(DateTime, default=datetime.utcnow)
-    file_path = Column(String)
     ocr_confidence = Column(Float)
     sex = Column(String)
     needs_manual_review = Column(Boolean, default=False)
     error_details = Column(JSON, nullable=True)
-    field_regions = Column(JSON, nullable=True)  # New column for field regions
+    image_path = Column(String)
 
 
 class DatabaseManager:
@@ -56,22 +56,46 @@ class DatabaseManager:
         Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
     
-    def add_record(self, patient_info, file_path, ocr_confidence=None, validation_errors=None):
+    def add_record(self, patient_info, validation_errors, ocr_confidence=None):
         """
-        Adds a new patient record to the database.
+        Adds a new patient record to the database, ensuring data integrity and logging.
 
         Args:
-            patient_info (dict): Dictionary containing patient information.
-            file_path (str): Path to the processed file.
-            ocr_confidence (float, optional): OCR confidence score. Defaults to None.
+            patient_info (ProcessedForm): Custom data structure containing patient information.
             validation_errors (dict, optional): Validation errors, if any.
+            ocr_confidence (float, optional): OCR confidence score.
+
+        Raises:
+            Exception: Rethrows any exception for higher-level handling.
         """
+        def get_field_value(field, field_type=None):
+            """
+            Safely extract the value from a field, handling None and specific types.
+
+            Args:
+                field: The field to extract.
+                field_type: Expected type (e.g., 'datetime') for special handling.
+
+            Returns:
+                Extracted value or None.
+            """
+            value = field.value if field and hasattr(field, 'value') else None
+
+            if field_type == 'datetime' and isinstance(value, str):
+                try:
+                    return datetime.strptime(value, '%d/%m/%Y')  # Adjust format if needed
+                except ValueError:
+                    logging.warning(f"Invalid datetime format: {value}")
+                    return None
+
+            return value
+
         session = self.Session()
         try:
-            logging.debug(f"Adding patient record with info: {patient_info}")
+            logging.debug(f"Patient info: {patient_info}")
 
-            # Parse date_of_birth if it's a string
-            date_of_birth = patient_info.get('date_of_birth')
+            # Parse date_of_birth safely
+            date_of_birth = get_field_value(patient_info.date_of_birth)
             if isinstance(date_of_birth, str):
                 try:
                     date_of_birth = datetime.strptime(date_of_birth, '%d/%m/%Y')
@@ -79,46 +103,57 @@ class DatabaseManager:
                     logging.warning(f"Invalid date_of_birth format: {date_of_birth}")
                     date_of_birth = None
 
-            # Determine if the record needs manual review
-            needs_manual_review = bool(validation_errors)
+            # Check for duplicates based on request_number
+            request_number = get_field_value(patient_info.request_number)
+            if not request_number:
+                logging.warning("Request number is missing; skipping record.")
+                return  # Skip insertion if request_number is not available
+
+            existing_record = session.query(PatientRecord).filter(
+                PatientRecord.request_number == request_number
+            ).first()
+
+            if existing_record:
+                logging.warning(f"Duplicate record detected for request_number: {request_number}")
+                return  # Skip duplicate insertion
 
             # Create a new PatientRecord instance
             new_record = PatientRecord(
-                request_date=patient_info.get('request_date'),
-                request_number=patient_info.get('request_number'),
-                given_names=patient_info.get('given_names'),
-                surname=patient_info.get('surname'),
-                address=patient_info.get('address'),
-                suburb=patient_info.get('suburb'),
-                state=patient_info.get('state'),
-                postcode=patient_info.get('postcode'),
-                home_phone=patient_info.get('home_phone_number'),
-                mobile_phone=patient_info.get('mobile_phone_number'),
-                medicare_number=patient_info.get('medicare_number'),
-                medicare_position=patient_info.get('medicare_position'),
-                provider_number=patient_info.get('provider_number'),
-                date_of_birth=date_of_birth,
+                request_date=get_field_value(patient_info.request_date, field_type='datetime'),
+                request_number=get_field_value(patient_info.request_number),
+                given_names=get_field_value(patient_info.given_name),
+                surname=get_field_value(patient_info.surname),
+                address=get_field_value(patient_info.address),
+                suburb=get_field_value(patient_info.suburb),
+                state=get_field_value(patient_info.state),
+                postcode=get_field_value(patient_info.postcode),
+                home_phone=get_field_value(patient_info.home_phone_number),
+                mobile_phone=get_field_value(patient_info.mobile_phone_number),
+                medicare_number=get_field_value(patient_info.medicare_number),
+                medicare_position=get_field_value(patient_info.medicare_position),
+                provider_number=get_field_value(patient_info.provider_number),
+                date_of_birth=get_field_value(patient_info.date_of_birth, field_type='datetime'),
                 scan_date=datetime.utcnow(),
-                file_path=file_path,
                 ocr_confidence=ocr_confidence,
-                sex=patient_info.get('sex'),
-                needs_manual_review=needs_manual_review,
-                error_details=validation_errors,  # Store validation errors
-                field_regions=patient_info.get('field_regions')  # Store field regions
+                sex=get_field_value(patient_info.sex),
+                needs_manual_review=bool(validation_errors),
+                error_details=validation_errors,
+                image_path=get_field_value(patient_info.image_path)
             )
 
-            # Add the record to the session and commit it
+
             session.add(new_record)
             session.commit()
-            logging.debug(f"Added patient record: {new_record}")
+            logging.info(f"Successfully added patient record: {new_record.id}")
 
         except Exception as e:
-            # Rollback the transaction in case of error
             session.rollback()
             logging.error(f"Error adding patient record: {e}")
             raise
         finally:
             session.close()
+
+
 
 
     def get_folder_stats(self, folder_path):
@@ -189,7 +224,6 @@ class DatabaseManager:
                     'request_number': record.request_number,
                     'given_names': record.given_names,
                     'surname': record.surname,
-                    'name': record.name,
                     'validation_errors': record.error_details,
                     # Add other fields as needed
                 }

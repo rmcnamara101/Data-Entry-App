@@ -8,16 +8,22 @@ from PyQt5.QtGui import QPalette, QColor, QFont, QIcon
 import sys
 import os
 
+
 class PathologyLabApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Pathology Lab Data Entry System")
         self.setMinimumSize(1200, 800)
+
+        # Pick one of the style options here:
+        #   option1: Modern Blue
+        #   option2: Soft Pastel
+        #   option3: Dark Theme
+        self.apply_style("option1")
+
         self.init_ui()
 
     def init_ui(self):
-        self.set_high_contrast_palette()
-
         # Main Layout
         main_layout = QHBoxLayout()
         central_widget = QWidget()
@@ -56,37 +62,94 @@ class PathologyLabApp(QMainWindow):
         # By default, show the Home page
         self.stacked_widget.setCurrentIndex(0)
 
-    def set_high_contrast_palette(self):
+    # ------------------- STYLE OPTIONS ------------------- #
+    def apply_style(self, option="option1"):
         """
-        Apply a high-contrast, laboratory-friendly color palette.
+        Switch between different design options.
+        option1: Modern Blue
+        option2: Soft Pastel
+        option3: Dark Theme
+        """
+        if option == "option1":
+            self.set_modern_blue_palette()
+        elif option == "option2":
+            self.set_soft_pastel_palette()
+        elif option == "option3":
+            self.set_dark_theme_palette()
+        else:
+            self.set_modern_blue_palette()  # fallback
+
+    def set_modern_blue_palette(self):
+        """
+        A crisp, modern palette with bright backgrounds and navy highlights.
         """
         palette = QPalette()
 
         # --- Background / Window ---
-        # A near-white background for high contrast with text
-        palette.setColor(QPalette.Window, QColor("#F8FAFC"))
-
+        palette.setColor(QPalette.Window, QColor("#F0F4F8"))
         # --- Text ---
-        # Use a very dark gray or black for maximum legibility
-        palette.setColor(QPalette.WindowText, QColor("#1C1C1C"))
-        
-        # Base (e.g. text edit background)
+        palette.setColor(QPalette.WindowText, QColor("#0A0A0A"))
+        # --- Base (for text edits, etc.) ---
         palette.setColor(QPalette.Base, QColor("#FFFFFF"))
-        palette.setColor(QPalette.AlternateBase, QColor("#EBEBEB"))
-
+        palette.setColor(QPalette.AlternateBase, QColor("#E8ECF1"))
         # --- Buttons ---
-        # We'll keep a lighter background, but styling in stylesheets
-        # will ensure strong contrast for text.
         palette.setColor(QPalette.Button, QColor("#FFFFFF"))
-        palette.setColor(QPalette.ButtonText, QColor("#1C1C1C"))
-
+        palette.setColor(QPalette.ButtonText, QColor("#0A0A0A"))
         # --- Highlights ---
-        # Bold navy highlight for selection
-        palette.setColor(QPalette.Highlight, QColor("#0B2C4B"))
+        palette.setColor(QPalette.Highlight, QColor("#1D4F8C"))
         palette.setColor(QPalette.HighlightedText, QColor("#FFFFFF"))
 
         self.setPalette(palette)
+        # Optional: set a global Fusion style
+        QApplication.setStyle("Fusion")
 
+    def set_soft_pastel_palette(self):
+        """
+        A softer pastel palette with gentle highlights and minimal contrast.
+        """
+        palette = QPalette()
+
+        # --- Background / Window ---
+        palette.setColor(QPalette.Window, QColor("#FFFDFC"))  # Off-white
+        # --- Text ---
+        palette.setColor(QPalette.WindowText, QColor("#403C3C"))
+        # --- Base ---
+        palette.setColor(QPalette.Base, QColor("#FFFFFF"))
+        palette.setColor(QPalette.AlternateBase, QColor("#FAF3F3"))
+        # --- Buttons ---
+        palette.setColor(QPalette.Button, QColor("#FEEAE6"))
+        palette.setColor(QPalette.ButtonText, QColor("#5C5757"))
+        # --- Highlights ---
+        palette.setColor(QPalette.Highlight, QColor("#F9B7AA"))
+        palette.setColor(QPalette.HighlightedText, QColor("#3F3F3F"))
+
+        self.setPalette(palette)
+        QApplication.setStyle("Fusion")
+
+    def set_dark_theme_palette(self):
+        """
+        A dark theme palette for low-light environments or to reduce eye strain.
+        """
+        palette = QPalette()
+
+        # --- Background / Window ---
+        palette.setColor(QPalette.Window, QColor("#2C2C2C"))
+        # --- Text ---
+        palette.setColor(QPalette.WindowText, QColor("#E5E5E5"))
+        # --- Base ---
+        palette.setColor(QPalette.Base, QColor("#3C3C3C"))
+        palette.setColor(QPalette.AlternateBase, QColor("#474747"))
+        # --- Buttons ---
+        palette.setColor(QPalette.Button, QColor("#3C3C3C"))
+        palette.setColor(QPalette.ButtonText, QColor("#E5E5E5"))
+        # --- Highlights ---
+        palette.setColor(QPalette.Highlight, QColor("#5596E6"))
+        palette.setColor(QPalette.HighlightedText, QColor("#FFFFFF"))
+
+        self.setPalette(palette)
+        QApplication.setStyle("Fusion")
+
+    # ------------------- SIDEBAR ------------------- #
     def create_sidebar(self):
         """
         Create a vertical navigation sidebar with an added 'Home' button.
@@ -118,24 +181,23 @@ class PathologyLabApp(QMainWindow):
         for label, icon, handler in buttons:
             button = QPushButton(f"  {label}")
             button.setFont(btn_font)
-            # If icon is unavailable on the system, you may use a local icon path
             button.setIcon(QIcon.fromTheme(icon))
             button.setIconSize(QSize(20, 20))
 
+            # Notice: styleSheet uses placeholders for color so it adapts to the palette
             button.setStyleSheet("""
                 QPushButton {
                     text-align: left;
-                    background-color: #FFFFFF; 
-                    color: #1C1C1C;
                     padding: 8px 20px;
-                    border: 1px solid #0B2C4B;
+                    border: 1px solid palette(Highlight);
                     border-radius: 4px;
                 }
                 QPushButton:hover {
-                    background-color: #DDE7F0; /* Lightened background for hover */
+                    background-color: palette(AlternateBase);
                 }
                 QPushButton:pressed {
-                    background-color: #BACFE0; /* Slightly darker on press */
+                    background-color: palette(Highlight);
+                    color: palette(HighlightedText);
                 }
             """)
             button.clicked.connect(handler)
@@ -145,6 +207,7 @@ class PathologyLabApp(QMainWindow):
 
         return sidebar
 
+    # ------------------- PAGES ------------------- #
     def create_home_page(self):
         """
         Creates a home page with a welcome message, possible branding, and
@@ -158,7 +221,6 @@ class PathologyLabApp(QMainWindow):
         welcome_label = QLabel("Welcome to the Pathology Lab System")
         welcome_label.setFont(QFont("Arial", 20, QFont.Bold))
         welcome_label.setAlignment(Qt.AlignCenter)
-        welcome_label.setStyleSheet("color: #1C1C1C;")
 
         sub_label = QLabel(
             "Here you can scan documents, view the database, validate data, "
@@ -168,7 +230,6 @@ class PathologyLabApp(QMainWindow):
         sub_label.setFont(QFont("Arial", 14))
         sub_label.setAlignment(Qt.AlignCenter)
         sub_label.setWordWrap(True)
-        sub_label.setStyleSheet("color: #1C1C1C;")
 
         layout.addStretch()
         layout.addWidget(welcome_label)
@@ -190,22 +251,21 @@ class PathologyLabApp(QMainWindow):
         folder_layout = QHBoxLayout()
         self.folder_label = QLabel("No folder selected")
         self.folder_label.setFont(QFont("Arial", 11))
-        self.folder_label.setStyleSheet("color: #1C1C1C;")
-        
+
         folder_button = QPushButton("Select Folder")
         folder_button.setFont(QFont("Arial", 11))
         folder_button.setStyleSheet("""
             QPushButton {
-                background-color: #0B2C4B; 
-                color: white; 
+                background-color: palette(Highlight); 
+                color: palette(HighlightedText); 
                 padding: 6px 15px;
                 border-radius: 4px;
             }
             QPushButton:hover {
-                background-color: #1B3C5D;
+                background-color: palette(Highlight).lighter(110);
             }
             QPushButton:pressed {
-                background-color: #0A2540;
+                background-color: palette(Highlight).darker(110);
             }
         """)
         folder_button.clicked.connect(self.select_folder)
@@ -222,14 +282,14 @@ class PathologyLabApp(QMainWindow):
         self.file_table.setAlternatingRowColors(True)
         self.file_table.setStyleSheet("""
             QTableWidget {
-                gridline-color: #1B3C5D;
+                gridline-color: palette(Shadow);
             }
             QTableWidget::item {
-                color: #1C1C1C;
+                padding: 4px;
             }
             QHeaderView::section {
-                background-color: #0B2C4B;
-                color: white;
+                background-color: palette(Highlight);
+                color: palette(HighlightedText);
             }
         """)
 
@@ -257,14 +317,14 @@ class PathologyLabApp(QMainWindow):
         self.db_table.setAlternatingRowColors(True)
         self.db_table.setStyleSheet("""
             QTableWidget {
-                gridline-color: #1B3C5D;
+                gridline-color: palette(Shadow);
             }
             QTableWidget::item {
-                color: #1C1C1C;
+                padding: 4px;
             }
             QHeaderView::section {
-                background-color: #0B2C4B;
-                color: white;
+                background-color: palette(Highlight);
+                color: palette(HighlightedText);
             }
         """)
 
@@ -273,16 +333,16 @@ class PathologyLabApp(QMainWindow):
         refresh_button.setFont(QFont("Arial", 11))
         refresh_button.setStyleSheet("""
             QPushButton {
-                background-color: #0B2C4B; 
-                color: white; 
+                background-color: palette(Highlight); 
+                color: palette(HighlightedText); 
                 padding: 6px 15px;
                 border-radius: 4px;
             }
             QPushButton:hover {
-                background-color: #1B3C5D;
+                background-color: palette(Highlight).lighter(110);
             }
             QPushButton:pressed {
-                background-color: #0A2540;
+                background-color: palette(Highlight).darker(110);
             }
         """)
         refresh_button.clicked.connect(self.refresh_database)
@@ -303,7 +363,6 @@ class PathologyLabApp(QMainWindow):
         # Validation Text
         self.validation_text = QTextEdit()
         self.validation_text.setReadOnly(True)
-        self.validation_text.setStyleSheet("color: #1C1C1C;")
 
         # Flagged Entries Table
         self.flagged_table = QTableWidget()
@@ -315,14 +374,14 @@ class PathologyLabApp(QMainWindow):
         self.flagged_table.setAlternatingRowColors(True)
         self.flagged_table.setStyleSheet("""
             QTableWidget {
-                gridline-color: #1B3C5D;
+                gridline-color: palette(Shadow);
             }
             QTableWidget::item {
-                color: #1C1C1C;
+                padding: 4px;
             }
             QHeaderView::section {
-                background-color: #0B2C4B;
-                color: white;
+                background-color: palette(Highlight);
+                color: palette(HighlightedText);
             }
         """)
 
@@ -346,18 +405,15 @@ class PathologyLabApp(QMainWindow):
             QProgressBar {
                 text-align: center;
                 height: 24px;
-                color: #1C1C1C;
-                background-color: #FFFFFF;
             }
             QProgressBar::chunk {
-                background-color: #0B2C4B;
+                background-color: palette(Highlight);
             }
         """)
 
         # Execution Status
         self.execution_status = QTextEdit()
         self.execution_status.setReadOnly(True)
-        self.execution_status.setStyleSheet("color: #1C1C1C;")
 
         # Execution Controls
         controls_layout = QHBoxLayout()
@@ -366,16 +422,16 @@ class PathologyLabApp(QMainWindow):
         start_button.setFont(QFont("Arial", 11))
         start_button.setStyleSheet("""
             QPushButton {
-                background-color: #0B2C4B; 
-                color: white; 
+                background-color: palette(Highlight); 
+                color: palette(HighlightedText); 
                 padding: 6px 15px;
                 border-radius: 4px;
             }
             QPushButton:hover {
-                background-color: #1B3C5D;
+                background-color: palette(Highlight).lighter(110);
             }
             QPushButton:pressed {
-                background-color: #0A2540;
+                background-color: palette(Highlight).darker(110);
             }
         """)
         start_button.clicked.connect(self.start_data_entry)
@@ -384,16 +440,16 @@ class PathologyLabApp(QMainWindow):
         stop_button.setFont(QFont("Arial", 11))
         stop_button.setStyleSheet("""
             QPushButton {
-                background-color: #0B2C4B; 
-                color: white; 
+                background-color: palette(Highlight); 
+                color: palette(HighlightedText); 
                 padding: 6px 15px;
                 border-radius: 4px;
             }
             QPushButton:hover {
-                background-color: #1B3C5D;
+                background-color: palette(Highlight).lighter(110);
             }
             QPushButton:pressed {
-                background-color: #0A2540;
+                background-color: palette(Highlight).darker(110);
             }
         """)
         stop_button.clicked.connect(self.stop_data_entry)
@@ -433,13 +489,27 @@ class PathologyLabApp(QMainWindow):
         """
         QMessageBox.information(self, "Stop Data Entry", "Stopping data entry process...")
 
+
 # ------------------- MAIN ENTRY POINT ------------------- #
 def main():
     app = QApplication(sys.argv)
-    app.setStyle("Fusion")
+
+    # Create the main window
     window = PathologyLabApp()
+    # Possibly remove other set_*_palette() calls in PathologyLabApp.__init__
+    # so that only apply_style controls the final palette.
+
+    # Force the Fusion style if you want a consistent cross-platform baseline
+    QApplication.setStyle("Fusion")
+
+    # Now pick your style
+    window.apply_style("option2")  # or "option1" / "option3"
+
+    # Show window
     window.show()
     sys.exit(app.exec_())
+
+
 
 if __name__ == "__main__":
     main()

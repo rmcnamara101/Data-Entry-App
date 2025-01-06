@@ -1,9 +1,9 @@
 # FieldExtractor.py
 from typing import Dict, List, Tuple, Optional, Any
 import numpy as np
-from TextProcessor import TextProcessor
-from utils import MEDICARE_RELATIVE_OFFSETS, FIELD_REGIONS
-from constants import OCR_CONFIGS
+from backend.TextProcessor import TextProcessor
+from backend.utils import MEDICARE_RELATIVE_OFFSETS, FIELD_REGIONS
+from backend.constants import OCR_CONFIGS
 import cv2
 
 class FieldExtractor:
@@ -35,9 +35,6 @@ class FieldExtractor:
             x2 = x1 + field_width
             y2 = y1 + field_height
             cropped_region = self.form_image[y1:y2, x1:x2]
-
-            if field_name == 'surname':
-                cv2.imwrite('test_scan_folder/surname.jpg', cropped_region)
 
             lang ='eng'
             psm = OCR_CONFIGS.get(field_name, 3)

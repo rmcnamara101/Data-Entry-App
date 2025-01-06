@@ -18,6 +18,7 @@ FIELD_REGIONS = {
     "address": FieldRegion("Address", (39, 145, 212, 213), None, 'text'),
     "doctor_information": FieldRegion("Doctor Information", (466, 538, 864, 684), None, 'text'),
     "sex": FieldRegion('sex', (617, 80, 828, 128), r'^[MFU]$', 'text'),
+    "request_date": FieldRegion('request_date', (666, 450,949, 629))
 }
 
 MEDICARE_RELATIVE_OFFSETS = {
