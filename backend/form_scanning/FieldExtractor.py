@@ -1,7 +1,7 @@
 # FieldExtractor.py
 from typing import Dict, List, Tuple, Optional, Any
 import numpy as np
-from backend.TextProcessor import TextProcessor
+from backend.form_scanning.TextProcessor import TextProcessor
 from backend.utils import MEDICARE_RELATIVE_OFFSETS, FIELD_REGIONS
 from backend.constants import OCR_CONFIGS
 import cv2

@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt
 import os
 
 # Import DatabaseManager from your backend
-from backend.database import DatabaseManager, PatientRecord
+from backend.database.database import DatabaseManager, PatientRecord
 
 
 class EditDialog(QDialog):

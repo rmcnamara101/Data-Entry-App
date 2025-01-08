@@ -6,7 +6,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
 # Import your backend function
-from backend.FolderProcessor import process_folder
+from backend.form_scanning.FolderProcessor import process_folder
 import os
 
 class FolderProcessorThread(QThread):

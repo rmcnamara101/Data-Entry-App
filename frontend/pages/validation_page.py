@@ -10,7 +10,7 @@ from datetime import datetime
 import cv2
 
 # Import DatabaseManager and FIELD_REGIONS from your backend
-from backend.database import DatabaseManager, PatientRecord
+from backend.database.database import DatabaseManager, PatientRecord
 from backend.utils import FIELD_REGIONS
 
 

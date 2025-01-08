@@ -1,0 +1,46 @@
+[
+        {"action": "click", "position": [100, 200]},  
+        {"action": "paste", "field": "request_number"},
+
+        {"action": "click", "position": [150, 250]},  
+        {"action": "paste", "field": "received_date"},
+
+        {"action": "key_press", "key": "tab"},
+        {"action": "key_press", "key": "tab"},
+        {"action": "key_press", "key": "tab"},
+
+        {"action": "click", "position": [200, 300]},  
+
+        {"action": "click", "position": [250, 350]},  
+        {"action": "paste", "field": "surname"},
+
+        {"action": "click", "position": [300, 400]},  
+        {"action": "paste", "field": "given_name"},
+
+        {"action": "click", "position": [350, 450]},  
+        {"action": "paste", "field": "address"},
+
+        {"action": "click", "position": [400, 500]}, 
+        {"action": "paste", "field": "postcode"},
+
+        {"action": "click", "position": [450, 550]}, 
+        {"action": "paste", "field": "state"},
+
+        {"action": "click", "position": [500, 600]},  
+        {"action": "paste", "field": "mobile_phone_number"},
+
+        {"action": "click", "position": [550, 650]},  
+        {"action": "paste", "field": "home_phone_number"},
+
+        {"action": "key_press", "key": "tab"}, 
+
+        {"action": "click", "position": [600, 700]},  
+        {"action": "paste", "field": "medicare_number"},
+
+        {"action": "click", "position": [650, 750]}, 
+        {"action": "paste", "field": "medicare_position"},
+
+        {"action": "click", "position": [700, 800]},  
+
+        {"action": "click", "position": [750, 850]}
+]

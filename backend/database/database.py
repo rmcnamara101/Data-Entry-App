@@ -5,7 +5,6 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from backend.config import config_manager  # Ensure config.py is correctly imported
 from sqlalchemy.dialects.postgresql import JSON
 import numpy as np
 
@@ -46,8 +45,8 @@ class DatabaseManager:
         Args:
             db_url (str, optional): The database connection URI. Defaults to None.
         """
-        if db_url is None:
-            db_url = config_manager.get('DATABASE_URI', 'sqlite:///pathology_records.db')
+        if not db_url:
+            db_url = 'sqlite:///pathology_records.db'
         
         # Log the database URI being used
         logging.info(f"Using database at: {db_url}")

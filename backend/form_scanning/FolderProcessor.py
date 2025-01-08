@@ -1,8 +1,7 @@
 # folderprocessor.py
 
-from backend.database import DatabaseManager
-from backend.RequestFormProcessor import RequestFormProcessor
-from backend.config import config_manager
+from backend.database.database import DatabaseManager
+from backend.form_scanning.RequestFormProcessor import RequestFormProcessor
 import os
 import logging
 from datetime import datetime
@@ -22,7 +21,7 @@ def process_folder(folder_path, progress_callback=None):
     Raises:
         RuntimeError: If folder processing fails.
     """
-    db = DatabaseManager(db_url=config_manager.get('DATABASE_URI', 'sqlite:///pathology_records.db'))
+    db = DatabaseManager()
     records_added = 0
     total_files = 0
     processed_files = 0

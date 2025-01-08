@@ -10,10 +10,10 @@ import numpy as np
 from pyzbar import pyzbar
 
 from utils import FIELD_REGIONS, MEDICARE_RELATIVE_OFFSETS
-from TextProcessor import TextProcessor
-from MedicareAnchorDetector import MedicareDetector
-from FormImagePreparer import FormImagePreparer
-from database import DatabaseManager
+from form_scanning.TextProcessor import TextProcessor
+from form_scanning.MedicareAnchorDetector import MedicareDetector
+from form_scanning.FormImagePreparer import FormImagePreparer
+from backend.database.database import DatabaseManager
 
 # Define allowed characters for each field
 ALLOWED_CHARACTERS = {

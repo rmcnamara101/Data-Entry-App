@@ -3,12 +3,12 @@ from dataclasses import dataclass, fields
 import logging
 import cv2
 from datetime import datetime
-from backend.FormImagePreparer import FormImagePreparer
-from backend.FieldExtractor import FieldExtractor
-from backend.DataPostProcessor import DataPostProcessor
-from backend.Validator import Validator
-from backend.database import DatabaseManager
-from backend.MedicareAnchorDetector import MedicareDetector
+from backend.form_scanning.FormImagePreparer import FormImagePreparer
+from backend.form_scanning.FieldExtractor import FieldExtractor
+from backend.form_scanning.DataPostProcessor import DataPostProcessor
+from backend.form_scanning.Validator import Validator
+from backend.database.database import DatabaseManager
+from backend.form_scanning.MedicareAnchorDetector import MedicareDetector
 from backend.constants import OCR_CONFIGS
 from pyzbar.pyzbar import decode
 
@@ -113,7 +113,7 @@ class RequestFormProcessor:
             now_str = datetime.now().strftime('%d/%m/%Y')
             self.information["received_date"] = (now_str, 100, None)  # Confidence 100, no bbox since generated
 
-            validation_errors = self.validator.validate_data(self.informatiofn)
+            validation_errors = self.validator.validate_data(self.information)
 
             cropped_path = f"/Users/rileymcnamara/CODE/2024/Data-Entry-App/db/cropped_image_{self.information["request_number"][0]}.jpg"
             cv2.imwrite(cropped_path, self.cropped_image)

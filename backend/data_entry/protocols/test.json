@@ -1,0 +1,32 @@
+{
+    "protocol": [
+        {
+            "action": "click",
+            "position": [600, 400]
+        },
+        {
+            "action": "paste",
+            "field": "request_number"
+        },
+        {
+            "action": "wait",
+            "duration": 1
+        },
+        {
+            "action": "paste",
+            "field": "surname"
+        },
+        {
+            "action": "wait",
+            "duration": 1
+        },
+        {
+            "action": "type",
+            "text": "Testing macros for {given_names} {surname}"
+        },
+        {
+            "action": "wait",
+            "duration": 2
+        }
+    ]
+}
