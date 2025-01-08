@@ -28,7 +28,7 @@ class DataPostProcessor:
         # Additional field-specific cleaning
         if field_name == "medicare_number":
             text = re.sub(r'\s+', '', text)
-        elif field_name in ["home_phone_number", "mobile_phone_number"]:
+        elif field_name in ["home_phone", "mobile_phone"]:
             text = re.sub(r'\D+', '', text)
         elif field_name == "address":
             text = re.sub(r'(?<!^)(?=[A-Z])', ' ', text)
@@ -141,7 +141,7 @@ class DataPostProcessor:
         Returns:
             Dict[str, Optional[str]]: Extracted home and mobile phone numbers.
         """
-        phone_numbers = {"home_phone_number": None, "mobile_phone_number": None}
+        phone_numbers = {"home_phone": None, "mobile_phone": None}
 
         if not phone_field:
             return phone_numbers
@@ -152,8 +152,8 @@ class DataPostProcessor:
         for number, label in phone_matches:
             number = re.sub(r'[^\d+]', '', number).strip()
             if label.upper() == 'H':
-                phone_numbers["home_phone_number"] = number
+                phone_numbers["home_phone"] = number
             elif label.upper() == 'M':
-                phone_numbers["mobile_phone_number"] = number
+                phone_numbers["mobile_phone"] = number
 
         return phone_numbers

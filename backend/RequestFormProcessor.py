@@ -15,6 +15,7 @@ from pyzbar.pyzbar import decode
 import numpy as np
 from typing import List, Optional, Tuple
 import re
+import os
 
 @dataclass
 class FieldData:
@@ -36,8 +37,8 @@ class ProcessedForm:
     postcode: Optional[FieldData] = None
     state: Optional[FieldData] = None
     date_of_birth: Optional[FieldData] = None
-    mobile_phone_number: Optional[FieldData] = None
-    home_phone_number: Optional[FieldData] = None
+    mobile_phone: Optional[FieldData] = None
+    home_phone: Optional[FieldData] = None
     medicare_number: Optional[FieldData] = None
     medicare_position: Optional[FieldData] = None
     provider_number: Optional[FieldData] = None
@@ -71,8 +72,8 @@ class RequestFormProcessor:
             "postcode": None,
             "state": None,
             "date_of_birth": None,
-            "mobile_phone_number": None,
-            "home_phone_number": None,
+            "mobile_phone": None,
+            "home_phone": None,
             "medicare_number": None,
             "medicare_position": None,
             "provider_number": None,
@@ -91,59 +92,35 @@ class RequestFormProcessor:
         as well as a ProcessedForm object.
         """
         try:
-            print("Starting form processing...")
             form_image = self.cropped_image
-            print("Form image loaded.")
 
-            # Step 1: get request number
-            print("Adding request number...")
             self._add_request_number(self.image_path)
-            print("Request number added.")
 
-            # Step 2: extract information from the form
-            print("Finding Medicare anchor...")
             medicare_anchor = self.medicare_anchor_detector.find_medicare_number(form_image)
 
             if medicare_anchor:
-                print(f"Medicare anchor found: {medicare_anchor}")
-                # Extract fields using the anchor
                 raw_data = self.field_extractor.extract_fields_using_anchor(medicare_anchor)
                 raw_data["medicare_number"] = (medicare_anchor.text, medicare_anchor.confidence, medicare_anchor.bounding_box)
-                print(f"Fields extracted using Medicare anchor: {raw_data}")
             else:
-                print("No Medicare anchor found. Extracting fields using manual regions.")
                 raw_data = self.field_extractor.extract_fields_using_manual_regions()
-                print(f"Fields extracted using manual regions: {raw_data}")
 
-            print("Raw data extraction complete.")
-
-            # Step 3: Clean and post-process extracted data
-            print("Cleaning and processing extracted data...")
             for field, (value, confidence, region) in raw_data.items():
-                print(f"Processing field: {field}")
                 cleaned_value = self.data_post_processor.clean_text(field, value)
                 self.information[field] = (cleaned_value, confidence, region)
-                print(f"Field {field} cleaned. Value: {cleaned_value}, Confidence: {confidence}, Region: {region}")
 
-            print("Derived fields post-processing...")
-            # Step 4: Perform additional post-processing (including provider number, phone, Medicare, etc.)
             self._post_process_derived_fields()
 
-            print("Overwriting received date with current processing time...")
-            # Overwrite received_date with current processing time (ignore OCR extracted value)
             now_str = datetime.now().strftime('%d/%m/%Y')
             self.information["received_date"] = (now_str, 100, None)  # Confidence 100, no bbox since generated
-            print(f"Received date set to {now_str}.")
 
-            # Step 5: Validate the cleaned data
-            print("Validating processed data...")
-            validation_errors = self.validator.validate_data(self.information)
-            print(f"Validation errors: {validation_errors}")
+            validation_errors = self.validator.validate_data(self.informatiofn)
 
-            # Convert self.information into a ProcessedForm
-            print("Creating processed form object...")
+            cropped_path = f"/Users/rileymcnamara/CODE/2024/Data-Entry-App/db/cropped_image_{self.information["request_number"][0]}.jpg"
+            cv2.imwrite(cropped_path, self.cropped_image)
+            #os.remove(self.image_path)
+            self.image_path = cropped_path
+
             processed_form = self._create_processed_form()
-            print("Processed form object created.")
 
             return {
                 "data": processed_form,
@@ -213,8 +190,8 @@ class RequestFormProcessor:
                 self.information["provider_number"] = (provider_extracted, prov_conf, prov_bbox)
 
         # --- Phone Numbers ---
-        home_data = self.information.get("home_phone_number")
-        mobile_data = self.information.get("mobile_phone_number")
+        home_data = self.information.get("home_phone")
+        mobile_data = self.information.get("mobile_phone")
         phone_data = self.information.get("phone_number")
 
         if (not home_data or not home_data[0]) and (not mobile_data or not mobile_data[0]) and phone_data and phone_data[0]:
@@ -226,12 +203,12 @@ class RequestFormProcessor:
             phone_str_no_spaces = re.sub(r'\s+', '', phone_str)  
             phone_numbers = self.data_post_processor.process_phone_numbers(phone_str_no_spaces)
 
-            if phone_numbers["home_phone_number"] or phone_numbers["mobile_phone_number"]:
+            if phone_numbers["home_phone"] or phone_numbers["mobile_phone"]:
                 # Labeled numbers found
-                if phone_numbers["home_phone_number"]:
-                    self.information["home_phone_number"] = (phone_numbers["home_phone_number"], ph_confidence, ph_bbox)
-                if phone_numbers["mobile_phone_number"]:
-                    self.information["mobile_phone_number"] = (phone_numbers["mobile_phone_number"], ph_confidence, ph_bbox)
+                if phone_numbers["home_phone"]:
+                    self.information["home_phone"] = (phone_numbers["home_phone"], ph_confidence, ph_bbox)
+                if phone_numbers["mobile_phone"]:
+                    self.information["mobile_phone"] = (phone_numbers["mobile_phone"], ph_confidence, ph_bbox)
             else:
                 # No labeled matches found, try unlabeled approach
                 single_numbers = re.findall(r'\d+', phone_str_no_spaces)
@@ -239,13 +216,13 @@ class RequestFormProcessor:
                     # Single unlabeled number
                     number = single_numbers[0]
                     if number.startswith("04"):
-                        self.information["mobile_phone_number"] = (number, ph_confidence, ph_bbox)
+                        self.information["mobile_phone"] = (number, ph_confidence, ph_bbox)
                     else:
-                        self.information["home_phone_number"] = (number, ph_confidence, ph_bbox)
+                        self.information["home_phone"] = (number, ph_confidence, ph_bbox)
                 elif len(single_numbers) == 2:
                     # Two unlabeled numbers
-                    self.information["mobile_phone_number"] = (single_numbers[0], ph_confidence, ph_bbox)
-                    self.information["home_phone_number"] = (single_numbers[1], ph_confidence, ph_bbox)
+                    self.information["mobile_phone"] = (single_numbers[0], ph_confidence, ph_bbox)
+                    self.information["home_phone"] = (single_numbers[1], ph_confidence, ph_bbox)
                 # If more than 2 or none, no further action.
 
         # The received_date is overwritten in process_form to current time, so no need to parse it here.
@@ -278,8 +255,8 @@ class RequestFormProcessor:
             postcode=self._field_to_fielddata("postcode"),
             state=self._field_to_fielddata("state"),
             date_of_birth=self._field_to_fielddata("date_of_birth"),
-            mobile_phone_number=self._field_to_fielddata("mobile_phone_number"),
-            home_phone_number=self._field_to_fielddata("home_phone_number"),
+            mobile_phone=self._field_to_fielddata("mobile_phone"),
+            home_phone=self._field_to_fielddata("home_phone"),
             medicare_number=self._field_to_fielddata("medicare_number"),
             medicare_position=self._field_to_fielddata("medicare_position"),
             provider_number=self._field_to_fielddata("provider_number"),

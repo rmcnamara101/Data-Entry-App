@@ -20,6 +20,21 @@ class Validator:
         if medicare_number is None:
             return False
         return bool(re.match(r'^\d{10}$', medicare_number))
+    
+    @staticmethod
+    def is_valid_medicare_position(medicare_position: str) -> bool:
+        """
+        Validates the Medicare position format.
+
+        Args:
+            medicare_position (str): The Medicare position to validate.
+
+        Returns:
+            bool: True if valid, False otherwise.
+        """
+        if medicare_position is None:
+            return False
+        return bool(re.match(r'^[1-9]$', medicare_position))
 
     @staticmethod
     def is_valid_phone_number(phone_number: str) -> bool:
@@ -34,8 +49,7 @@ class Validator:
         """
         if phone_number is None:
             return False
-        
-        print(phone_number)
+    
         return bool(re.match(r'^\d{10}$', phone_number))
 
     @staticmethod
@@ -100,38 +114,37 @@ class Validator:
             dict: A dictionary containing validation results (field: error message or None).
         """
         errors = {}
-        print("Starting validation...")  # Debug
 
+        # Validate OCR confidence for individual fields
+        for field, value in data.items():
+            if value is not None and len(value) > 1:  # Ensure value is a tuple with confidence
+                field_value, confidence, _ = value
+                if confidence < 70:
+                    errors[field] = f"OCR confidence for '{field}' is too low: {confidence}. Must be at least 70."
+
+        # Field-specific validation logic
         if "medicare_number" in data:
-            print(f"Validating Medicare Number: {data.get('medicare_number')}")  # Debug
             if data["medicare_number"] is None or not Validator.is_valid_medicare_number(data["medicare_number"][0]):
                 errors["medicare_number"] = "Invalid Medicare Number format."
 
-        if "home_phone_number" in data:
-            print(f"Validating Home Phone Number: {data.get('home_phone_number')}")  # Debug
-            if data["home_phone_number"] is None or not Validator.is_valid_phone_number(data["home_phone_number"][0]):
-                errors["home_phone_number"] = "Invalid Home Phone Number format."
-
-        if "mobile_phone_number" in data:
-            print(f"Validating Mobile Phone Number: {data.get('mobile_phone_number')}")  # Debug
-            if data["mobile_phone_number"] is None or not Validator.is_valid_phone_number(data["mobile_phone_number"][0]):
-                errors["mobile_phone_number"] = "Invalid Mobile Phone Number format."
+        if "mobile_phone" in data:
+            if data["mobile_phone"] is None or not Validator.is_valid_phone_number(data["mobile_phone"][0]):
+                errors["mobile_phone"] = "Invalid Mobile Phone Number format."
 
         if "provider_number" in data:
-            print(f"Validating Provider Number: {data.get('provider_number')}")  # Debug
             if data["provider_number"] is None or not Validator.is_valid_provider_number(data["provider_number"][0]):
                 errors["provider_number"] = "Invalid Provider Number format."
 
         if "date_of_birth" in data:
-            print(f"Validating Date of Birth: {data.get('date_of_birth')}")  # Debug
             if data["date_of_birth"] is None or not Validator.is_valid_date(data["date_of_birth"][0]):
                 errors["date_of_birth"] = "Invalid Date of Birth format."
 
         if "request_date" in data:
-            print(f"Validating Request Date: {data.get('request_date')}")  # Debug
             if data["request_date"] is None or not Validator.is_valid_date(data["request_date"][0]):
                 errors["request_date"] = "Invalid Request Date format."
 
-        print(f"Validation errors: {errors}")  # Debug
-        return errors
+        if "medicare_position" in data:
+            if data["medicare_position"] is None or not Validator.is_valid_medicare_position(data["medicare_position"][0]):
+                errors["medicare_position"] = "Invalid Medicare Position format."
 
+        return errors

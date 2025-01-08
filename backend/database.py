@@ -85,8 +85,9 @@ class DatabaseManager:
                 try:
                     return datetime.strptime(value, '%d/%m/%Y')  # Adjust format if needed
                 except ValueError:
-                    logging.warning(f"Invalid datetime format: {value}")
                     return None
+            if field_type == 'image_path':
+                return patient_info.image_path
 
             return value
 
@@ -127,8 +128,8 @@ class DatabaseManager:
                 suburb=get_field_value(patient_info.suburb),
                 state=get_field_value(patient_info.state),
                 postcode=get_field_value(patient_info.postcode),
-                home_phone=get_field_value(patient_info.home_phone_number),
-                mobile_phone=get_field_value(patient_info.mobile_phone_number),
+                home_phone=get_field_value(patient_info.home_phone),
+                mobile_phone=get_field_value(patient_info.mobile_phone),
                 medicare_number=get_field_value(patient_info.medicare_number),
                 medicare_position=get_field_value(patient_info.medicare_position),
                 provider_number=get_field_value(patient_info.provider_number),
@@ -138,7 +139,7 @@ class DatabaseManager:
                 sex=get_field_value(patient_info.sex),
                 needs_manual_review=bool(validation_errors),
                 error_details=validation_errors,
-                image_path=get_field_value(patient_info.image_path)
+                image_path=get_field_value(patient_info.image_path, "image_path")
             )
 
 
@@ -152,9 +153,6 @@ class DatabaseManager:
             raise
         finally:
             session.close()
-
-
-
 
     def get_folder_stats(self, folder_path):
         """
