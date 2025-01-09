@@ -16,6 +16,7 @@ import numpy as np
 from typing import List, Optional, Tuple
 import re
 import os
+import json
 
 @dataclass
 class FieldData:
@@ -45,10 +46,12 @@ class ProcessedForm:
     sex: Optional[FieldData] = None  # Added sex field as requested
 
 class RequestFormProcessor:
-    def __init__(self, image_path: str, debug_mode: bool = False) -> None:
+    def __init__(self, image_path: str, config_path: str, debug_mode: bool = False) -> None:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.logger.setLevel(logging.DEBUG if debug_mode else logging.INFO)
 
+        self.config = load_field_config(config_path)
+        print(self.config)
         self.image_path = image_path
         self.debug_mode = debug_mode
 
@@ -83,7 +86,7 @@ class RequestFormProcessor:
         }
 
         self.cropped_image = self.form_preparer.prepare_form()
-        self.field_extractor = FieldExtractor(self.cropped_image, debug_mode)
+        self.field_extractor = FieldExtractor(self.cropped_image, self.config, debug_mode)
 
     def process_form(self) -> Dict[str, Any]:
         """
@@ -94,15 +97,15 @@ class RequestFormProcessor:
         try:
             form_image = self.cropped_image
 
-            self._add_request_number(self.image_path)
-
+            # Detect Medicare anchor
             medicare_anchor = self.medicare_anchor_detector.find_medicare_number(form_image)
 
-            if medicare_anchor:
-                raw_data = self.field_extractor.extract_fields_using_anchor(medicare_anchor)
-                raw_data["medicare_number"] = (medicare_anchor.text, medicare_anchor.confidence, medicare_anchor.bounding_box)
-            else:
-                raw_data = self.field_extractor.extract_fields_using_manual_regions()
+            if not medicare_anchor:
+                raise ValueError("No valid Medicare anchor detected. Ensure the form alignment and quality.")
+
+            # Extract fields based on anchor
+            raw_data = self.field_extractor.extract_fields_using_anchor(medicare_anchor)
+            raw_data["medicare_number"] = (medicare_anchor.text, medicare_anchor.confidence, medicare_anchor.bounding_box)
 
             for field, (value, confidence, region) in raw_data.items():
                 cleaned_value = self.data_post_processor.clean_text(field, value)
@@ -115,11 +118,6 @@ class RequestFormProcessor:
 
             validation_errors = self.validator.validate_data(self.information)
 
-            cropped_path = f"/Users/rileymcnamara/CODE/2024/Data-Entry-App/db/cropped_image_{self.information["request_number"][0]}.jpg"
-            cv2.imwrite(cropped_path, self.cropped_image)
-            #os.remove(self.image_path)
-            self.image_path = cropped_path
-
             processed_form = self._create_processed_form()
 
             return {
@@ -131,6 +129,7 @@ class RequestFormProcessor:
             print(f"An error occurred while processing the form: {e}")
             self.logger.error(f"An error occurred while processing the form: {e}")
             raise
+
 
 
     def _post_process_derived_fields(self):
@@ -303,3 +302,8 @@ class RequestFormProcessor:
 
         ocr /= i + 1
         return ocr
+
+
+def load_field_config(config_path: str) -> dict:
+    with open(config_path, 'r') as config_file:
+        return json.load(config_file)

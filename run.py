@@ -1,12 +1,11 @@
 import os
 import sys
+from backend.form_scanning.RequestFormProcessor import RequestFormProcessor
 
-# Add the project root to Python path
-project_root = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, project_root)
-
-# Import and run the application
-from frontend.main import main
 
 if __name__ == "__main__":
-    main()
+    file_path = '/Users/rileymcnamara/CODE/2024/Data-Entry-App/test_scan_folder/SKM_C224e24111620340_0001.jpg'
+    config_path = '/Users/rileymcnamara/CODE/2024/Data-Entry-App/backend/form_scanning/configs/field_config.json'
+    processor = RequestFormProcessor(file_path, config_path)
+    processed_data = processor.process_form()
+    print(processed_data)
