@@ -1,4 +1,8 @@
 import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '/Users/rileymcnamara/CODE/2024/Data-Entry-App/' )))
+
 import json
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QGraphicsView, QGraphicsScene, QGraphicsRectItem,
@@ -7,9 +11,10 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPixmap, QPen, QBrush, QPen
 from PyQt5.QtCore import Qt, QRectF, QPointF
-from backend.form_scanning.MedicareAnchorDetector import MedicareAnchorDetector
+from backend.form_scanning.MedicareAnchorDetector import MedicareAnchorDetector, MedicareDetector
 from backend.form_scanning.TextProcessor import TextProcessor
 import cv2
+
 
 
 class FieldEditor(QMainWindow):
@@ -33,7 +38,7 @@ class FieldEditor(QMainWindow):
         layout = QVBoxLayout()
 
         # Graphics View and Scene
-        self.graphics_view = ZoomableGraphicsView(self)
+        self.graphics_view = QGraphicsView(self)
         self.scene = QGraphicsScene(self)
         self.graphics_view.setScene(self.scene)
         layout.addWidget(self.graphics_view)
@@ -82,8 +87,14 @@ class FieldEditor(QMainWindow):
             self.anchor_point = None
             self.is_anchor_set = False
             self.field_items.clear()
+            
+            # Load and add the image to the scene
             image = QPixmap(file_name)
-            self.scene.addPixmap(image)
+            pixmap_item = self.scene.addPixmap(image)
+            
+            # Fit the view to the image
+            self.graphics_view.fitInView(pixmap_item, Qt.KeepAspectRatio)
+
 
     def set_anchor_mode(self):
         if not self.image_path:
@@ -158,36 +169,75 @@ class FieldEditor(QMainWindow):
             print("No fields to save.")
             return
 
+        # Ensure the config has a "relative_offsets" section
+        if "relative_offsets" not in self.config:
+            self.config["relative_offsets"] = {}
+
         # Update configuration with current rectangle positions
         for field_name, item in self.field_items.items():
+            # Get the current position and size of the rectangle
             rect = item.rect()
-            self.config["relative_offsets"][field_name] = [
-                int(rect.x() - self.anchor_point.x()),  # Relative X
-                int(self.anchor_point.y() - rect.y()),  # Relative Y (subtract for upward offset)
-                int(rect.width()),
-                int(rect.height())
-            ]
 
+            # Calculate relative offsets
+            relative_x = int(rect.x() - self.anchor_point.x())  # Relative X
+            relative_y = int(self.anchor_point.y() - rect.y())  # Relative Y
+            width = int(rect.width())
+            height = int(rect.height())
+
+            # Update the config
+            self.config["relative_offsets"][field_name] = [relative_x, relative_y, width, height]
+
+            old_value = self.config["relative_offsets"][field_name]
+            print(f"OLD {field_name} = {old_value}")
+            print(f"NEW {field_name} = {[relative_x, relative_y, width, height]}")
+
+
+        # Save the updated config to the file
         try:
             with open(self.config_path, 'w') as file:
                 json.dump(self.config, file, indent=4)
-            print("Configuration saved successfully.")
+            print(f"Configuration saved successfully at {self.config_path}")
         except Exception as e:
             print(f"Error saving configuration: {e}")
+
+
+
 
     def find_medicare_anchor(self):
         if not self.image_path:
             print("Load an image first.")
             return
 
+        # Safely clear existing anchor visuals if any
+        if self.anchor_visual:
+            try:
+                self.scene.removeItem(self.anchor_visual)
+            except RuntimeError:
+                print("Anchor visual was already deleted.")
+            finally:
+                self.anchor_visual = None
+
+        if hasattr(self, 'search_region_visual') and self.search_region_visual:
+            try:
+                self.scene.removeItem(self.search_region_visual)
+            except RuntimeError:
+                print("Search region visual was already deleted.")
+            finally:
+                self.search_region_visual = None
+
         # Load the image and detect the Medicare anchor
-        detector = MedicareAnchorDetector(
-            target_region=self.config["anchors"]["medicare_number"]["region"],
-            text_processor=TextProcessor(),
-            medicare_pattern=self.config["anchors"]["medicare_number"]["pattern"],
-            debug_mode=True
-        )
+        detector = MedicareDetector(debug_mode=True)
         image = cv2.imread(self.image_path)
+
+        # Display the target search region
+        x1, y1, x2, y2 = self.config["anchors"]["medicare_number"]["region"]
+        search_rect = QRectF(x1, y1, x2 - x1, y2 - y1)
+        search_region_visual = QGraphicsRectItem(search_rect)
+        search_region_visual.setPen(QPen(Qt.blue, 2, Qt.DashLine))  # Dashed blue rectangle
+        self.scene.addItem(search_region_visual)
+        self.search_region_visual = search_region_visual
+
+        # Find the Medicare anchor
         medicare_anchor = detector.find_medicare_number(image)
 
         if not medicare_anchor:
@@ -200,10 +250,11 @@ class FieldEditor(QMainWindow):
         rect_item = QGraphicsRectItem(anchor_rect)
         rect_item.setPen(QPen(Qt.green, 2))  # Green rectangle to highlight the anchor
         self.scene.addItem(rect_item)
+        self.anchor_visual = rect_item  # Store reference to the visual anchor
         print(f"Medicare anchor detected at: {medicare_anchor.bounding_box}")
 
-        # Optionally store the rect_item for future updates
-        self.anchor_visual = rect_item
+
+
 
 
 
@@ -306,6 +357,7 @@ class ResizableRectItem(QGraphicsRectItem):
             self.initial_pos = None
             self.update()  # Ensure final visual update
         super().mouseReleaseEvent(event)
+        print("Rect after release:", self.rect())
 
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionChange:
@@ -321,24 +373,6 @@ class ResizableRectItem(QGraphicsRectItem):
         self.update_label_position()
 
     
-class ZoomableGraphicsView(QGraphicsView):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setDragMode(QGraphicsView.ScrollHandDrag)
-        self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
-        self.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
-
-    def wheelEvent(self, event):
-        # Zoom in or out based on the mouse wheel
-        zoom_in_factor = 1.15
-        zoom_out_factor = 1 / zoom_in_factor
-
-        if event.angleDelta().y() > 0:
-            factor = zoom_in_factor
-        else:
-            factor = zoom_out_factor
-
-        self.scale(factor, factor)
 # Main application
 if __name__ == "__main__":
     app = QApplication(sys.argv)

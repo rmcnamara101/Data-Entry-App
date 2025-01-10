@@ -1,19 +1,64 @@
 {
     "anchors": {
         "medicare_number": {
-            "region": [531, 15, 798, 98],
+            "region": [
+                531,
+                0,
+                750,
+                98
+            ],
             "pattern": "^\\d{10}\\s*/\\s*\\d$"
         }
     },
     "relative_offsets": {
-        "date_of_birth": [126, -65, 150, 30],
-        "given_names": [-239, -65, 200, 30],
-        "surname": [-498, -62, 200, 40],
-        "address": [-504, -104, 300, 70],
-        "doctor_information": [-22, -516, 357, 130],
-        "phone_number": [123, -116, 200, 60],
-        "request_date": [154, -431, 200, 30],
-        "sex": [77, -65, 40, 30]
+        "date_of_birth": [
+            157,
+            -61,
+            118,
+            31
+        ],
+        "given_names": [
+            -239,
+            -65,
+            200,
+            30
+        ],
+        "surname": [
+            -466,
+            -69,
+            168,
+            32
+        ],
+        "address": [
+            -445,
+            -106,
+            241,
+            67
+        ],
+        "doctor_information": [
+            21,
+            -551,
+            313,
+            93
+        ],
+        "phone_number": [
+            174,
+            -113,
+            148,
+            55
+        ],
+        "request_date": [
+            228,
+            -451,
+            124,
+            28
+        ],
+        "sex": [
+            77,
+            -65,
+            40,
+            30
+        ]
     },
     "ocr_configs": {
         "default": {

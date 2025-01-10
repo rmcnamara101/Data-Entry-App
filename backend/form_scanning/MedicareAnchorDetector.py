@@ -39,22 +39,9 @@ class MedicareAnchorDetector:
             return None
 
         # Extract text and confidence from the entire target area
-        text, confidence = self.text_processor.extract_text(target_area_rgb, lang="eng", psm=6)
+        text, confidence = self.text_processor.extract_text(target_area_rgb, lang="eng", psm=7, config='-c tessedit_char_whitelist=0123456789/')
         if self.debug_mode:
             print(f"Extracted text: '{text}', Confidence: {confidence}")
-
-        # Clean the text to just digits and '/'
-        cleaned_text = re.sub(r'[^0-9/]', '', text)
-
-        # If text directly matches the pattern and confidence is good enough, we can return the entire region
-        if re.match(self.medicare_pattern, cleaned_text) and confidence > 80:
-            if self.debug_mode:
-                print("Found Medicare number directly from combined OCR output.")
-            return MedicareAnchor(
-                text=cleaned_text,
-                confidence=confidence,
-                bounding_box=(x1, y1, x2, y2)
-            )
 
         # If not found directly, parse the detailed OCR results
         ocr_data = self.text_processor.get_ocr_result()
@@ -87,48 +74,34 @@ class MedicareAnchorDetector:
             cleaned_word = re.sub(r'[^0-9/]', '', word_str)
 
             # Check if this word matches the Medicare pattern
-            if re.match(self.medicare_pattern, cleaned_word) and word_conf > 80:
-                # Found a good match, now we make sure bounding box is tight.
-                # If cleaned_word is exactly the recognized word after cleaning, just use the entire box.
-                # If not, find substring indices in the original word_str.
-
+            if re.match(self.medicare_pattern, cleaned_word):
                 left = lefts[i]
                 top = tops[i]
                 width = widths[i]
                 height = heights[i]
 
-                # Default bounding box from OCR word-level data
-                sub_left = left
-                sub_width = width
-
-                # If the recognized word contains the Medicare number plus extra chars,
-                # find the exact substring and scale.
-                # For example, if word_str = "ABC1234567890/1XYZ" and cleaned_word = "1234567890/1",
-                # find start and end indices in the original word_str.
-                
-                # The cleaned_word might have lost non-digit chars, so we attempt to find the cleaned_word
-                # inside a stripped-down version of word_str that also only has digits and '/'.
-                original_cleaned = re.sub(r'[^0-9/]', '', word_str)
-                
                 # Find substring indices
+                original_cleaned = re.sub(r'[^0-9/]', '', word_str)
                 start_idx = original_cleaned.find(cleaned_word)
+                
                 if start_idx != -1 and len(original_cleaned) >= len(cleaned_word):
                     end_idx = start_idx + len(cleaned_word)
-                    # Approximate character width
                     char_width = width / max(len(original_cleaned), 1)
+                    
+                    # Adjust bounding box for the substring
                     sub_left = left + int(start_idx * char_width)
                     sub_width = int((end_idx - start_idx) * char_width)
 
-                # Create a MedicareAnchor with a tighter bounding box
-                anchor = MedicareAnchor(
-                    text=cleaned_word,
-                    confidence=word_conf,
-                    bounding_box=(x1 + sub_left, y1 + top, x1 + sub_left + sub_width, y1 + top + height)
-                )
+                    # Tight bounding box around the substring
+                    anchor = MedicareAnchor(
+                        text=cleaned_word,
+                        confidence=word_conf,
+                        bounding_box=(x1 + sub_left, y1 + top, x1 + sub_left + sub_width, y1 + top + height)
+                    )
 
-                # Keep track of the highest confidence match if multiple words match
-                if not highest_conf_match or word_conf > highest_conf_match.confidence:
-                    highest_conf_match = anchor
+                    # Keep track of the highest confidence match
+                    if not highest_conf_match or word_conf > highest_conf_match.confidence:
+                        highest_conf_match = anchor
 
         if highest_conf_match:
             if self.debug_mode:
@@ -148,7 +121,7 @@ class MedicareDetector:
         self.medicare_pattern = r"^\d{10}\s*/\s*\d$"
         
         # Define the exact region where Medicare number should be
-        self.target_region = (531, 15, 798, 98)  # (x1, y1, x2, y2)
+        self.target_region = (531, 0, 804, 98)  # (x1, y1, x2, y2)
 
     def find_medicare_number(self, image) -> Optional[MedicareAnchor]:
         detector = MedicareAnchorDetector(

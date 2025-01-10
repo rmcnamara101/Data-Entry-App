@@ -49,7 +49,7 @@ def process_folder(folder_path, progress_callback=None):
             logging.info(f"Processing file: {file_name}")
 
             try:
-                processor = RequestFormProcessor(file_path, '/Users/rileymcnamara/CODE/2024/Data-Entry-App/backend/form_scanning/configs/request_form_config.json')
+                processor = RequestFormProcessor(file_path, '/Users/rileymcnamara/CODE/2024/Data-Entry-App/backend/form_scanning/configs/field_config.json')
                 processed_data = processor.process_form()
 
                 if processed_data['data']:

@@ -14,7 +14,7 @@ class TextProcessor:
             print(f"Tesseract initialization error: {e}")
             print("Please ensure Tesseract is properly installed")
             
-    def extract_text(self, image: Any, lang: str = "eng", psm: int = 6) -> Tuple[str, float]:
+    def extract_text(self, image: Any, lang: str = "eng", psm: int = 6, config: str = None) -> Tuple[str, float]:
         """
         Extracts text from an image using Tesseract OCR with customizable parameters.
 
@@ -28,7 +28,10 @@ class TextProcessor:
             Tuple[str, float]: Extracted text and confidence score.
         """
         # Prepare OCR configuration
-        custom_config = f"--psm {psm} -l {lang} --oem 3"
+        if config is None:
+            custom_config = f"--psm {psm} -l {lang} --oem 3"
+        else:
+            custom_config = f"{config} --psm {psm} -l {lang} --oem 3"
 
         # Perform OCR
         self.ocr_result = pytesseract.image_to_data(image, config=custom_config, output_type=pytesseract.Output.DICT)

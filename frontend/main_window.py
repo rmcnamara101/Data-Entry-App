@@ -1,6 +1,8 @@
-# main_window.py
-
 import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '/Users/rileymcnamara/CODE/2024/Data-Entry-App/' )))
+
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QStackedWidget, QHBoxLayout, QFrame,
     QVBoxLayout, QPushButton, QMenuBar, QStatusBar, QAction
@@ -14,6 +16,7 @@ from frontend.pages.scanner_page import ScannerPage
 from frontend.pages.database_page import DatabasePage
 from frontend.pages.validation_page import ValidationPage
 from frontend.pages.execution_page import ExecutionPage
+from frontend.pages.settings_page import SettingsPage  # New import
 
 
 class MainWindow(QMainWindow):
@@ -92,6 +95,7 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(DatabasePage(self))   # index 2
         self.stacked_widget.addWidget(ValidationPage(self)) # index 3
         self.stacked_widget.addWidget(ExecutionPage(self))  # index 4
+        self.stacked_widget.addWidget(SettingsPage(self))   # index 5
 
     def create_sidebar(self):
         """
@@ -120,6 +124,7 @@ class MainWindow(QMainWindow):
             ("Database View", "database", 2),
             ("Validation", "check-circle", 3),
             ("Data Entry", "play-circle", 4),
+            ("Settings", "settings", 5),  # New button
         ]
 
         for text, icon_name, page_idx in nav_buttons:

@@ -97,6 +97,8 @@ class RequestFormProcessor:
         try:
             form_image = self.cropped_image
 
+            self._add_request_number(self.image_path)
+
             # Detect Medicare anchor
             medicare_anchor = self.medicare_anchor_detector.find_medicare_number(form_image)
 
@@ -262,7 +264,7 @@ class RequestFormProcessor:
             sex=self._field_to_fielddata("sex")
         )
 
-    def _add_request_number(self, image: np.array) -> List[str]:
+    def _add_request_number(self, image: str) -> List[str]:
         """
         Function to read barcodes from an image.
         """
