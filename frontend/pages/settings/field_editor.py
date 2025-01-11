@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPixmap, QPen, QBrush, QPen
 from PyQt5.QtCore import Qt, QRectF, QPointF
-from backend.form_scanning.MedicareAnchorDetector import MedicareAnchorDetector, MedicareDetector
+from backend.form_scanning.MedicareAnchorDetector import  MedicareDetector
 from backend.form_scanning.TextProcessor import TextProcessor
 import cv2
 
@@ -61,7 +61,13 @@ class FieldEditor(QMainWindow):
         layout.addWidget(self.save_config_btn)
 
         # Instructions
-        self.instructions = QLabel("Instructions:\n1. Load an image.\n2. Find Medicare Anchor or Set Anchor Point.\n3. Adjust relative boxes.\n4. Save the configuration.")
+        self.instructions = QLabel(
+            "Instructions:\n"
+            "1. Load an image.\n"
+            "2. Find Medicare Anchor or Set Anchor Point.\n"
+            "3. Adjust relative boxes.\n"
+            "4. Save the configuration."
+        )
         layout.addWidget(self.instructions)
 
         # Set central widget
@@ -78,7 +84,10 @@ class FieldEditor(QMainWindow):
             return {}
 
     def load_image(self):
-        file_name, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Images (*.png *.jpg *.jpeg *.tiff)")
+        file_name, _ = QFileDialog.getOpenFileName(
+            self, "Open Image File", "",
+            "Images (*.png *.jpg *.jpeg *.tiff)"
+        )
         if file_name:
             self.image_path = file_name
             self.scene.clear()  # Clear the previous scene
@@ -87,14 +96,13 @@ class FieldEditor(QMainWindow):
             self.anchor_point = None
             self.is_anchor_set = False
             self.field_items.clear()
-            
+
             # Load and add the image to the scene
             image = QPixmap(file_name)
             pixmap_item = self.scene.addPixmap(image)
-            
+
             # Fit the view to the image
             self.graphics_view.fitInView(pixmap_item, Qt.KeepAspectRatio)
-
 
     def set_anchor_mode(self):
         if not self.image_path:
@@ -117,8 +125,6 @@ class FieldEditor(QMainWindow):
         # Enable setting anchor point
         self.graphics_view.setCursor(Qt.CrossCursor)
         self.graphics_view.mousePressEvent = self.set_anchor_point
-
-
 
     def set_anchor_point(self, event):
         if self.is_anchor_set:  # Prevent resetting the anchor
@@ -165,32 +171,29 @@ class FieldEditor(QMainWindow):
             self.labels.append(rect_item.label)
 
     def save_config(self):
-        if not self.field_items:
-            print("No fields to save.")
+        if not self.field_items or not self.anchor_point:
+            print("No fields to save or anchor point not set.")
             return
 
-        # Ensure the config has a "relative_offsets" section
         if "relative_offsets" not in self.config:
             self.config["relative_offsets"] = {}
 
         # Update configuration with current rectangle positions
         for field_name, item in self.field_items.items():
-            # Get the current position and size of the rectangle
-            rect = item.rect()
+            # Get the actual scene coordinates of the rectangle
+            scene_rect = item.getSceneRect()
+            
+            # Calculate relative offsets from the anchor point
+            relative_x = int(scene_rect.x() - self.anchor_point.x())
+            relative_y = int(self.anchor_point.y() - scene_rect.y())
+            
+            # Store the width and height
+            width = int(scene_rect.width())
+            height = int(scene_rect.height())
 
-            # Calculate relative offsets
-            relative_x = int(rect.x() - self.anchor_point.x())  # Relative X
-            relative_y = int(self.anchor_point.y() - rect.y())  # Relative Y
-            width = int(rect.width())
-            height = int(rect.height())
-
-            # Update the config
-            self.config["relative_offsets"][field_name] = [relative_x, relative_y, width, height]
-
-            old_value = self.config["relative_offsets"][field_name]
-            print(f"OLD {field_name} = {old_value}")
-            print(f"NEW {field_name} = {[relative_x, relative_y, width, height]}")
-
+            self.config["relative_offsets"][field_name] = [
+                relative_x, relative_y, width, height
+            ]
 
         # Save the updated config to the file
         try:
@@ -199,9 +202,6 @@ class FieldEditor(QMainWindow):
             print(f"Configuration saved successfully at {self.config_path}")
         except Exception as e:
             print(f"Error saving configuration: {e}")
-
-
-
 
     def find_medicare_anchor(self):
         if not self.image_path:
@@ -225,7 +225,6 @@ class FieldEditor(QMainWindow):
             finally:
                 self.search_region_visual = None
 
-        # Load the image and detect the Medicare anchor
         detector = MedicareDetector(debug_mode=True)
         image = cv2.imread(self.image_path)
 
@@ -233,13 +232,11 @@ class FieldEditor(QMainWindow):
         x1, y1, x2, y2 = self.config["anchors"]["medicare_number"]["region"]
         search_rect = QRectF(x1, y1, x2 - x1, y2 - y1)
         search_region_visual = QGraphicsRectItem(search_rect)
-        search_region_visual.setPen(QPen(Qt.blue, 2, Qt.DashLine))  # Dashed blue rectangle
+        search_region_visual.setPen(QPen(Qt.blue, 2, Qt.DashLine))
         self.scene.addItem(search_region_visual)
         self.search_region_visual = search_region_visual
 
-        # Find the Medicare anchor
         medicare_anchor = detector.find_medicare_number(image)
-
         if not medicare_anchor:
             print("Medicare anchor not found.")
             return
@@ -248,14 +245,10 @@ class FieldEditor(QMainWindow):
         x1, y1, x2, y2 = medicare_anchor.bounding_box
         anchor_rect = QRectF(x1, y1, x2 - x1, y2 - y1)
         rect_item = QGraphicsRectItem(anchor_rect)
-        rect_item.setPen(QPen(Qt.green, 2))  # Green rectangle to highlight the anchor
+        rect_item.setPen(QPen(Qt.green, 2))
         self.scene.addItem(rect_item)
-        self.anchor_visual = rect_item  # Store reference to the visual anchor
+        self.anchor_visual = rect_item
         print(f"Medicare anchor detected at: {medicare_anchor.bounding_box}")
-
-
-
-
 
 
 class ResizableRectItem(QGraphicsRectItem):
@@ -281,7 +274,7 @@ class ResizableRectItem(QGraphicsRectItem):
         self.label = QGraphicsSimpleTextItem(field_name, self)
         self.update_label_position()
 
-        # Create handles
+        # Create handles for resizing
         self.handles = {}
         handle_positions = ["top_left", "top_right", "bottom_left", "bottom_right"]
         for pos in handle_positions:
@@ -297,6 +290,7 @@ class ResizableRectItem(QGraphicsRectItem):
         return handle
 
     def update_label_position(self):
+        # Move label above the rectangle
         self.label.setPos(0, -20)
 
     def update_handles(self):
@@ -341,23 +335,24 @@ class ResizableRectItem(QGraphicsRectItem):
 
             # Apply the new rectangle if it's valid
             if new_rect.width() >= self.HANDLE_SIZE and new_rect.height() >= self.HANDLE_SIZE:
-                self.prepareGeometryChange()  # Important: notify the scene about upcoming geometry change
+                self.prepareGeometryChange()
                 self.setRect(new_rect.normalized())
                 self.update_handles()
-                self.update()  # Force a visual update
+                self.update()
             event.accept()
         else:
             super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):
+        super().mouseReleaseEvent(event)
         if event.button() == Qt.LeftButton:
             self.dragging = False
             self.active_handle = None
             self.initial_rect = None
             self.initial_pos = None
-            self.update()  # Ensure final visual update
-        super().mouseReleaseEvent(event)
-        print("Rect after release:", self.rect())
+            self.update()
+        # Print the final *scene rect* so we can debug
+        print(f"{self.field_name} scene rect after release:", self.getSceneRect())
 
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionChange:
@@ -366,13 +361,24 @@ class ResizableRectItem(QGraphicsRectItem):
         return super().itemChange(change, value)
 
     def paint(self, painter, option, widget=None):
-        # Draw the main rectangle
         super().paint(painter, option, widget)
-        # Force update of handles and label positions
         self.update_handles()
         self.update_label_position()
 
-    
+    def getSceneRect(self):
+        """
+        Get the rectangle's position in scene coordinates.
+        Combines the item's scene position with its local rect.
+        """
+        scene_pos = self.scenePos()
+        local_rect = self.rect()
+        return QRectF(
+            scene_pos.x() + local_rect.x(),
+            scene_pos.y() + local_rect.y(),
+            local_rect.width(),
+            local_rect.height()
+        )
+
 # Main application
 if __name__ == "__main__":
     app = QApplication(sys.argv)
