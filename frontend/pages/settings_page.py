@@ -28,6 +28,11 @@ class SettingsPage(QWidget):
         field_editor_button.clicked.connect(self.launch_field_editor)
         layout.addWidget(field_editor_button)
 
+        field_editor_button = QPushButton("Launch Anchor Editor")
+        field_editor_button.setToolTip("Open the Anchor Editor tool.")
+        field_editor_button.clicked.connect(self.launch_anchor_editor)
+        layout.addWidget(field_editor_button)
+
         placeholder = QLabel("Additional settings can go here.")
         placeholder.setAlignment(Qt.AlignCenter)
         layout.addWidget(placeholder)
@@ -46,3 +51,12 @@ class SettingsPage(QWidget):
         # Use sys.executable to get the current Python interpreter path
         python_executable = sys.executable
         subprocess.Popen([python_executable, field_editor_path, config_path], shell=False)
+
+    def launch_anchor_editor(self):
+        """
+        Launches the Anchor Tool as a separate process.
+        """
+        anchor_editor_path = "/Users/rileymcnamara/CODE/2024/Data-Entry-App/frontend/pages/settings/anchor_editor.py"
+
+        python_executable = sys.executable
+        subprocess.Popen([python_executable, anchor_editor_path], shell=False)

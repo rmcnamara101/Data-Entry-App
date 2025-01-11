@@ -386,3 +386,4 @@ if __name__ == "__main__":
     editor = FieldEditor(config_path)
     editor.show()
     sys.exit(app.exec_())
+    
