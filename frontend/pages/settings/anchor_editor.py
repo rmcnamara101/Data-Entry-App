@@ -86,7 +86,7 @@ class ConfigPanel(QWidget):
         
     def reset_to_defaults(self):
         """Reset all configuration parameters to default values."""
-        default_region = (531, 0, 804, 98)
+        default_region = (531, 0, 804, 80)
         for coord, value in zip(['x1', 'y1', 'x2', 'y2'], default_region):
             self.region_inputs[coord].setValue(value)
         self.pattern_input.setText(r"^\d{10}\s*/\s*\d$")
@@ -107,7 +107,7 @@ class ConfigPanel(QWidget):
         
     def load_config(self, config: Dict):
         """Load configuration from dictionary."""
-        region = config.get('target_region', (531, 0, 804, 98))
+        region = config.get('target_region', (531, 0, 804, 80))
         for coord, value in zip(['x1', 'y1', 'x2', 'y2'], region):
             self.region_inputs[coord].setValue(value)
         self.pattern_input.setText(config.get('medicare_pattern', r"^\d{10}\s*/\s*\d$"))

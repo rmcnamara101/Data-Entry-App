@@ -24,6 +24,9 @@ class MedicareAnchorDetector:
         self.medicare_pattern = medicare_pattern
         self.debug_mode = debug_mode
 
+        self.threshold_value = 150
+        self.threshold = True
+
     def find_medicare_number(self, image) -> Optional[MedicareAnchor]:
         """
         Finds a Medicare number anchor within the given image.
@@ -33,6 +36,18 @@ class MedicareAnchorDetector:
 
         # 1. Create a masked image so the rest of the image is white
         masked_image = self.create_masked_image(image, (x1, y1, x2, y2))
+        gray_masked = cv2.cvtColor(masked_image, cv2.COLOR_BGR2GRAY)
+
+        if self.threshold:
+            # OTSU automatically determines best threshold,
+            # ignoring self.threshold_value
+            _, final_masked = cv2.threshold(
+                gray_masked, 0, 255, 
+                cv2.THRESH_BINARY + cv2.THRESH_OTSU
+            )
+        else:
+            # Fixed threshold at self.threshold_value
+            final_masked = gray_masked.copy()
         
         # 2. Extract text and confidence from the masked image
         #    - Adjust psm/config as needed. For example, pass a dict if you want thresholding:
@@ -42,9 +57,9 @@ class MedicareAnchorDetector:
         #      }
         #      text, confidence = self.text_processor.extract_text(masked_image, lang="eng", psm=7, config=config_dict)
         text, confidence = self.text_processor.extract_text(
-            masked_image, 
+            final_masked, 
             lang="eng", 
-            psm=8
+            psm=7
         )
         if self.debug_mode:
             print(f"Extracted text: '{text}', Confidence: {confidence}")
@@ -105,10 +120,10 @@ class MedicareAnchorDetector:
                         text=cleaned_word,
                         confidence=word_conf,
                         bounding_box=(
-                            x1 + sub_left,       # left
-                            y1 + top,            # top
-                            x1 + sub_left + sub_width,  # right
-                            y1 + top + height    # bottom
+                            sub_left,
+                            top,
+                            sub_left + sub_width,
+                            top + height
                         )
                     )
 
@@ -156,7 +171,7 @@ class MedicareDetector:
         self.medicare_pattern = r"^\d{10}\s*/\s*\d$"
         
         # Define the region where the Medicare number is expected
-        self.target_region = (531, 0, 804, 85)  # (x1, y1, x2, y2)
+        self.target_region = (531, 0, 804, 80)  # (x1, y1, x2, y2)
 
     def find_medicare_number(self, image) -> Optional[MedicareAnchor]:
         detector = MedicareAnchorDetector(
