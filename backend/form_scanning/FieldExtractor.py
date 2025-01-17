@@ -37,10 +37,7 @@ class FieldExtractor:
         
         # Cut out the region of interest from the mask
         mask[y1:y2, x1:x2] = self.form_image[y1:y2, x1:x2]
-        
-        if self.debug_mode:
-            cv2.imshow('Masked Region', mask)
-            cv2.waitKey(1)
+ 
             
         return mask
 
