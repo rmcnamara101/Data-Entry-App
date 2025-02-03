@@ -17,6 +17,9 @@ from typing import List, Optional, Tuple
 import re
 import os
 import json
+import torch
+from detectron2.config import get_cfg
+from detectron2.engine import DefaultPredictor
 
 @dataclass
 class FieldData:
@@ -45,31 +48,125 @@ class ProcessedForm:
     provider_number: Optional[FieldData] = None
     sex: Optional[FieldData] = None  # Added sex field as requested
 
-class RequestFormProcessor:
-    def __init__(self, image_path: str, config_path: str, debug_mode: bool = False) -> None:
-        self.logger = logging.getLogger(self.__class__.__name__)
-        self.logger.setLevel(logging.DEBUG if debug_mode else logging.INFO)
-
-        self.config = load_field_config(config_path)
-        print(self.config)
-        self.image_path = image_path
+class ModelManager:
+    """Singleton class to manage the model instance and configuration."""
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(ModelManager, cls).__new__(cls)
+            cls._instance.predictor = None
+            cls._instance.cfg = None
+        return cls._instance
+    
+    def initialize_model(self, config_path: str, weights_path: str, use_gpu: bool = True):
+        """Initialize the model with the given configuration."""
+        if self.predictor is None:
+            cfg = get_cfg()
+            cfg.merge_from_file(config_path)
+            cfg.MODEL.WEIGHTS = weights_path
+            cfg.MODEL.WEIGHTS_ONLY = True
+            
+            if use_gpu and torch.cuda.is_available():
+                cfg.MODEL.DEVICE = "cuda"
+                if torch.cuda.get_device_capability()[0] >= 7:
+                    cfg.MODEL.FP16_ENABLED = True
+            else:
+                cfg.MODEL.DEVICE = "cpu"
+                if cv2.ocl.haveOpenCL():
+                    cv2.ocl.setUseOpenCL(True)
+            
+            self.predictor = DefaultPredictor(cfg)
+            self.cfg = cfg
+    
+    def get_predictor(self):
+        return self.predictor, self.cfg
+    
+class BatchRequestFormProcessor:
+    """Handles batch processing of multiple forms."""
+    def __init__(self, model_config_path: str, model_weights_path: str, field_config_path: str, debug_mode: bool = False):
         self.debug_mode = debug_mode
-
-        # Initialize components
-        self.form_preparer = FormImagePreparer(image_path, debug_mode)
+        self.field_config = load_field_config(field_config_path)
+        
+        # Initialize model manager
+        self.model_manager = ModelManager()
+        self.model_manager.initialize_model(model_config_path, model_weights_path)
+        
+        # Initialize components that can be shared across forms
         self.data_post_processor = DataPostProcessor(debug_mode)
         self.validator = Validator()
-        self.medicare_anchor_detector = MedicareDetector(debug_mode=self.debug_mode)
 
-        # Each field stored as (value, confidence, bounding_box) after cleaning
+    def process_batch(self, image_paths: List[str], batch_size: int = 4) -> Dict[str, Dict]:
+        """Process multiple forms in batches."""
+        results = {}
+        
+        # Process images in batches
+        for i in range(0, len(image_paths), batch_size):
+            batch_paths = image_paths[i:i + batch_size]
+            batch_results = self._process_batch(batch_paths)
+            results.update(batch_results)
+        
+        return results
+
+    def _process_batch(self, image_paths: List[str]) -> Dict[str, Dict]:
+        """Process a single batch of forms."""
+        predictor, cfg = self.model_manager.get_predictor()
+        batch_results = {}
+        
+        # Prepare all images in batch
+        prepared_images = []
+        for path in image_paths:
+            form_preparer = FormImagePreparer(self.debug_mode)
+            form_preparer.image_path = path
+            prepared_images.append((path, form_preparer.prepare_form()))
+        
+        # Extract fields for all images in batch
+        with torch.no_grad():
+            for path, prepared_image in prepared_images:
+                processor = SingleFormProcessor(
+                    path,
+                    prepared_image,
+                    predictor,
+                    cfg,
+                    self.field_config,
+                    self.data_post_processor,
+                    self.validator,
+                    self.debug_mode
+                )
+                result = processor.process_form()
+                batch_results[os.path.basename(path)] = result
+        
+        return batch_results
+
+class SingleFormProcessor:
+    """Processes a single form using shared resources."""
+    def __init__(
+        self,
+        image_path: str,
+        prepared_image: np.ndarray,
+        predictor: DefaultPredictor,
+        cfg: get_cfg,
+        field_config: dict,
+        data_post_processor: DataPostProcessor,
+        validator: Validator,
+        debug_mode: bool = False
+    ):
+        self.image_path = image_path
+        self.prepared_image = prepared_image
+        self.predictor = predictor
+        self.cfg = cfg
+        self.field_config = field_config
+        self.data_post_processor = data_post_processor
+        self.validator = validator
+        self.debug_mode = debug_mode
+        
         self.information = {
             "request_number": None,
             "request_date": None,
-            # "collection_date": None,  # Removed as requested
             "received_date": None,
             "surname": None,
             "given_names": None,
-            "sex": None,  # Added sex field
+            "sex": None,
             "address": None,
             "suburb": None,
             "postcode": None,
@@ -81,55 +178,43 @@ class RequestFormProcessor:
             "medicare_position": None,
             "provider_number": None,
             "ocr_confidence": None,
-            "phone_number": None,  # If combined phone field exists
-            "doctor_information": None  # If we need this for provider_number extraction
+            "phone_number": None,
+            "doctor_information": None
         }
 
-        self.cropped_image = self.form_preparer.prepare_form()
-        self.field_extractor = FieldExtractor(self.cropped_image, self.config, debug_mode)
-
     def process_form(self) -> Dict[str, Any]:
-        """
-        Processes the request form to extract, clean, validate, and store data.
-        Returns a dictionary with processed data and validation errors,
-        as well as a ProcessedForm object.
-        """
+        """Process a single form using the shared predictor."""
         try:
-            form_image = self.cropped_image
-
-            self._add_request_number(self.image_path)
-
-            # Detect Medicare anchor
-            medicare_anchor = self.medicare_anchor_detector.find_medicare_number(form_image)
-
-            if not medicare_anchor:
-                raise ValueError("No valid Medicare anchor detected. Ensure the form alignment and quality.")
-
-            # Extract fields based on anchor
-            raw_data = self.field_extractor.extract_fields_using_anchor(medicare_anchor)
-            raw_data["medicare_number"] = (medicare_anchor.text, medicare_anchor.confidence, medicare_anchor.bounding_box)
-
-            for field, (value, confidence, region) in raw_data.items():
-                cleaned_value = self.data_post_processor.clean_text(field, value)
-                self.information[field] = (cleaned_value, confidence, region)
-
+            # Extract fields using the shared predictor
+            field_extractor = FieldExtractor(self.prepared_image, self.field_config, self.debug_mode)
+            extracted_fields = field_extractor.extract_field_info(self.predictor)
+            
+            # Map extracted fields
+            self._map_extracted_fields(extracted_fields)
+            
+            # Post-process fields
             self._post_process_derived_fields()
-
+            
+            # Add request number from barcode
+            self._add_request_number(self.image_path)
+            
+            # Set received date
             now_str = datetime.now().strftime('%d/%m/%Y')
-            self.information["received_date"] = (now_str, 100, None)  # Confidence 100, no bbox since generated
-
+            self.information["received_date"] = (now_str, 100, None)
+            
+            # Validate data
             validation_errors = self.validator.validate_data(self.information)
-
+            
+            # Create processed form
             processed_form = self._create_processed_form()
-
+            
             return {
                 "data": processed_form,
                 "validation_errors": validation_errors
             }
-
+            
         except Exception as e:
-            print(f"An error occurred while processing the form: {e}")
-            self.logger.error(f"An error occurred while processing the form: {e}")
+            logging.error(f"Error processing form {self.image_path}: {str(e)}")
             raise
 
 

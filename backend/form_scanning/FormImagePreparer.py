@@ -4,10 +4,8 @@ from typing import Tuple
 from dataclasses import dataclass
 
 class FormImagePreparer:
-    def __init__(self, image_path: str, debug_mode: bool = False) -> None:
-        self.image_path = image_path
-        self.image = self._load_image(image_path)
-        self.debug_mode = debug_mode
+    def __init__(self, debug_mode: bool = False) -> None:
+        pass
 
     def _load_image(self, image_path: str) -> np.ndarray:
         image = cv2.imread(image_path)
@@ -15,8 +13,10 @@ class FormImagePreparer:
             raise FileNotFoundError(f"Could not load image at {image_path}")
         return image
 
-    def prepare_form(self, target_size: Tuple[int, int] = (1024, 768)) -> np.ndarray:
-        cropped_image = self.crop_to_content(self.image)
+    def prepare_form(self, file_path, target_size: Tuple[int, int] = (1024, 768)) -> np.ndarray:
+        img = self._load_image(file_path)
+
+        cropped_image = self.crop_to_content(img)
         prepared_image = self.scale_image(cropped_image, target_size)        
         return prepared_image
 
