@@ -46,7 +46,7 @@ class ProcessedForm:
     medicare_number: Optional[FieldData] = None
     medicare_position: Optional[FieldData] = None
     provider_number: Optional[FieldData] = None
-    sex: Optional[FieldData] = None  # Added sex field as requested
+    sex: Optional[FieldData] = None  
 
 class ModelManager:
     """Singleton class to manage the model instance and configuration."""

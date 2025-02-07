@@ -1,0 +1,4 @@
+detectvenv/
+.venv/
+.conda/
+archive/
